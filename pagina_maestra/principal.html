@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PesatusPesos - Home</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/coins-solid.png">
+    <link rel="stylesheet" href="estilo.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </head>
+
+  <body>
+    <div class="contenedor-flotante-app">
+      <header class="barra">
+        <div class="caja-logo">
+          <i class="fa-solid fa-coins" style="font-size: 2rem; color: #CFB53B;"></i>
+          <span class="texto-logo">PESATUSPESOS</span>
+        </div>
+        <div class="menu-wrapper">
+          <nav class="menu">
+            <button>Inicio</button>
+            <button>Ingresos/Egresos</button>
+            <button>Deuda</button>
+            <button>Ahorro</button>
+          </nav>
+        </div>
+
+        <div class="contenedor-flotante">
+          <div class="opciones-flotantes">
+            <button class="boton-opcion boton-manual">
+              <img src="img\informacion (1).png" alt="Manual" />
+            </button>
+            <button class="boton-opcion boton-atencion">
+              <img src="img/apoyo (1).png" alt="Atencion" />
+            </button>
+            <button class="boton-opcion boton-editar" id="botonPerfil">
+              <img src="img/avatar-de-usuario (1).png" alt="Editar" />
+            </button>
+          </div>
+
+          <button class="boton-principal" id="botonConfiguracion">
+            <img src="img\ajustes.png" alt="Configuración" />
+          </button>
+        </div>
+      </header>
+
+      <main class="contenido">
+
+        <section class="principal">
+          <!-- Aquí irá el contenido específico de cada página -->
+        </section>
+
+        <!-- Panel usuario FUERA de .principal -->
+        <aside class="usuario" id="panelUsuario">
+          <button class="cerrar-panel" id="cerrarPanel">✕</button>
+          <h2 id="nombre_usuario">Usuario</h2>
+          <div class="avatar-wrapper">
+            <img
+              src="img/marrano.png"
+              class="avatar"
+              id="avatarPrincipal"
+              alt="avatar"
+            />
+            <div class="avatar-lapiz">
+              <img src="img/lapiz.png" alt="editar" width="14" height="14" />
+            </div>
+          </div>
+          <p class="frase" id="frase_motivadora"></p>
+          <button class="boton-cerrar">Cerrar sesión</button>
+        </aside>
+
+
+      </main>
+      <!--FOOTER-->
+      <footer>
+        <div class="footer-grid">
+          <!-- Logo + descripción -->
+          <div class="footer-brand">
+            <div class="footer-logos">
+              <img
+                src="img/logoSenaNaranja.png"
+                alt="SENA"
+                style="width: 50px"
+              />
+              <img
+                src="img\Gemini_Generated_Image_1f5if41f5if41f5i-removebg-preview.png"
+                alt="Logo 2"
+                style="width: 50px"
+              />
+              <img
+                src="img\Gemini_Generated_Image_8j74rx8j74rx8j74-removebg-preview.png"
+                alt="Logo 3"
+                style="width: 50px"
+              />
+            </div>
+            <p>PesatusPesos · Herramienta de educación financiera</p>
+          </div>
+
+          <!-- Contacto -->
+          <div class="footer-col">
+            <h4>Contacto</h4>
+            <p>jpjcompany10@gmail.com</p>
+            <p>Lunes a viernes 8:00 a.m. – 6:00 p.m.</p>
+            <p>Tel: +57 310 520 4819</p>
+          </div>
+
+          <!-- Ubicación -->
+          <div class="footer-col">
+            <h4>Ubicación</h4>
+            <p>Medellín, Antioquia</p>
+            <p>Colombia</p>
+            <p>Aprendizaje en línea y seguimiento presencial según programa.</p>
+          </div>
+
+          <!-- Legal -->
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <a
+              href="https://drive.google.com/file/d/1niNl3BNnppZKtocOjVEMd492v4KXjG2V/view?usp=sharing"
+              class="politicas-link"
+              >Políticas de privacidad y datos</a
+            >
+            <a
+              href="https://drive.google.com/file/d/1U7qVxJ6KrGPEQ5WMXAMO16hA1F6firyb/view?usp=sharing"
+              class="terminos-link"
+              >Términos y condiciones</a
+            >
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          © 2026 PesatusPesos · Proyecto formativo · SENA
+        </div>
+      </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="animacion.js"></script>
+  </body>
+</html>

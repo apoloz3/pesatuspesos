@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PesaTusPesos - Login</title>
+<link rel="icon" type="image/png" sizes="32x32" href="imagenes/coins-solid.png">
+<link rel="stylesheet" type="text/css" href="login.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- Script de Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+
+</head>
+
+<body>
+
+<div class="contenedor-principal">
+    <header class="encabezado-logo animacion" style="--D:0; --S:10">
+        <div class="caja-logo">
+            <i class="fa-solid fa-coins" style="font-size: 2rem; color: #CFB53B;"></i>
+            <span class="texto-logo">PESATUSPESOS</span>
+        </div>
+    </header>
+    <div class="forma-curva"></div>
+    <div class="forma-curva2"></div>
+
+    <!-- FORMULARIO INICIAR SESIÓN -->
+    <div class="caja-formulario iniciar-sesion">
+
+        <div class="cuadro-blanco animacion" style="--D:0; --S:20">
+
+            <h2 class="animacion" style="--D:0; --S:21">Iniciar sesión</h2>
+
+            <form action="#">
+
+                <div class="caja-input animacion" style="--D:1; --S:22">
+
+                    <input type="text" id="usuarioLogin" name="usuario" required>
+
+                    <label for="usuarioLogin">Usuario</label>
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+                <div class="caja-input animacion" style="--D:2; --S:23">
+
+                    <input type="password" id="contrasenaLogin" name="contrasena" required>
+
+                    <label for="contrasenaLogin">Contraseña</label>
+
+                    <i class="fa-solid fa-lock"></i>
+
+                </div>
+
+                <div class="caja-input animacion" style="--D:3; --S:24">
+
+                    <button class="boton" type="submit">Iniciar sesión</button>
+
+                </div>
+
+                <!-- Contenedor del Botón de Google para iniciar sesión -->
+                <div class="animacion" style="--D:4; --S:24; display: flex; justify-content: center; margin-top: 25px; margin-bottom: 5px;">
+                    <div id="googleBtnDivLogin"></div>
+                </div>
+
+                <div class="link-registro animacion" style="--D:4; --S:24">
+
+                    <p>
+                        <a href="#" id="abrirModal">¿Olvidaste tu contraseña?</a>
+                    </p>
+
+                </div>
+
+                <div class="link-registro animacion" style="--D:4; --S:25">
+
+                    <p>¿No tienes una cuenta?
+                        <a href="#" class="linkRegistro">Regístrate</a>
+                    </p>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- TEXTO BIENVENIDA -->
+    <div class="contenido-info iniciar-sesion">
+        <div class="envoltorio-info animacion" style="--D:0; --S:20">
+            <div class="contenedor-animacion-monedas">
+                <i class="fa-solid fa-sack-dollar bolsa-dinero"></i>
+                <i class="fa-solid fa-coins moneda moneda-1"></i>
+                <i class="fa-solid fa-coins moneda moneda-2"></i>
+                <i class="fa-solid fa-coins moneda moneda-3"></i>
+                <i class="fa-solid fa-coins moneda moneda-4"></i>
+                <i class="fa-solid fa-coins moneda moneda-5"></i>
+            </div>
+            <h2>¡Haz que cada peso cuente!</h2>
+            <p>Monitorea tus finanzas con la precisión que mereces.</p>
+        </div>
+    </div>
+
+    <!-- FORMULARIO REGISTRO -->
+    <div class="caja-formulario registro">
+
+        <div class="cuadro-blanco animacion" style="--D:0; --S:0;">
+
+            <h2 class="animacion" style="--D:0; --S:0;">Regístrate</h2>
+
+            <form id="formRegistro" action="#">
+
+                <div class="caja-input animacion" style="--D:1; --S:1;">
+
+                    <input type="text" id="usuarioRegistro" name="usuario" required>
+
+                    <label for="usuarioRegistro">Nombres y apellidos</label>
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+                <div class="caja-input animacion" style="--D:2; --S:1;">
+
+                    <input type="email" id="correoRegistro" name="correo" required>
+
+                    <label for="correoRegistro">Correo electrónico</label>
+
+                    <i class="fa-solid fa-envelope"></i>
+
+                </div>
+
+                <div class="caja-input animacion" style="--D:3; --S:2;">
+
+                    <input type="tel"
+                           id="telefonoRegistro"
+                           name="telefono"
+                           required
+                           pattern="[0-9]+"
+                           title="Solo se permiten números"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+
+                    <label for="telefonoRegistro">Teléfono</label>
+
+                    <i class="fa-solid fa-phone"></i>
+
+                </div>
+
+                <div class="caja-input animacion" style="--D:4; --S:2;">
+
+                    <input type="password" id="contrasenaRegistro" name="contrasena" required>
+
+                    <label for="contrasenaRegistro">Contraseña</label>
+
+                    <i class="fa-solid fa-eye ver-contrasena" data-target="contrasenaRegistro"></i>
+
+                </div>
+
+                <div class="caja-input animacion" style="--D:5; --S:2;">
+
+                    <input type="password" id="confirmarContrasena" name="confirmacion" required>
+
+                    <label for="confirmarContrasena">Confirmar contraseña</label>
+
+                    <i class="fa-solid fa-eye ver-contrasena" data-target="confirmarContrasena"></i>
+
+                </div>
+
+                <div class="caja-input animacion" style="--D:3; --S:3;">
+
+                    <button class="boton" type="submit">Crear cuenta</button>
+
+                </div>
+                
+                <div class="link-registro animacion" style="--D:4; --S:4;">
+                    <!-- Contenedor donde se insertará el botón oficial de Google -->
+                    <div id="googleBtnDiv" style="display: flex; justify-content: center;"></div>
+                    
+                </div>
+
+                <div class="link-registro animacion" style="--D:4; --S:5;">
+
+                    <p>¿Ya tienes una cuenta?
+                        <a href="#" class="linkLogin">Iniciar sesión</a>
+                    </p>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- TEXTO REGISTRO -->
+    <div class="contenido-info registro">
+        <div class="envoltorio-info animacion" style="--D:0; --S:20">
+            <div class="contenedor-animacion-monedas">
+                <i class="fa-solid fa-sack-dollar bolsa-dinero"></i>
+                <i class="fa-solid fa-coins moneda moneda-1"></i>
+                <i class="fa-solid fa-coins moneda moneda-2"></i>
+                <i class="fa-solid fa-coins moneda moneda-3"></i>
+                <i class="fa-solid fa-coins moneda moneda-4"></i>
+                <i class="fa-solid fa-coins moneda moneda-5"></i>
+            </div>
+            <h2>¿Tu viaje financiero comienza aqui?</h2>
+            <p>Unete a Pesatuspesos y toma el control de tus finanzas</p>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- MODAL RECUPERAR CONTRASEÑA -->
+<div class="modal" id="modal">
+
+    <div class="contenedor-modal">
+
+        <i class="fa-solid fa-x" id="cerrar"></i>
+
+        <div class="logo">
+
+            <i class="fa-solid fa-fingerprint"></i>
+
+        </div>
+
+        <h2>Restablecer contraseña</h2>
+
+        <div class="grupo-input">
+
+            <i class="fa-solid fa-phone" style="font-size: 1rem; color: #1d1d1d;"></i>
+
+            <input type="text" id="telefonoRecuperacion" placeholder="Teléfono">
+
+        </div>
+
+        <button class="boton" id="enviarCodigo">Enviar código</button>
+
+        <div class="grupo-input">
+
+            <i class="fa-solid fa-barcode" style="font-size: 1rem; color: #1d1d1d;"></i>
+
+            <input type="text" id="codigoRecuperacion" placeholder="Código">
+
+        </div>
+
+        <button class="boton recuperar" id="recuperarCuenta">Recuperar</button>
+
+        <p id="mensaje"></p>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL CAMBIAR CONTRASEÑA -->
+<div class="modal" id="modalCambio">
+    <div class="contenedor-modal cambio-contrasena">
+        <i class="fa-solid fa-x" id="cerrarCambio"></i>
+        <div class="logo-cambio">
+            <i class="fa-solid fa-unlock-keyhole"></i>
+        </div>
+        <h2>Cambiar contraseña</h2>
+        <div class="grupo-input">
+            <i class="fa-solid fa-lock" style="font-size: 1rem; color: #1d1d1d;"></i>
+            <input type="password" id="nuevaContrasena" placeholder="Nueva contraseña">
+            <i class="fa-solid fa-eye ver-contrasena" data-target="nuevaContrasena" style="cursor: pointer; color: #1d1d1d; margin-left: auto;"></i>
+        </div>
+        <div class="grupo-input">
+            <i class="fa-solid fa-key" style="font-size: 1rem; color: #1d1d1d;"></i>
+            <input type="password" id="confirmarContrasenaNueva" placeholder="verifica tu contraseña">
+            <i class="fa-solid fa-eye ver-contrasena" data-target="confirmarContrasenaNueva" style="cursor: pointer; color: #1d1d1d; margin-left: auto;"></i>
+        </div>
+        <button class="boton" id="guardarContrasena">Guardar contraseña</button>
+        <p id="mensajeCambio"></p>
+    </div>
+</div>
+
+
+<!-- MODAL TÉRMINOS Y CONDICIONES -->
+<div class="modal" id="modalTerminos">
+    <div class="contenedor-modal">
+        <i class="fa-solid fa-x" id="cerrarTerminos"></i>
+        <h2 style="font-size: 1.5rem; color: #1d1d1d; margin-top: 20px;">Para continuar debes aceptar los terminos y condiciones</h2>
+        
+        <button class="boton" id="irTerminos">Ir a terminos y condiciones</button>
+        <button class="boton" id="aceptarTerminos" style="margin-top: 15px;">He leido y acepto</button>
+    </div>
+</div>
+
+
+<script src="login.js"></script>
+
+</body>
+</html>

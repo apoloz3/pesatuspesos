@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PesatusPesos - Home</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/coins-solid.png">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </head>
+
+  <body>
+    <div class="contenedor-flotante-app">
+      <header class="barra">
+        <div class="caja-logo">
+          <i class="fa-solid fa-coins" style="font-size: 2rem; color: #CFB53B;"></i>
+          <span class="texto-logo">PESATUSPESOS</span>
+        </div>
+        <div class="menu-wrapper">
+          <nav class="menu">
+            <button>Inicio</button>
+            <button>Ingresos/Egresos</button>
+            <button>Deuda</button>
+            <button>Ahorro</button>
+          </nav>
+        </div>
+
+        <div class="contenedor-flotante">
+          <div class="opciones-flotantes">
+            <button class="boton-opcion boton-manual">
+              <img src="img\informacion (1).png" alt="Manual" />
+            </button>
+            <button class="boton-opcion boton-atencion">
+              <img src="img/apoyo (1).png" alt="Atencion" />
+            </button>
+            <button class="boton-opcion boton-editar" id="botonPerfil">
+              <img src="img/avatar-de-usuario (1).png" alt="Editar" />
+            </button>
+          </div>
+
+          <button class="boton-principal" id="botonConfiguracion">
+            <img src="img\ajustes.png" alt="Configuración" />
+          </button>
+        </div>
+      </header>
+
+      <main class="contenido">
+
+        <section class="principal">
+          <!-- Gráfico dólar IZQUIERDA -->
+          <div class="graficas-crecimiento">
+            <header class="finanzas-cabecera">
+              <img
+                src="img/grafico.png"
+                alt=""
+                class="finanzas-cabecera__icono-img"
+                width="44"
+                height="44"
+              />
+              <div class="finanzas-cabecera__texto">
+                <h3>Finanzas hoy</h3>
+                <p class="finanzas-cabecera__sub">Analiza, anticipa y crece</p>
+              </div>
+            </header>
+            <div class="finanzas-bloques">
+              <article class="finanza-bloque" data-mercado="dolar">
+                <div class="finanza-item">
+                  <span class="finanza-item__label">
+                    <img
+                      src="img/billete-de-banco.png"
+                      alt=""
+                      class="finanza-item__icono"
+                      width="22"
+                      height="22"
+                    />
+                    Dólar (COP)
+                  </span>
+                  <span id="dolar" class="finanza-item__valor"
+                    >Cargando...</span
+                  >
+                </div>
+                <div class="finanza-chart-wrap">
+                  <canvas id="graficaDolar" width="400" height="140"></canvas>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- Centro: moneda -->
+          <div class="centro-principal">
+            <div class="moneda">
+              <video autoplay loop muted>
+                <source src="videos/videologoptp.mp4" />
+              </video>
+            </div>
+          </div>
+
+          <!-- Gráfico bitcoin DERECHA -->
+          <div class="graficas-crecimiento">
+            <header class="finanzas-cabecera">
+              <img
+                src="img/grafico.png"
+                alt=""
+                class="finanzas-cabecera__icono-img"
+                width="44"
+                height="44"
+              />
+              <div class="finanzas-cabecera__texto">
+                <h3>Finanzas hoy</h3>
+                <p class="finanzas-cabecera__sub">Analiza, anticipa y crece</p>
+              </div>
+            </header>
+            <div class="finanzas-bloques">
+              <article class="finanza-bloque" data-mercado="btc">
+                <div class="finanza-item">
+                  <span class="finanza-item__label">
+                    <img
+                      src="img/cartera-de-bitcoins.png"
+                      alt=""
+                      class="finanza-item__icono finanza-item__icono--btc"
+                      width="24"
+                      height="24"
+                    />
+                    Bitcoin
+                  </span>
+                  <span id="bitcoin" class="finanza-item__valor"
+                    >Cargando...</span
+                  >
+                </div>
+                <div class="finanza-chart-wrap">
+                  <canvas id="graficaBitcoin" width="400" height="140"></canvas>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel usuario FUERA de .principal -->
+        <aside class="usuario" id="panelUsuario">
+          <button class="cerrar-panel" id="cerrarPanel">✕</button>
+          <h2 id="nombre_usuario">Usuario</h2>
+          <div class="avatar-wrapper">
+            <img
+              src="img/marrano.png"
+              class="avatar"
+              id="avatarPrincipal"
+              alt="avatar"
+            />
+            <div class="avatar-lapiz">
+              <img src="img/lapiz.png" alt="editar" width="14" height="14" />
+            </div>
+          </div>
+          <p class="frase" id="frase_motivadora"></p>
+          <button class="boton-cerrar">Cerrar sesión</button>
+        </aside>
+
+        <section class="cards">
+          <div class="card">
+            <h3>¿Quiénes somos?</h3>
+            <p class="card-preview">
+              Pesa Tus Pesos es un proyecto tecnológico y educativo desarrollado
+              por JPJ COMPANY, enfocado en apoyar...
+            </p>
+            <span
+              class="ver-mas"
+              data-title="¿Quiénes somos?"
+              data-text="Pesa Tus Pesos es un proyecto tecnológico y educativo desarrollado por JPJ COMPANY, enfocado en apoyar la educación financiera y el manejo responsable del dinero. Surge como una iniciativa orientada a brindar una herramienta digital que permita a los usuarios registrar, organizar y analizar sus ingresos y gastos personales."
+              data-img="img\ayuda.png"
+              >ver más...</span
+            >
+          </div>
+          <div class="card">
+            <h3>Misión</h3>
+            <p class="card-preview">
+              La misión de Pesa Tus Pesos es desarrollar una plataforma web que
+              permita a los usuarios gestionar de...
+            </p>
+            <span
+              class="ver-mas"
+              data-title="Misión"
+              data-text="La misión de Pesa Tus Pesos es desarrollar una plataforma web que permita a los usuarios gestionar de manera eficiente sus finanzas personales mediante el registro de ingresos, gastos y recomendaciones educativas, contribuyendo así al fortalecimiento de la cultura financiera y al mejoramiento de la toma de decisiones económicas."
+              data-img="img\motivacion.png"
+              >ver más...</span
+            >
+          </div>
+          <div class="card">
+            <h3>Visión</h3>
+            <p class="card-preview">
+              La visión de Pesa Tus Pesos es consolidarse como una herramienta
+              digital de referencia en educación...
+            </p>
+            <span
+              class="ver-mas"
+              data-title="Visión"
+              data-text="La visión de Pesa Tus Pesos es consolidarse como una herramienta digital de referencia en educación financiera dentro de las comunidades educativas, contribuyendo al desarrollo de personas con mayor responsabilidad financiera, capaces de administrar sus recursos de manera adecuada y planificar su futuro económico."
+              data-img="img/en-todo-el-mundo.png"
+              >ver más...</span
+            >
+          </div>
+        </section>
+
+        <div id="infoModal" class="modal">
+          <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+              <img id="modalImg" src="" alt="Imagen" class="modal-image" />
+              <div class="modal-text-container">
+                <h2 id="modalTitle">Título</h2>
+                <p id="modalText">Texto...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="videos-titulo">Videos para mejorar tus finanzas!</h2>
+        <section class="carrusel-wrapper">
+          <div class="carrusel-track" id="carruselTrack">
+            <div id="video1" class="carrusel-item"></div>
+            <div id="video2" class="carrusel-item"></div>
+            <div id="video3" class="carrusel-item"></div>
+            <div id="video4" class="carrusel-item"></div>
+            <div id="video5" class="carrusel-item"></div>
+            <div id="video6" class="carrusel-item"></div>
+            <div id="video7" class="carrusel-item"></div>
+            <div id="video8" class="carrusel-item"></div>
+            <div id="video9" class="carrusel-item"></div>
+            <div id="video10" class="carrusel-item"></div>
+            <div id="video11" class="carrusel-item"></div>
+            <div id="video12" class="carrusel-item"></div>
+          </div>
+          <div class="carrusel-puntos" id="carruselPuntos">
+            <span class="punto activo" data-index="0"></span>
+            <span class="punto" data-index="1"></span>
+            <span class="punto" data-index="2"></span>
+          </div>
+        </section>
+      </main>
+      <!--FOOTER-->
+      <footer>
+        <div class="footer-grid">
+          <!-- Logo + descripción -->
+          <div class="footer-brand">
+            <div class="footer-logos">
+              <img
+                src="img/logoSenaNaranja.png"
+                alt="SENA"
+                style="width: 50px"
+              />
+              <img
+                src="img/logoptpt.png"
+                alt="Logo 2"
+                style="width: 50px"
+              />
+              <img
+                src="img/Gemini_Generated_Image_8j74rx8j74rx8j74-removebg-preview.png"
+                alt="Logo 3"
+                style="width: 50px"
+              />
+            </div>
+            <p>PesatusPesos · Herramienta de educación financiera</p>
+          </div>
+
+          <!-- Contacto -->
+          <div class="footer-col">
+            <h4>Contacto</h4>
+            <p>jpjcompany10@gmail.com</p>
+            <p>Lunes a viernes 8:00 a.m. – 6:00 p.m.</p>
+            <p>Tel: +57 310 520 4819</p>
+          </div>
+
+          <!-- Ubicación -->
+          <div class="footer-col">
+            <h4>Ubicación</h4>
+            <p>Medellín, Antioquia</p>
+            <p>Colombia</p>
+            <p>Aprendizaje en línea y seguimiento presencial según programa.</p>
+          </div>
+
+          <!-- Legal -->
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <a
+              href="https://drive.google.com/file/d/1niNl3BNnppZKtocOjVEMd492v4KXjG2V/view?usp=sharing"
+              class="politicas-link"
+              >Políticas de privacidad y datos</a
+            >
+            <a
+              href="https://drive.google.com/file/d/1U7qVxJ6KrGPEQ5WMXAMO16hA1F6firyb/view?usp=sharing"
+              class="terminos-link"
+              >Términos y condiciones</a
+            >
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          © 2026 PesatusPesos · Proyecto formativo · SENA
+        </div>
+      </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

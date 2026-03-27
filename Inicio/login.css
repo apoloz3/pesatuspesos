@@ -1,0 +1,810 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    color: #ffffff;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #000a12;
+}
+
+.contenedor-principal {
+    position: relative;
+    width: 100%;
+    max-width: 1500px;
+    height: 700px;
+    overflow: hidden;
+}
+
+/* ENCABEZADO LOGO */
+.encabezado-logo {
+    position: absolute;
+    top: 30px;
+    left: 50px;
+    z-index: 100;
+}
+
+.caja-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.texto-logo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    color: #ffffff;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+
+.contenedor-principal .caja-formulario {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.caja-formulario.iniciar-sesion {
+    left: 0;
+    padding: 0 50px;
+}
+
+.caja-formulario.iniciar-sesion .animacion {
+    transform: translateX(0%);
+    transition: .7s;
+    opacity: 1;
+    transition-delay: calc(.1s * var(--S));
+}
+
+.contenedor-principal.active .caja-formulario.iniciar-sesion .animacion {
+    transform: translateX(-200%);
+    opacity: 0;
+    transition-delay: calc(.1s * var(--D));
+}
+
+.caja-formulario.registro {
+    right: 0;
+    padding: 0 60px;
+}
+
+.caja-formulario.registro .animacion {
+    transform: translateX(200%);
+    transition: .7s ease;
+    opacity: 0;
+    filter: blur(10px);
+    transition-delay: calc(.1s * var(--S));
+}
+
+.contenedor-principal.active .caja-formulario.registro .animacion {
+    transform: translateX(0%);
+    opacity: 1;
+    filter: blur(0);
+    transition-delay: calc(.1s * var(--D));
+}
+
+.caja-formulario h2 {
+    font-size: 36px;
+    text-align: center;
+}
+
+.caja-formulario .caja-input {
+    position: relative;
+    width: 100%;
+    max-width: 330px;
+    height: 40px;
+    margin: 30px auto 0;
+}
+
+.caja-input input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: 2px solid #000;
+    padding-right: 32px;
+    transition: .5s;
+}
+
+.caja-input input:focus,
+.caja-input input:valid {
+    border-bottom: 2px solid #cfb53c;
+}
+
+.caja-input label {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    font-size: 16px;
+    letter-spacing: 1px;
+    transition: .5s;
+}
+
+.caja-input input:focus~label,
+.caja-input input:valid~label {
+    top: -5px;
+    color: #cfb53c;
+}
+
+.caja-input i {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    font-size: 18px;
+    transform: translateY(-50%);
+    transition: .5s;
+}
+
+.caja-input .ver-contrasena {
+    right: 0;
+    cursor: pointer;
+}
+
+.caja-input input:focus~i,
+.caja-input input:valid~i {
+    color: #cfb53c;
+}
+
+.boton {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    color: #1d1d1d;
+    border: 2px solid #cfb53c;
+    letter-spacing: 1px;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.caja-formulario.registro .boton,
+.caja-formulario.iniciar-sesion .boton {
+    width: 240px;
+    display: block;
+    margin: 0 auto;
+}
+
+.boton::before {
+    content: '';
+    position: absolute;
+    height: 300%;
+    width: 100%;
+    background: linear-gradient(#cfb53c, #f3d989, #cfb53c, #f3d989);
+    top: -100%;
+    left: 0;
+    z-index: -1;
+    transition: .5s;
+}
+
+.boton:hover::before {
+    top: 0;
+}
+
+.link-registro {
+    font-size: 14px;
+    text-align: center;
+    margin: 20px 0 10px;
+}
+
+/* CUADRO BLANCO */
+.cuadro-blanco {
+    background: #fff8dc;
+    padding: 12px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 10;
+}
+
+.caja-formulario.iniciar-sesion .cuadro-blanco {
+    margin: 0 auto 0 50px;
+}
+
+.caja-formulario.registro .cuadro-blanco {
+    margin: 0 20px 0 auto;
+}
+
+.cuadro-blanco h2 {
+    color: #1d1d1d;
+    margin-bottom: 30px;
+}
+
+.cuadro-blanco .caja-input {
+    margin: 35px auto 0;
+}
+
+.cuadro-blanco .caja-input input {
+    border-bottom: 2px solid #d1d1d1;
+    color: #1d1d1d;
+}
+
+.cuadro-blanco .caja-input label {
+    color: #666;
+}
+
+.cuadro-blanco .caja-input i {
+    color: #1d1d1d;
+}
+
+.cuadro-blanco .caja-input input:focus~label,
+.cuadro-blanco .caja-input input:valid~label {
+    color: var(--matte-gold, #cfb53c);
+}
+
+.cuadro-blanco .caja-input input:focus,
+.cuadro-blanco .caja-input input:valid {
+    border-bottom: 2px solid var(--matte-gold, #cfb53c);
+}
+
+.cuadro-blanco .link-registro p {
+    color: #666;
+}
+
+.cuadro-blanco .link-registro a {
+    color: #1d1d1d;
+}
+
+.cuadro-blanco .boton {
+    margin-top: 30px;
+}
+
+.link-registro a {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.link-registro a:hover {
+    text-decoration: underline;
+}
+
+.contenido-info {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.contenido-info.iniciar-sesion {
+    right: 0;
+    text-align: center;
+    padding: 0 100px 60px 300px;
+}
+
+.contenido-info.iniciar-sesion .animacion {
+    transform: translateX(0);
+    transition: .7s ease;
+    transition-delay: calc(.1s * var(--S));
+    opacity: 1;
+    filter: blur(0);
+}
+
+.contenedor-principal.active .contenido-info.iniciar-sesion .animacion {
+    transform: translateX(120%);
+    opacity: 0;
+    filter: blur(10px);
+    transition-delay: calc(.1s * var(--D));
+}
+
+.contenido-info.registro {
+    left: 0;
+    text-align: center;
+    padding: 0 180px 60px 30px;
+    pointer-events: none;
+}
+
+.contenido-info.registro .animacion {
+    transform: translateX(-120%);
+    transition: .7s ease;
+    opacity: 0;
+    filter: blur(10px);
+    transition-delay: calc(.1s * var(--S));
+}
+
+.contenedor-principal.active .contenido-info.registro .animacion {
+    transform: translateX(0%);
+    opacity: 1;
+    filter: blur(0);
+    transition-delay: calc(.1s * var(--D));
+}
+
+.contenido-info h2 {
+    text-transform: uppercase;
+    font-size: 36px;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.contenedor-principal .forma-curva {
+    position: absolute;
+    right: 0;
+    top: -5px;
+    height: 1200px;
+    width: 2000px;
+    background: #001524;
+    transform: rotate(10deg) skewY(40deg);
+    transform-origin: bottom right;
+    transition: 1.5s ease;
+    transition-delay: 1.6s;
+}
+
+.contenedor-principal.active .forma-curva {
+    transform: rotate(0deg) skewY(0deg);
+    transition-delay: .5s;
+}
+
+.contenedor-principal .forma-curva2 {
+    position: absolute;
+    left: 650px;
+    top: 100%;
+    height: 1500px;
+    width: 2000px;
+    background: #000a12;
+    border-top: 3px solid #001524;
+    transform-origin: bottom left;
+    transition: 1.5s ease;
+    transition-delay: .5s;
+}
+
+.contenedor-principal.active .forma-curva2 {
+    transform: rotate(-11deg) skewY(-41deg);
+    transition-delay: 1.2s;
+}
+
+/* MODAL RECUPERAR CONTRASEÑA */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    animation: fade .3s;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+.contenedor-modal {
+    background: #fff8dc;
+    padding: 40px;
+    width: 100%;
+    max-width: 380px;
+    margin: 20px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative;
+    z-index: 9999;
+}
+
+.contenedor-modal h2 {
+    color: #1d1d1d;
+    margin-bottom: 20px;
+}
+
+#cerrar,
+#cerrarCambio,
+#cerrarTerminos {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    background: none;
+    color: #1d1d1d;
+    font-size: 18px;
+    cursor: pointer;
+    transition: .3s;
+    z-index: 100;
+}
+
+#cerrar:hover,
+#cerrarCambio:hover,
+#cerrarTerminos:hover {
+    transform: scale(1.1);
+    color: #ff0000;
+}
+
+.logo i {
+    font-size: 70px;
+    color: #cfb53c;
+    margin-bottom: 10px;
+}
+
+.grupo-input {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #000;
+    margin: 20px 0;
+    padding: 5px;
+}
+
+.grupo-input i {
+    margin-right: 10px;
+}
+
+.grupo-input input {
+    background: transparent !important;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 10px;
+    color: #1d1d1d;
+    font-weight: 500;
+}
+
+/* Forzar fondo transparente para autocompletado de navegadores */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #fff8dc inset !important;
+    -webkit-text-fill-color: #1d1d1d !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.contenedor-modal .boton {
+    width: 60%;
+    max-width: 240px;
+    margin: 20px auto 0;
+}
+
+.recuperar {
+    margin-top: 15px;
+}
+
+#mensaje {
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* EFECTO BOLSA DE MONEDAS */
+.contenedor-animacion-monedas {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bolsa-dinero {
+    font-size: 6rem;
+    color: #cfb53c;
+    z-index: 2;
+    animation: vibrar-bolsa 3s infinite ease-in-out;
+}
+
+.moneda {
+    position: absolute;
+    font-size: 1.5rem;
+    color: #cfb53c;
+    opacity: 0;
+    z-index: 1;
+    bottom: 60px;
+    animation: lanzar-moneda 2.5s infinite ease-out;
+}
+
+.moneda-1 {
+    left: 40%;
+    animation-delay: 0s;
+}
+
+.moneda-2 {
+    left: 45%;
+    animation-delay: 0.5s;
+}
+
+.moneda-3 {
+    left: 50%;
+    animation-delay: 1s;
+}
+
+.moneda-4 {
+    left: 55%;
+    animation-delay: 1.5s;
+}
+
+.moneda-5 {
+    left: 60%;
+    animation-delay: 2s;
+}
+
+@keyframes lanzar-moneda {
+    0% {
+        transform: translateY(0) scale(0.5) rotate(0deg);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-150px) translateX(var(--x-coord, 20px)) scale(1.2) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes vibrar-bolsa {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0);
+    }
+
+    25% {
+        transform: translateY(-5px) rotate(-2deg);
+    }
+
+    75% {
+        transform: translateY(-5px) rotate(2deg);
+    }
+}
+
+.moneda-1 {
+    --x-coord: -40px;
+}
+
+.moneda-2 {
+    --x-coord: -20px;
+}
+
+.moneda-3 {
+    --x-coord: 0px;
+}
+
+.moneda-4 {
+    --x-coord: 20px;
+}
+
+.moneda-5 {
+    --x-coord: 40px;
+}
+
+/* MODAL CAMBIAR CONTRASEÑA (ESTILOS ESPECÍFICOS) */
+
+.contenedor-modal.cambio-contrasena {
+    background: #fff8dc;
+}
+
+.logo-cambio {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.logo-cambio i {
+    font-size: 80px;
+    color: #cfb53c;
+    margin-bottom: 10px;
+}
+
+
+.cambio-contrasena h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #000;
+}
+
+.cambio-contrasena .grupo-input {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #000;
+    margin: 20px 0;
+    padding: 5px;
+}
+
+.cambio-contrasena .grupo-input i {
+    color: #1d1d1d;
+    font-size: 1.1rem;
+    margin-right: 10px;
+}
+
+.cambio-contrasena input::placeholder {
+    color: #333;
+    font-weight: 500;
+}
+
+.cambio-contrasena .boton {
+    background: #ffcc00;
+    border: 2px solid #b38b00;
+    margin-top: 10px;
+    box-shadow: 0 5px 15px rgba(255, 204, 0, 0.4);
+}
+
+#mensajeCambio {
+    margin-top: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* ANIMACIONES */
+.animacion {
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+        opacity 0.8s ease;
+    transition-delay: calc(0.1s * var(--S));
+}
+
+
+/* MEDIA QUERIES PARA RESPONSIVIDAD */
+
+@media (max-width: 1200px) {
+    .contenedor-principal {
+        width: 95vw;
+        height: 650px;
+    }
+
+    .contenido-info.iniciar-sesion {
+        padding: 0 50px 60px 250px;
+    }
+
+    .contenido-info.registro {
+        padding: 0 150px 60px 30px;
+    }
+}
+
+@media (max-width: 992px) {
+    .contenedor-principal {
+        height: 600px;
+    }
+
+    .caja-formulario h2,
+    .contenido-info h2 {
+        font-size: 28px;
+    }
+
+    .cuadro-blanco {
+        padding: 20px;
+    }
+
+    .caja-formulario.iniciar-sesion {
+        padding: 0 30px;
+    }
+
+    .caja-formulario.registro {
+        padding: 0 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        align-items: flex-start;
+        padding: 20px 0;
+        overflow-y: auto;
+    }
+
+    .contenedor-principal {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .encabezado-logo {
+        position: relative;
+        top: 0;
+        left: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .forma-curva,
+    .forma-curva2 {
+        display: none;
+        /* Ocultar formas complejas en móvil para mejorar rendimiento y claridad */
+    }
+
+    .contenedor-principal .caja-formulario,
+    .contenido-info {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 20px !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: 0 !important;
+        transform: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+        transition: none !important;
+    }
+
+    /* Manejar visibilidad de formularios en móvil */
+    .caja-formulario.registro,
+    .contenido-info.registro {
+        display: none;
+    }
+
+    .contenedor-principal.active .caja-formulario.iniciar-sesion,
+    .contenedor-principal.active .contenido-info.iniciar-sesion {
+        display: none;
+    }
+
+    .contenedor-principal.active .caja-formulario.registro,
+    .contenedor-principal.active .contenido-info.registro {
+        display: block;
+    }
+
+    .cuadro-blanco {
+        margin: 0 auto !important;
+        max-width: 100%;
+    }
+
+    .contenido-info {
+        order: -1;
+        /* Poner el texto de bienvenida arriba del formulario */
+        margin-bottom: 20px;
+    }
+
+    .caja-input {
+        margin: 25px auto 0 !important;
+    }
+
+    .contenedor-animacion-monedas {
+        width: 130px;
+        height: 130px;
+    }
+
+    .bolsa-dinero {
+        font-size: 4rem;
+    }
+
+    .moneda {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .caja-formulario h2 {
+        font-size: 24px;
+    }
+
+    .texto-logo {
+        font-size: 1rem;
+    }
+
+    .boton {
+        font-size: 15px;
+        height: 45px;
+    }
+}
