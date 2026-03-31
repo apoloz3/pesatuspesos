@@ -83,21 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /* cambiar avatar */
-  opcionesAvatar.forEach(function (opcion) {
-    opcion.addEventListener("click", function () {
-      const nuevaImagen = opcion.getAttribute("src");
-      avatarPrincipal.src = nuevaImagen;
-      localStorage.setItem("avatar_usuario", nuevaImagen);
-    });
-  });
-
-  /* cargar avatar guardado */
-  const avatarGuardado = localStorage.getItem("avatar_usuario");
-  if (avatarGuardado && avatarPrincipal) {
-    avatarPrincipal.src = avatarGuardado;
-  }
-
   /*X para cerrar panel de usuario */
   const cerrarPanelBtn = document.getElementById("cerrarPanel");
   if (cerrarPanelBtn) {
