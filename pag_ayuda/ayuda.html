@@ -18,7 +18,7 @@
         </div>
         <div class="menu-wrapper">
           <nav class="menu">
-            <button>Inicio</button>
+            <button id="btn-inicio">Inicio</button>
             <button>Ingresos/Egresos</button>
             <button>Deuda</button>
             <button>Ahorro</button>
@@ -80,8 +80,11 @@
             
             <div class="faq-column-right">
               <div class="faq-illustration">
-                <!-- Nube sutil del fondo -->
-                <i class="fa-solid fa-cloud illustration-cloud"></i>
+                <!-- Nube sutil del fondo transformada en botón interactivo -->
+                <div class="cloud-button-wrapper" id="openChatBtn">
+                  <i class="fa-solid fa-cloud illustration-cloud"></i>
+                  <span class="cloud-text">¿Necesitas ayuda?</span>
+                </div>
                 
                 <div class="robot-container">
                   <div class="robot-chat-wrapper">
@@ -109,6 +112,32 @@
                 <h2 id="faqModalTitle">Pregunta</h2>
               </div>
               <p id="faqModalText">Respuesta detallada aparecerá aquí.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHATBOT MODAL -->
+        <div class="modal chat-modal" id="chatModal">
+          <div class="chat-content">
+            <div class="chat-header">
+              <div class="chat-header-info">
+                <i class="fa-solid fa-robot chat-header-icon"></i>
+                <h2>Asistente Virtual</h2>
+              </div>
+              <span class="close-chat" id="closeChatModal">&times;</span>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+              <div class="chat-bubble chat-bot">
+                Hola, soy el asistente de PesatusPesos. ¿En qué te puedo ayudar hoy?
+              </div>
+            </div>
+            
+            <div class="chat-input-area">
+              <input type="text" id="chatInputField" placeholder="Escribe tu mensaje aquí..." autocomplete="off"/>
+              <button class="chat-send-btn" id="sendChatBtn">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
             </div>
           </div>
         </div>

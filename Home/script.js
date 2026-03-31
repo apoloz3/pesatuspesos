@@ -51,6 +51,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  /* ===============================
+       REDIRECCIÓN A AYUDA GESTOR
+    =============================== */
+  const botonAtencion = document.querySelector(".boton-atencion");
+  if (botonAtencion) {
+    botonAtencion.addEventListener("click", function () {
+      window.location.href = "../pag_ayuda/ayuda.html";
+    });
+  }
+
   document.addEventListener("click", function (evento) {
     if (contenedorFlotante && !contenedorFlotante.contains(evento.target)) {
       contenedorFlotante.classList.remove("active");
