@@ -470,7 +470,7 @@ if (faqModal && faqItems.length > 0) {
       // Set modal content by extracting from data attributes
       if (faqModalTitle) faqModalTitle.textContent = item.getAttribute("data-question");
       if (faqModalText) faqModalText.textContent = item.getAttribute("data-answer");
-      
+
       // Add 'activo' class to render the modal visible
       faqModal.classList.add("activo");
     });
