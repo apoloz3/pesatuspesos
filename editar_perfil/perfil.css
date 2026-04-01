@@ -1,0 +1,239 @@
+/* Estilos del Perfil - Pesa tus pesos */
+
+body {
+    background-image: linear-gradient(135deg, var(--cream) 0%, #ffffff 100%);
+    min-height: 100vh;
+    padding-top: 80px; 
+}
+
+.contenedor-perfil-app {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.cabecera-perfil h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--bg-navy);
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.rejilla-principal-perfil {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+}
+
+.tarjeta-perfil {
+    background: var(--surface-white);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(207, 181, 60, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tarjeta-perfil:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+.titulo-tarjeta {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4rem;
+    color: var(--bg-deep);
+    margin-bottom: 25px;
+    border-bottom: 1.5px solid var(--matte-gold);
+    padding-bottom: 10px;
+    font-weight: 700;
+}
+
+/* Sección de Avatar */
+.seccion-foto-perfil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.vista-avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 4px solid var(--matte-gold);
+    overflow: hidden;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.vista-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.acciones-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Estilos de Formulario */
+.formulario-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.grupo-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.grupo-formulario label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.input-con-icono {
+    position: relative;
+    width: 100%;
+}
+
+.grupo-formulario input {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--gray-border);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #fdfdfd;
+    width: 100%;
+}
+
+.grupo-formulario input:focus {
+    outline: none;
+    border-color: var(--matte-gold);
+    box-shadow: 0 0 0 4px rgba(207, 181, 60, 0.1);
+    background: #fff;
+}
+
+/* Estilo para alternar contraseña */
+.btn-alternar-contrasena {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.btn-alternar-contrasena:hover {
+    opacity: 1;
+}
+
+.btn-alternar-contrasena img {
+    width: 20px;
+    height: 20px;
+}
+
+.fila-formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Especificaciones de la sección de contraseña */
+.seccion-contrasena {
+    grid-column: 1 / -1;
+}
+
+.seccion-contrasena .fila-formulario {
+    margin-bottom: 20px;
+}
+
+.contenedor-boton-centrado {
+    display: flex;
+    justify-content: center;
+}
+
+/* Botones */
+.boton {
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid var(--gold-border);
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 0.02em;
+}
+
+/* Botón Principal (Unificado) */
+.boton-principal {
+    background: var(--bg-navy);
+    color: white;
+    min-width: 240px;
+    width: fit-content;
+    margin: 5px auto;
+}
+
+.boton-principal:hover {
+    background: var(--bg-deep);
+    color: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 10, 18, 0.3);
+}
+
+.boton-peligro {
+    background: var(--danger);
+    color: white;
+}
+
+.boton-peligro:hover {
+    background: #cc0000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+}
+
+/* Responsividad */
+@media (max-width: 992px) {
+    .rejilla-principal-perfil {
+        grid-template-columns: 1fr;
+    }
+    
+    .seccion-contrasena {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .fila-formulario {
+        grid-template-columns: 1fr;
+    }
+    
+    .cabecera-perfil h1 {
+        font-size: 1.8rem;
+    }
+    
+    .tarjeta-perfil {
+        padding: 20px;
+    }
+}
