@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PesatusPesos - Home</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/coins-solid.png">
+    <link rel="stylesheet" href="est_ayuda.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </head>
+
+  <body>
+    <div class="contenedor-flotante-app">
+      <header class="barra">
+        <div class="caja-logo">
+          <i class="fa-solid fa-coins" style="font-size: 2rem; color: #CFB53B;"></i>
+          <span class="texto-logo">PESATUSPESOS</span>
+        </div>
+        <div class="menu-wrapper">
+          <nav class="menu">
+            <button id="btn-inicio">Inicio</button>
+            <button>Ingresos/Egresos</button>
+            <button>Deuda</button>
+            <button>Ahorro</button>
+          </nav>
+        </div>
+
+        <div class="contenedor-flotante">
+          <div class="opciones-flotantes">
+            <button class="boton-opcion boton-manual">
+              <img src="img\informacion (1).png" alt="Manual" />
+            </button>
+            <button class="boton-opcion boton-atencion">
+              <img src="img/apoyo (1).png" alt="Atencion" />
+            </button>
+            <button class="boton-opcion boton-editar" id="botonPerfil">
+              <img src="img/avatar-de-usuario (1).png" alt="Editar" />
+            </button>
+          </div>
+
+          <button class="boton-principal" id="botonConfiguracion">
+            <img src="img\ajustes.png" alt="Configuración" />
+          </button>
+        </div>
+      </header>
+
+      <main class="contenido">
+
+        <section class="principal">
+          <div class="faq-layout">
+            <div class="faq-column-left">
+              <h1 class="faq-title">Preguntas Frecuentes</h1>
+              <div class="faq-list">
+                <button class="faq-item" data-question="¿Cómo registro un nuevo ingreso o egreso?" data-answer="Dirígete a la sección 'Ingresos/Egresos' desde el menú superior, selecciona 'Nuevo Registro' y elige si es una entrada o salida de dinero.">
+                  <span class="faq-text">¿Cómo registro un nuevo ingreso o egreso?</span>
+                  <i class="fa-solid fa-angles-right faq-icon"></i>
+                </button>
+                <button class="faq-item" data-question="¿Dónde puedo visualizar mis deudas activas e históricas?" data-answer="Toda tu información relacionada a préstamos se encuentra en la sección 'Deuda'. Allí podrás ver el estado y progreso de cada obligación.">
+                  <span class="faq-text">¿Dónde puedo visualizar mis deudas activas e históricas?</span>
+                  <i class="fa-solid fa-angles-right faq-icon"></i>
+                </button>
+                <button class="faq-item" data-question="¿Cómo editar la foto y los detalles de mi perfil de usuario?" data-answer="En la barra superior, pulsa tu avatar o el botón de usuario; se abrirá un panel lateral. Haz clic en el ícono del relápiz para cambiar tus datos y foto de perfil.">
+                  <span class="faq-text">¿Cómo editar la foto y los detalles de mi perfil de usuario?</span>
+                  <i class="fa-solid fa-angles-right faq-icon"></i>
+                </button>
+                <button class="faq-item" data-question="¿Qué nos indican las gráficas de crecimiento de la plataforma?" data-answer="Estas gráficas visualizan el histórico y precio actual de divisas como el dólar y criptomonedas como Bitcoin frente al peso local, ayudándote a tomar decisiones informadas.">
+                  <span class="faq-text">¿Qué nos indican las gráficas de crecimiento de la plataforma?</span>
+                  <i class="fa-solid fa-angles-right faq-icon"></i>
+                </button>
+                <button class="faq-item" data-question="¿Tienen algún manual de uso de todo el sistema disponible?" data-answer="Sí, dentro de la barra principal encontrarás un ícono con forma de libro (Manual), a través del cual puedes acceder a la guía de todas las funcionalidades en cualquier momento.">
+                  <span class="faq-text">¿Tienen algún manual de uso de todo el sistema disponible?</span>
+                  <i class="fa-solid fa-angles-right faq-icon"></i>
+                </button>
+                <button class="faq-item" data-question="¿Cuáles son los pasos si olvido mi contraseña?" data-answer="En la pantalla inicial (Log In), haz clic en 'Recuperar Contraseña'. Solo necesitas ingresar tu correo electrónico registrado y seguir las instrucciones enviadas a esa dirección.">
+                  <span class="faq-text">¿Cuáles son los pasos si olvido mi contraseña?</span>
+                  <i class="fa-solid fa-angles-right faq-icon"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="faq-column-right">
+              <div class="faq-illustration">
+                <!-- Nube sutil del fondo transformada en botón interactivo -->
+                <div class="cloud-button-wrapper" id="openChatBtn">
+                  <i class="fa-solid fa-cloud illustration-cloud"></i>
+                  <span class="cloud-text">¿Necesitas ayuda?</span>
+                </div>
+                
+                <div class="robot-container">
+                  <div class="robot-chat-wrapper">
+                    <!-- Iconos de chat -->
+                    <div class="chat-bubbles">
+                      <i class="fa-regular fa-comment-dots bubble-1"></i>
+                      <i class="fa-regular fa-comment-dots bubble-2"></i>
+                    </div>
+                  </div>
+                  <!-- Robot -->
+                  <i class="fa-solid fa-robot illustration-robot"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MODAL FAQ -->
+        <div class="modal faq-modal" id="faqModal">
+          <div class="modal-content info-content">
+            <span class="close-modal" id="closeFaqModal">&times;</span>
+            <div class="modal-body faq-modal-body">
+              <div class="faq-modal-header">
+                <i class="fa-solid fa-circle-info faq-modal-icon"></i>
+                <h2 id="faqModalTitle">Pregunta</h2>
+              </div>
+              <p id="faqModalText">Respuesta detallada aparecerá aquí.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHATBOT MODAL -->
+        <div class="modal chat-modal" id="chatModal">
+          <div class="chat-content">
+            <div class="chat-header">
+              <div class="chat-header-info">
+                <i class="fa-solid fa-robot chat-header-icon"></i>
+                <h2>Asistente Virtual</h2>
+              </div>
+              <span class="close-chat" id="closeChatModal">&times;</span>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+              <div class="chat-bubble chat-bot">
+                Hola, soy el asistente de PesatusPesos. ¿En qué te puedo ayudar hoy?
+              </div>
+            </div>
+            
+            <div class="chat-input-area">
+              <input type="text" id="chatInputField" placeholder="Escribe tu mensaje aquí..." autocomplete="off"/>
+              <button class="chat-send-btn" id="sendChatBtn">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel usuario FUERA de .principal -->
+        <aside class="usuario" id="panelUsuario">
+          <button class="cerrar-panel" id="cerrarPanel">✕</button>
+          <h2 id="nombre_usuario">Usuario</h2>
+          <div class="avatar-wrapper">
+            <img
+              src="img/hucha.png"
+              class="avatar"
+              id="avatarPrincipal"
+              alt="avatar"
+            />
+            <div class="avatar-lapiz">
+              <img src="img/lapiz.png" alt="editar" width="14" height="14" />
+            </div>
+          </div>
+          <p class="frase" id="frase_motivadora"></p>
+          <button class="boton-cerrar">Cerrar sesión</button>
+        </aside>
+
+
+      </main>
+      <!--FOOTER-->
+      <footer>
+        <div class="footer-grid">
+          <!-- Logo + descripción -->
+          <div class="footer-brand">
+            <div class="footer-logos">
+              <img
+                src="img/logoSenaNaranja.png"
+                alt="SENA"
+                style="width: 50px"
+              />
+              <img
+                src="img\Gemini_Generated_Image_1f5if41f5if41f5i-removebg-preview.png"
+                alt="Logo 2"
+                style="width: 50px"
+              />
+              <img
+                src="img\Gemini_Generated_Image_8j74rx8j74rx8j74-removebg-preview.png"
+                alt="Logo 3"
+                style="width: 50px"
+              />
+            </div>
+            <p>PesatusPesos · Herramienta de educación financiera</p>
+          </div>
+
+          <!-- Contacto -->
+          <div class="footer-col">
+            <h4>Contacto</h4>
+            <p>jpjcompany10@gmail.com</p>
+            <p>Lunes a viernes 8:00 a.m. – 6:00 p.m.</p>
+            <p>Tel: +57 310 520 4819</p>
+          </div>
+
+          <!-- Ubicación -->
+          <div class="footer-col">
+            <h4>Ubicación</h4>
+            <p>Medellín, Antioquia</p>
+            <p>Colombia</p>
+            <p>Aprendizaje en línea y seguimiento presencial según programa.</p>
+          </div>
+
+          <!-- Legal -->
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <a
+              href="https://drive.google.com/file/d/1niNl3BNnppZKtocOjVEMd492v4KXjG2V/view?usp=sharing"
+              class="politicas-link"
+              >Políticas de privacidad y datos</a
+            >
+            <a
+              href="https://drive.google.com/file/d/1U7qVxJ6KrGPEQ5WMXAMO16hA1F6firyb/view?usp=sharing"
+              class="terminos-link"
+              >Términos y condiciones</a
+            >
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          © 2026 PesatusPesos · Proyecto formativo · SENA
+        </div>
+      </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="ani_ayuda.js"></script>
+  </body>
+</html>

@@ -51,6 +51,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  /* ===============================
+       REDIRECCIÓN A AYUDA GESTOR
+    =============================== */
+  const botonAtencion = document.querySelector(".boton-atencion");
+  if (botonAtencion) {
+    botonAtencion.addEventListener("click", function () {
+      window.location.href = "../pag_ayuda/ayuda.html";
+    });
+  }
+
   document.addEventListener("click", function (evento) {
     if (contenedorFlotante && !contenedorFlotante.contains(evento.target)) {
       contenedorFlotante.classList.remove("active");
@@ -82,22 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("nombre_usuario", nuevoNombre);
     });
   }
-
-  /* cambiar avatar */
-  opcionesAvatar.forEach(function (opcion) {
-    opcion.addEventListener("click", function () {
-      const nuevaImagen = opcion.getAttribute("src");
-      avatarPrincipal.src = nuevaImagen;
-      localStorage.setItem("avatar_usuario", nuevaImagen);
-    });
-  });
-
-  /* cargar avatar guardado */
-  const avatarGuardado = localStorage.getItem("avatar_usuario");
-  if (avatarGuardado && avatarPrincipal) {
-    avatarPrincipal.src = avatarGuardado;
-  }
-
+  
   /*X para cerrar panel de usuario */
   const cerrarPanelBtn = document.getElementById("cerrarPanel");
   if (cerrarPanelBtn) {
