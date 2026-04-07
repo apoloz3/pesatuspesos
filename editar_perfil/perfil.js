@@ -1,129 +1,150 @@
 /* JS del Perfil - Pesa tus pesos */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Elementos
-    const btnVolver = document.getElementById('btn-volver');
-    const btnCambiarFoto = document.getElementById('btn-cambiar-foto');
-    const btnEliminarFoto = document.getElementById('btn-eliminar-foto');
-    const entradaFoto = document.getElementById('entrada-foto');
-    const vistaPreviaFoto = document.getElementById('vista-previa-foto');
+    // 1. Alternar entre Paneles (Información <-> Seguridad)
+    const panelInformacion = document.getElementById('panel-informacion');
+    const panelSeguridad = document.getElementById('panel-seguridad');
+    const botonIrASeguridad = document.getElementById('ir-a-seguridad');
+    const botonRegresarPerfil = document.getElementById('regresar-a-informacion');
+    const tituloEstado = document.getElementById('titulo-estado');
+    const botonVolverHeader = document.getElementById('boton-volver');
 
-    const formularioPersonal = document.getElementById('formulario-info-personal');
-    const formularioContrasena = document.getElementById('formulario-contrasena');
-
-    // Avatar por defecto
-    const AVATAR_POR_DEFECTO = 'img/hucha.png';
-
-    // --- Volver a Inicio ---
-    if (btnVolver) {
-        btnVolver.addEventListener('click', () => {
-            window.location.href = '../Home/index.html';
+    if (botonIrASeguridad && panelInformacion && panelSeguridad) {
+        botonIrASeguridad.addEventListener('click', () => {
+            panelInformacion.style.display = 'none';
+            panelSeguridad.style.display = 'grid';
+            panelSeguridad.style.opacity = '1';
+            panelSeguridad.style.transform = 'translateY(0)';
+            if (tituloEstado) tituloEstado.textContent = 'Seguridad de la Cuenta';
+            if (botonVolverHeader) botonVolverHeader.style.display = 'none'; 
         });
     }
 
-    // --- Acciones de la Foto ---
-
-    // Asegurar que la vista previa use el avatar por defecto al iniciar si no hay otra
-    if (!vistaPreviaFoto.src || vistaPreviaFoto.src.includes('placeholder')) {
-        vistaPreviaFoto.src = AVATAR_POR_DEFECTO;
+    if (botonRegresarPerfil && panelInformacion && panelSeguridad) {
+        botonRegresarPerfil.addEventListener('click', () => {
+            panelSeguridad.style.display = 'none';
+            panelInformacion.style.display = 'grid';
+            if (tituloEstado) tituloEstado.textContent = 'Configuración de Perfil';
+            if (botonVolverHeader) botonVolverHeader.style.display = 'flex';
+        });
     }
 
-    btnCambiarFoto.addEventListener('click', () => {
-        entradaFoto.click();
-    });
+    // 2. Mostrar/Ocultar Contraseña (El Ojito)
+    const botonesTogglePassword = document.querySelectorAll('.toggle-password');
 
-    entradaFoto.addEventListener('change', (evento) => {
-        const archivo = evento.target.files[0];
-        if (archivo) {
-            const lector = new FileReader();
-            lector.onload = (e) => {
-                vistaPreviaFoto.src = e.target.result;
-            };
-            lector.readAsDataURL(archivo);
-        }
-    });
-
-    btnEliminarFoto.addEventListener('click', () => {
-        if (confirm('¿Estás seguro de que deseas eliminar tu foto de perfil?')) {
-            vistaPreviaFoto.src = AVATAR_POR_DEFECTO;
-            entradaFoto.value = ''; // Limpiar entrada
-        }
-    });
-
-    // --- Visibilidad de Contraseña ---
-
-    const botonesAlternar = document.querySelectorAll('.btn-alternar-contrasena');
-    botonesAlternar.forEach(boton => {
+    botonesTogglePassword.forEach(boton => {
         boton.addEventListener('click', () => {
-            const idObjetivo = boton.getAttribute('data-objetivo');
-            const entrada = document.getElementById(idObjetivo);
-            const icono = boton.querySelector('img');
+            const input = boton.parentElement.querySelector('input');
+            const icono = boton.querySelector('i');
 
-            if (entrada.type === 'password') {
-                entrada.type = 'text';
-                icono.src = 'https://api.iconify.design/lucide:eye-off.svg';
-                icono.alt = 'Ocultar';
+            if (input.type === 'password') {
+                input.type = 'text'; 
+                icono.classList.replace('ph-eye', 'ph-eye-slash');
             } else {
-                entrada.type = 'password';
-                icono.src = 'https://api.iconify.design/lucide:eye.svg';
-                icono.alt = 'Mostrar';
+                input.type = 'password'; 
+                icono.classList.replace('ph-eye-slash', 'ph-eye');
             }
         });
     });
 
-    // --- Envíos de Formulario ---
+    // 3. Notificaciones y Modales
+    const modalCancelar = document.getElementById('modal-cancelar');
+    const modalConfirmarSalir = document.getElementById('modal-confirmar-salir');
+    const modalQuedarse = document.getElementById('modal-quedarse');
+    const toastElement = document.getElementById('toast');
 
-    formularioPersonal.addEventListener('submit', (evento) => {
-        evento.preventDefault();
-
-        // Simulando operación de guardado
-        const botonGuardar = formularioPersonal.querySelector('.boton-guardar');
-        const textoOriginal = botonGuardar.innerText;
-
-        botonGuardar.disabled = true;
-        botonGuardar.innerText = 'Guardando...';
-
+    // Función toast
+    function mostrarToast(mensaje, tipo = 'exito') {
+        if (!toastElement) return;
+        toastElement.textContent = mensaje;
+        toastElement.className = `toast ${tipo === 'error' ? 'error' : ''} visible`;
         setTimeout(() => {
-            alert('¡Información personal actualizada con éxito!');
-            botonGuardar.disabled = false;
-            botonGuardar.innerText = textoOriginal;
-        }, 1000);
+            toastElement.classList.remove('visible');
+        }, 3000);
+    }
+
+    const abrirModalCancelar = () => {
+        if (modalCancelar) modalCancelar.classList.add('visible');
+    };
+
+    if (modalConfirmarSalir) {
+        modalConfirmarSalir.addEventListener('click', () => {
+            window.location.href = '../pagina_maestra/index.html';
+        });
+    }
+
+    if (modalQuedarse) {
+        modalQuedarse.addEventListener('click', () => {
+            modalCancelar.classList.remove('visible');
+        });
+    }
+
+    // 4. Botones de Acción (Guardar / Cancelar) - Múltiples instancias
+    const botonesGuardar = document.querySelectorAll('.btn-guardar-global');
+    const botonesCancelar = document.querySelectorAll('.btn-cancelar-global');
+
+    botonesGuardar.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const originalText = btn.textContent;
+            btn.textContent = 'Guardando...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                mostrarToast('¡Cambios guardados con éxito! ✓');
+                btn.textContent = originalText;
+                btn.disabled = false;
+
+                // Si estamos en seguridad, volver a información tras guardar
+                if (panelSeguridad && panelSeguridad.style.display !== 'none') {
+                    botonRegresarPerfil.click();
+                }
+            }, 800);
+        });
     });
 
-    formularioContrasena.addEventListener('submit', (evento) => {
-        evento.preventDefault();
-
-        const passNueva = document.getElementById('pass-nueva').value;
-        const passConfirmar = document.getElementById('pass-confirmar').value;
-
-        if (passNueva !== passConfirmar) {
-            alert('Las contraseñas no coinciden. Por favor, verifica de nuevo.');
-            return;
-        }
-
-        if (passNueva.length < 8 && passNueva.length > 0) {
-            alert('La nueva contraseña debe tener al menos 8 caracteres.');
-            return;
-        }
-
-        // Simulando actualización de contraseña
-        const botonActualizar = formularioContrasena.querySelector('.boton-principal');
-        const textoOriginal = botonActualizar.innerText;
-
-        botonActualizar.disabled = true;
-        botonActualizar.innerText = 'Actualizando...';
-
-        setTimeout(() => {
-            alert('¡Contraseña actualizada con éxito!');
-            formularioContrasena.reset();
-            // Resetear iconos a "ojo"
-            botonesAlternar.forEach(b => {
-                const objetivo = document.getElementById(b.getAttribute('data-objetivo'));
-                objetivo.type = 'password';
-                b.querySelector('img').src = 'https://api.iconify.design/lucide:eye.svg';
-            });
-            botonActualizar.disabled = false;
-            botonActualizar.innerText = textoOriginal;
-        }, 1200);
+    botonesCancelar.forEach(btn => {
+        btn.addEventListener('click', abrirModalCancelar);
     });
+
+    if (botonVolverHeader) {
+        botonVolverHeader.addEventListener('click', abrirModalCancelar);
+    }
+
+    // 5. Gestión de Foto de Perfil
+    const btnCambiarFoto = document.getElementById('btn-cambiar-foto');
+    const btnEliminarFoto = document.getElementById('btn-eliminar-foto');
+    const inputFoto = document.getElementById('input-foto');
+    const imgPerfil = document.getElementById('foto-perfil');
+    const fotoPorDefecto = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+
+    if (btnCambiarFoto && inputFoto) {
+        btnCambiarFoto.addEventListener('click', () => {
+            inputFoto.click();
+        });
+
+        inputFoto.addEventListener('change', (e) => {
+            const archivo = e.target.files[0];
+            if (archivo) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imgPerfil.src = event.target.result;
+                };
+                reader.readAsDataURL(archivo);
+            }
+        });
+    }
+
+    if (btnEliminarFoto && imgPerfil) {
+        btnEliminarFoto.addEventListener('click', () => {
+            abrirModalCancelar(); // Podríamos usar otro modal, pero por ahora simplificamos confirmación
+        });
+        
+        // Re-implementando eliminación simple por ahora
+        btnEliminarFoto.addEventListener('click', (e) => {
+            e.stopImmediatePropagation();
+            if (confirm('¿Eliminar foto de perfil?')) {
+                imgPerfil.src = fotoPorDefecto;
+            }
+        });
+    }
 });
