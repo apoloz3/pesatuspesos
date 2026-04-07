@@ -42,3 +42,16 @@ SQLite / PostgreSQL
 Otros
 Git & GitHub
 APIs (posibles integraciones futuras como pagos o notificaciones)
+
+📊 Metodología
+El proyecto se desarrolla bajo un enfoque cualitativo, analizando el comportamiento financiero de los usuarios mediante encuestas y uso de la plataforma para generar mejoras en hábitos económicos.
+👨‍💻 Autor
+Juan Esteban Botero
+Proyecto desarrollado para el SENA
+Programa: Análisis y Desarrollo de Software
+📈 Futuras Mejoras
+Integración con pagos (Nequi, PSE, Bancolombia)
+Aplicación móvil
+Inteligencia artificial para recomendaciones financieras
+Notificaciones inteligentes
+Exportación de reportes en PDF
