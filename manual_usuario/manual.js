@@ -10,14 +10,14 @@ btnGirarPagina.forEach((el, index) => {
             girarPagina.classList.remove('giro');
 
             setTimeout(() => {
-                girarPagina.style.zIndex = 2 - index;
+                girarPagina.style.zIndex = 20 - index;
             }, 500);
 
         } else {
             girarPagina.classList.add('giro');
 
             setTimeout(() => {
-                girarPagina.style.zIndex = 2 + index;
+                girarPagina.style.zIndex = 20 + index;
             }, 500);
         }
     }
@@ -41,31 +41,17 @@ btnContactame.onclick = () => {
 }
 
 
-// Función para crear índice inverso
-let totalPaginas = paginas.length;
-let numeroPagina = 0;
-
-function indiceInverso() {
-    numeroPagina--;
-    if (numeroPagina < 0) {
-        numeroPagina = totalPaginas - 1;
-    }
-}
-
-
 // Botón volver al perfil al hacer clic
 const btnVolverPerfil = document.querySelector('.volver-perfil');
 
 btnVolverPerfil.onclick = () => {
     paginas.forEach((_, index) => {
         setTimeout(() => {
-            indiceInverso();
-
-            paginas[numeroPagina].classList.remove('giro');
+            let idx = paginas.length - 1 - index;
+            paginas[idx].classList.remove('giro');
 
             setTimeout(() => {
-                indiceInverso();
-                paginas[numeroPagina].style.zIndex = 10 + index;
+                paginas[idx].style.zIndex = 10 + index;
             }, 500)
         }, (index + 1) * 200 + 100)
 
@@ -90,13 +76,11 @@ setTimeout(() => {
 
 paginas.forEach((_, index) => {
     setTimeout(() => {
-        indiceInverso();
-
-        paginas[numeroPagina].classList.remove('giro');
+        let idx = paginas.length - 1 - index;
+        paginas[idx].classList.remove('giro');
 
         setTimeout(() => {
-            indiceInverso();
-            paginas[numeroPagina].style.zIndex = 10 + index;
+            paginas[idx].style.zIndex = 10 + index;
         }, 500)
     }, (index + 1) * 200 + 2100)
 
