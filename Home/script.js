@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("nombre_usuario", nuevoNombre);
     });
   }
-  
+
   /*X para cerrar panel de usuario */
   const cerrarPanelBtn = document.getElementById("cerrarPanel");
   if (cerrarPanelBtn) {
@@ -101,6 +101,17 @@ document.addEventListener("DOMContentLoaded", function () {
       if (panelEdicion) panelEdicion.classList.remove("activo");
     });
   }
+
+  /* ===============================
+       REDIRECCIÓN A PERFIL (LÁPIZ)
+    =============================== */
+  const avatarLapiz = document.querySelector(".avatar-lapiz");
+  if (avatarLapiz) {
+    avatarLapiz.addEventListener("click", function () {
+      window.location.href = "../editar_perfil/perfil.html";
+    });
+  }
+
   /* ===============================
        BOTÓN CERRAR SESIÓN
     =============================== */

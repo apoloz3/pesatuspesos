@@ -2,19 +2,27 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // Elementos
+    const btnVolver = document.getElementById('btn-volver');
     const btnCambiarFoto = document.getElementById('btn-cambiar-foto');
     const btnEliminarFoto = document.getElementById('btn-eliminar-foto');
     const entradaFoto = document.getElementById('entrada-foto');
     const vistaPreviaFoto = document.getElementById('vista-previa-foto');
-    
+
     const formularioPersonal = document.getElementById('formulario-info-personal');
     const formularioContrasena = document.getElementById('formulario-contrasena');
 
     // Avatar por defecto
     const AVATAR_POR_DEFECTO = 'img/hucha.png';
 
+    // --- Volver a Inicio ---
+    if (btnVolver) {
+        btnVolver.addEventListener('click', () => {
+            window.location.href = '../Home/index.html';
+        });
+    }
+
     // --- Acciones de la Foto ---
-    
+
     // Asegurar que la vista previa use el avatar por defecto al iniciar si no hay otra
     if (!vistaPreviaFoto.src || vistaPreviaFoto.src.includes('placeholder')) {
         vistaPreviaFoto.src = AVATAR_POR_DEFECTO;
@@ -43,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Visibilidad de Contraseña ---
-    
+
     const botonesAlternar = document.querySelectorAll('.btn-alternar-contrasena');
     botonesAlternar.forEach(boton => {
         boton.addEventListener('click', () => {
@@ -67,11 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     formularioPersonal.addEventListener('submit', (evento) => {
         evento.preventDefault();
-        
+
         // Simulando operación de guardado
         const botonGuardar = formularioPersonal.querySelector('.boton-guardar');
         const textoOriginal = botonGuardar.innerText;
-        
+
         botonGuardar.disabled = true;
         botonGuardar.innerText = 'Guardando...';
 
@@ -84,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     formularioContrasena.addEventListener('submit', (evento) => {
         evento.preventDefault();
-        
+
         const passNueva = document.getElementById('pass-nueva').value;
         const passConfirmar = document.getElementById('pass-confirmar').value;
 
@@ -101,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Simulando actualización de contraseña
         const botonActualizar = formularioContrasena.querySelector('.boton-principal');
         const textoOriginal = botonActualizar.innerText;
-        
+
         botonActualizar.disabled = true;
         botonActualizar.innerText = 'Actualizando...';
 
