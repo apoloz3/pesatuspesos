@@ -1,4 +1,6 @@
-# pesatuspesos
+# pesatuspesos 
+
+Integrantes Jader, Juan y Mafe
 paginaweb
 
 💰 Pesa Tus Pesos
