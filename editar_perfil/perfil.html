@@ -7,16 +7,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="../pagina_maestra/estilo.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="perfil.css">
 </head>
 <body>
+    <!-- ENCABEZADO LOGO -->
+    <div class="encabezado-logo">
+        <div class="caja-logo">
+            <i class="fa-solid fa-coins" style="font-size: 2rem; color: #CFB53B;"></i>
+            <span class="texto-logo">PESATUSPESOS</span>
+        </div>
+    </div>
+
     <div class="contenedor-principal">
         <header class="cabecera">
             <div class="izquierda">
                 <button class="boton-volver" id="boton-volver">
-                    <i class="ph ph-arrow-left"></i> Volver
+                    <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
                 <h1 class="titulo-pagina" id="titulo-estado">Configuración de Perfil</h1>
             </div>
@@ -27,19 +35,19 @@
             <div class="tarjeta-perfil" id="panel-informacion">
                 <div class="seccion-avatar">
                     <div class="contenedor-foto">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop" alt="Foto de Perfil" id="foto-perfil">
+                        <img src="img/hucha.png" alt="Foto de Perfil" id="foto-perfil">
                         <!-- Input oculto para subir archivo -->
                         <input type="file" id="input-foto" accept="image/*" style="display: none;">
                     </div>
                     <div class="acciones-foto-exterior">
                         <button class="boton-editar-foto-v2" id="btn-cambiar-foto">
-                            <i class="ph ph-camera"></i> Editar Foto
+                            <i class="fa-solid fa-camera"></i> Editar Foto
                         </button>
                         <button class="boton-eliminar-foto-v2" id="btn-eliminar-foto">
-                            <i class="ph ph-trash"></i> Eliminar Foto
+                            <i class="fa-solid fa-trash"></i> Eliminar Foto
                         </button>
                         <button class="boton-seguridad" id="ir-a-seguridad">
-                            <i class="ph ph-lock"></i> Cambiar Contraseña
+                            <i class="fa-solid fa-lock"></i> Cambiar Contraseña
                         </button>
                     </div>
                 </div>
@@ -50,7 +58,7 @@
                             <label for="nombre">Nombre Completo</label>
                             <div class="input-linea">
                                 <input type="text" id="nombre" value="María García"> <!-- Sin placeholder -->
-                                <i class="ph ph-user"></i>
+                                <i class="fa-solid fa-user"></i>
                             </div>
                         </div>
 
@@ -58,7 +66,7 @@
                             <label for="email">Correo Electrónico</label>
                             <div class="input-linea">
                                 <input type="email" id="email" value="maria.garcia@email.co"> <!-- Sin placeholder -->
-                                <i class="ph ph-envelope"></i>
+                                <i class="fa-solid fa-envelope"></i>
                             </div>
                         </div>
 
@@ -66,7 +74,7 @@
                             <label for="telefono">Teléfono</label>
                             <div class="input-linea">
                                 <input type="tel" id="telefono" value="+57 312 456 7890"> <!-- Sin placeholder -->
-                                <i class="ph ph-phone"></i>
+                                <i class="fa-solid fa-phone"></i>
                             </div>
                         </div>
                     </div>
@@ -84,38 +92,35 @@
                 <div class="seccion-formulario-completo">
                     <div class="encabezado-panel">
                         <button class="boton-regresar-perfil" id="regresar-a-informacion">
-                            <i class="ph ph-caret-left"></i> Regresar a información
+                            <i class="fa-solid fa-chevron-left"></i> Regresar a información
                         </button>
                         <h2>Cambiar Contraseña</h2>
                         <p>Verifica tu identidad para establecer una nueva clave.</p>
                     </div>
 
                     <div class="campo-grupo">
-                        <label for="pass-actual">Contraseña Actual</label>
                         <div class="input-linea">
-                            <input type="password" id="pass-actual"> <!-- Sin placeholder -->
+                            <input type="password" id="pass-actual" placeholder="Contraseña Actual">
                             <button class="toggle-password" type="button">
-                                <i class="ph ph-eye"></i>
+                                <i class="fa-solid fa-eye"></i>
                             </button>
                         </div>
                     </div>
 
                     <div class="campo-grupo">
-                        <label for="pass-nueva">Nueva Contraseña</label> <!-- Texto mejorado -->
                         <div class="input-linea">
-                            <input type="password" id="pass-nueva"> <!-- Sin placeholder -->
+                            <input type="password" id="pass-nueva" placeholder="Nueva Contraseña">
                             <button class="toggle-password" type="button">
-                                <i class="ph ph-eye"></i>
+                                <i class="fa-solid fa-eye"></i>
                             </button>
                         </div>
                     </div>
 
                     <div class="campo-grupo">
-                        <label for="pass-confirm">Confirmar Contraseña</label> <!-- Texto mejorado -->
                         <div class="input-linea">
-                            <input type="password" id="pass-confirm"> <!-- Sin placeholder -->
+                            <input type="password" id="pass-confirm" placeholder="Confirmar Contraseña">
                             <button class="toggle-password" type="button">
-                                <i class="ph ph-eye"></i>
+                                <i class="fa-solid fa-eye"></i>
                             </button>
                         </div>
                     </div>
@@ -143,6 +148,18 @@
       </div>
     </div>
 
-    <script src="perfil.js"></script>
+    <!-- MODAL ELIMINAR FOTO -->
+    <div class="modal-cancelar" id="modal-eliminar-foto">
+      <div class="modal-cancelar__contenido">
+        <h3>¿Eliminar foto de perfil?</h3>
+        <p>Tu foto de perfil volverá a ser la imagen por defecto.</p>
+        <div class="modal-cancelar__acciones">
+          <button class="modal-btn-salir" id="modal-confirmar-eliminar">Aceptar</button>
+          <button class="modal-btn-quedarse" id="modal-cancelar-eliminar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="perfil.js?v=2"></script>
 </body>
 </html>

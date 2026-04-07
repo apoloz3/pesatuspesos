@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
             panelSeguridad.style.opacity = '1';
             panelSeguridad.style.transform = 'translateY(0)';
             if (tituloEstado) tituloEstado.textContent = 'Seguridad de la Cuenta';
-            if (botonVolverHeader) botonVolverHeader.style.display = 'none'; 
+            if (botonVolverHeader) botonVolverHeader.style.display = 'none';
         });
     }
 
@@ -38,11 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const icono = boton.querySelector('i');
 
             if (input.type === 'password') {
-                input.type = 'text'; 
-                icono.classList.replace('ph-eye', 'ph-eye-slash');
+                input.type = 'text';
+                icono.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
-                input.type = 'password'; 
-                icono.classList.replace('ph-eye-slash', 'ph-eye');
+                input.type = 'password';
+                icono.classList.replace('fa-eye-slash', 'fa-eye');
             }
         });
     });
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (modalConfirmarSalir) {
         modalConfirmarSalir.addEventListener('click', () => {
-            window.location.href = '../pagina_maestra/index.html';
+            window.location.href = '../Home/index.html';
         });
     }
 
@@ -89,15 +89,20 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = 'Guardando...';
             btn.disabled = true;
 
+            // Sincronizar foto de perfil
+            if (imgPerfil) {
+                localStorage.setItem('pesa-tus-pesos-avatar', imgPerfil.src);
+            }
+
             setTimeout(() => {
                 mostrarToast('¡Cambios guardados con éxito! ✓');
                 btn.textContent = originalText;
-                btn.disabled = false;
 
-                // Si estamos en seguridad, volver a información tras guardar
-                if (panelSeguridad && panelSeguridad.style.display !== 'none') {
-                    botonRegresarPerfil.click();
-                }
+                // Redirigir al inicio después de un breve momento para que vean el mensaje
+                setTimeout(() => {
+                    window.location.href = '../Home/index.html';
+                }, 1500);
+
             }, 800);
         });
     });
@@ -115,7 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnEliminarFoto = document.getElementById('btn-eliminar-foto');
     const inputFoto = document.getElementById('input-foto');
     const imgPerfil = document.getElementById('foto-perfil');
-    const fotoPorDefecto = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+    const fotoPorDefecto = 'img/hucha.png';
+
+    // Cargar avatar sincronizado si existe
+    const avatarGuardado = localStorage.getItem('pesa-tus-pesos-avatar');
+    if (avatarGuardado && imgPerfil) {
+        imgPerfil.src = avatarGuardado;
+    }
 
     if (btnCambiarFoto && inputFoto) {
         btnCambiarFoto.addEventListener('click', () => {
@@ -134,17 +145,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (btnEliminarFoto && imgPerfil) {
-        btnEliminarFoto.addEventListener('click', () => {
-            abrirModalCancelar(); // Podríamos usar otro modal, pero por ahora simplificamos confirmación
-        });
-        
-        // Re-implementando eliminación simple por ahora
+    const modalEliminarFoto = document.getElementById('modal-eliminar-foto');
+    const modalConfirmarEliminar = document.getElementById('modal-confirmar-eliminar');
+    const modalCancelarEliminar = document.getElementById('modal-cancelar-eliminar');
+
+    if (btnEliminarFoto && imgPerfil && modalEliminarFoto) {
         btnEliminarFoto.addEventListener('click', (e) => {
-            e.stopImmediatePropagation();
-            if (confirm('¿Eliminar foto de perfil?')) {
-                imgPerfil.src = fotoPorDefecto;
-            }
+            e.preventDefault();
+            modalEliminarFoto.classList.add('visible');
         });
+
+        if (modalConfirmarEliminar) {
+            modalConfirmarEliminar.addEventListener('click', () => {
+                imgPerfil.src = fotoPorDefecto;
+                modalEliminarFoto.classList.remove('visible');
+                mostrarToast('Foto de perfil eliminada ✓');
+            });
+        }
+
+        if (modalCancelarEliminar) {
+            modalCancelarEliminar.addEventListener('click', () => {
+                modalEliminarFoto.classList.remove('visible');
+            });
+        }
     }
 });

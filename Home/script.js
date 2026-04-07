@@ -28,6 +28,30 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ===============================
+       SINCRONIZAR AVATAR DE USUARIO
+    =============================== */
+  const avatarPrincipal = document.getElementById("avatarPrincipal");
+  const botonPerfilImg = document.querySelector("#botonPerfil img");
+  const avatarGuardado = localStorage.getItem("pesa-tus-pesos-avatar");
+
+  if (avatarGuardado) {
+    if (avatarPrincipal) avatarPrincipal.src = avatarGuardado;
+    // Adaptar path de imagen si venimos desde diferentes profundidades
+    // Home está en /Home y perfil está en /editar_perfil, localStorage guarda src absoluto/relativo de perfil
+    // En este caso, imgPerfil.src guarda el data URL completo (Data URI) que es universal y funciona bien
+    // o un string "img/hucha.png" (o url asb).
+    // Ya que usamos reader.readAsDataURL para la foto seleccionada, esto funciona perfecto en cualquier path.
+    // Si la foto guardada es 'img/hucha.png' (relativa en perfil), la traduciremos según la ruta del root.
+    let avatarAUsar = avatarGuardado;
+    if (avatarGuardado === 'img/hucha.png' || avatarGuardado.endsWith('img/hucha.png')) {
+      avatarAUsar = 'img/hucha.png'; // En Home/index.html tambien existe img/hucha.png local!
+    }
+
+    if (avatarPrincipal) avatarPrincipal.src = avatarAUsar;
+    if (botonPerfilImg) botonPerfilImg.src = avatarAUsar;
+  }
+
+  /* ===============================
        BOTÓN CONFIGURACIÓN ⚙️
     =============================== */
 
@@ -67,7 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  const avatarPrincipal = document.getElementById("avatarPrincipal");
   const opcionesAvatar = document.querySelectorAll(".opcion-avatar");
   const contenedorAvatar = document.getElementById("contenedorAvatar");
   const panelEdicion = document.getElementById("panelEdicion");
