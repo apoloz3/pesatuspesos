@@ -3,98 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil - Pesa tus pesos</title>
+    <title>Configuración de Perfil - Pesa tus Pesos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="../pagina_maestra/estilo.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="perfil.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="contenedor-perfil-app">
-        <header class="cabecera-perfil">
-            <button id="btn-volver" class="boton-volver">
-                <img src="https://api.iconify.design/lucide:arrow-left.svg" alt="Volver">
-                <span>Volver</span>
-            </button>
-            <h1>Configuración de Perfil</h1>
+    <div class="contenedor-principal">
+        <header class="cabecera">
+            <div class="izquierda">
+                <button class="boton-volver" id="boton-volver">
+                    <i class="ph ph-arrow-left"></i> Volver
+                </button>
+                <h1 class="titulo-pagina" id="titulo-estado">Configuración de Perfil</h1>
+            </div>
         </header>
 
-        <main class="rejilla-principal-perfil">
-            <!-- Sección Izquierda: Foto de Perfil -->
-            <section class="tarjeta-perfil seccion-foto-perfil">
-                <h2 class="titulo-tarjeta">Foto de Perfil</h2>
-                <div class="vista-avatar">
-                    <img id="vista-previa-foto" src="img/hucha.png" alt="Avatar Usuario">
+        <main class="contenido-perfil">
+            <!-- PANEL 1: INFORMACIÓN PERSONAL -->
+            <div class="tarjeta-perfil" id="panel-informacion">
+                <div class="seccion-avatar">
+                    <div class="contenedor-foto">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop" alt="Foto de Perfil" id="foto-perfil">
+                        <!-- Input oculto para subir archivo -->
+                        <input type="file" id="input-foto" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="acciones-foto-exterior">
+                        <button class="boton-editar-foto-v2" id="btn-cambiar-foto">
+                            <i class="ph ph-camera"></i> Editar Foto
+                        </button>
+                        <button class="boton-eliminar-foto-v2" id="btn-eliminar-foto">
+                            <i class="ph ph-trash"></i> Eliminar Foto
+                        </button>
+                        <button class="boton-seguridad" id="ir-a-seguridad">
+                            <i class="ph ph-lock"></i> Cambiar Contraseña
+                        </button>
+                    </div>
                 </div>
-                <div class="acciones-avatar">
-                    <button id="btn-cambiar-foto" class="boton boton-principal">Cambiar Foto</button>
-                    <button id="btn-eliminar-foto" class="boton boton-peligro">Eliminar Foto</button>
+
+                <div class="seccion-formulario">
+                    <div class="contenedor-campos">
+                        <div class="campo-grupo">
+                            <label for="nombre">Nombre Completo</label>
+                            <div class="input-linea">
+                                <input type="text" id="nombre" value="María García"> <!-- Sin placeholder -->
+                                <i class="ph ph-user"></i>
+                            </div>
+                        </div>
+
+                        <div class="campo-grupo">
+                            <label for="email">Correo Electrónico</label>
+                            <div class="input-linea">
+                                <input type="email" id="email" value="maria.garcia@email.co"> <!-- Sin placeholder -->
+                                <i class="ph ph-envelope"></i>
+                            </div>
+                        </div>
+
+                        <div class="campo-grupo">
+                            <label for="telefono">Teléfono</label>
+                            <div class="input-linea">
+                                <input type="tel" id="telefono" value="+57 312 456 7890"> <!-- Sin placeholder -->
+                                <i class="ph ph-phone"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones dentro de la tarjeta -->
+                    <div class="acciones-dentro-tarjeta">
+                        <button class="boton-guardar btn-guardar-global">Guardar Cambios</button>
+                        <button class="boton-cancelar btn-cancelar-global">Cancelar</button>
+                    </div>
                 </div>
-                <!-- Entrada oculta para subir archivos -->
-                <input type="file" id="entrada-foto" style="display: none;" accept="image/*">
-            </section>
+            </div>
 
-            <!-- Sección Derecha: Información Personal -->
-            <section class="tarjeta-perfil seccion-info-personal">
-                <h2 class="titulo-tarjeta">Información Personal</h2>
-                <form id="formulario-info-personal" class="formulario-vertical">
-                    <div class="grupo-formulario">
-                        <label for="nombre">Nombre</label>
-                        <input type="text" id="nombre" name="nombre" value="Carlos Gómez" required>
+            <!-- PANEL 2: CAMBIO DE CONTRASEÑA -->
+            <div class="tarjeta-perfil oculto" id="panel-seguridad">
+                <div class="seccion-formulario-completo">
+                    <div class="encabezado-panel">
+                        <button class="boton-regresar-perfil" id="regresar-a-informacion">
+                            <i class="ph ph-caret-left"></i> Regresar a información
+                        </button>
+                        <h2>Cambiar Contraseña</h2>
+                        <p>Verifica tu identidad para establecer una nueva clave.</p>
                     </div>
-                    <div class="grupo-formulario">
-                        <label for="email">Correo Electrónico</label>
-                        <input type="email" id="email" name="email" value="carlos.gomez@email.com" required>
-                    </div>
-                    <div class="grupo-formulario">
-                        <label for="telefono">Teléfono</label>
-                        <input type="tel" id="telefono" name="telefono" value="+34 600 123 456">
-                    </div>
-                    <button type="submit" class="boton boton-principal boton-guardar">Guardar Cambios</button>
-                </form>
-            </section>
 
-            <!-- Sección Inferior: Cambiar Contraseña -->
-            <section class="tarjeta-perfil seccion-contrasena">
-                <h2 class="titulo-tarjeta">Cambiar Contraseña</h2>
-                <form id="formulario-contrasena" class="formulario-vertical">
-                    <div class="fila-formulario">
-                        <div class="grupo-formulario contenedor-contrasena">
-                            <label for="pass-actual">Contraseña Actual</label>
-                            <div class="input-con-icono">
-                                <input type="password" id="pass-actual" name="pass-actual" placeholder="••••••••">
-                                <button type="button" class="btn-alternar-contrasena" data-objetivo="pass-actual">
-                                    <img src="https://api.iconify.design/lucide:eye.svg" alt="Mostrar">
-                                </button>
-                            </div>
+                    <div class="campo-grupo">
+                        <label for="pass-actual">Contraseña Actual</label>
+                        <div class="input-linea">
+                            <input type="password" id="pass-actual"> <!-- Sin placeholder -->
+                            <button class="toggle-password" type="button">
+                                <i class="ph ph-eye"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="fila-formulario">
-                        <div class="grupo-formulario contenedor-contrasena">
-                            <label for="pass-nueva">Nueva Contraseña</label>
-                            <div class="input-con-icono">
-                                <input type="password" id="pass-nueva" name="pass-nueva" placeholder="••••••••">
-                                <button type="button" class="btn-alternar-contrasena" data-objetivo="pass-nueva">
-                                    <img src="https://api.iconify.design/lucide:eye.svg" alt="Mostrar">
-                                </button>
-                            </div>
-                        </div>
-                        <div class="grupo-formulario contenedor-contrasena">
-                            <label for="pass-confirmar">Confirmar Nueva Contraseña</label>
-                            <div class="input-con-icono">
-                                <input type="password" id="pass-confirmar" name="pass-confirmar" placeholder="••••••••">
-                                <button type="button" class="btn-alternar-contrasena" data-objetivo="pass-confirmar">
-                                    <img src="https://api.iconify.design/lucide:eye.svg" alt="Mostrar">
-                                </button>
-                            </div>
+
+                    <div class="campo-grupo">
+                        <label for="pass-nueva">Nueva Contraseña</label> <!-- Texto mejorado -->
+                        <div class="input-linea">
+                            <input type="password" id="pass-nueva"> <!-- Sin placeholder -->
+                            <button class="toggle-password" type="button">
+                                <i class="ph ph-eye"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="contenedor-boton-centrado">
-                        <button type="submit" class="boton boton-principal">Actualizar Contraseña</button>
+
+                    <div class="campo-grupo">
+                        <label for="pass-confirm">Confirmar Contraseña</label> <!-- Texto mejorado -->
+                        <div class="input-linea">
+                            <input type="password" id="pass-confirm"> <!-- Sin placeholder -->
+                            <button class="toggle-password" type="button">
+                                <i class="ph ph-eye"></i>
+                            </button>
+                        </div>
                     </div>
-                </form>
-            </section>
+
+                    <!-- Botones dentro de la tarjeta de seguridad -->
+                    <div class="acciones-dentro-tarjeta mt-auto">
+                        <button class="boton-guardar btn-guardar-global">Guardar Cambios</button>
+                        <button class="boton-cancelar btn-cancelar-global">Cancelar</button>
+                    </div>
+                </div>
+            </div>
         </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="modal-cancelar" id="modal-cancelar">
+      <div class="modal-cancelar__contenido">
+        <h3>¿Salir sin guardar?</h3>
+        <p>Los cambios que hiciste no se guardarán.</p>
+        <div class="modal-cancelar__acciones">
+          <button class="modal-btn-salir" id="modal-confirmar-salir">Sí, salir</button>
+          <button class="modal-btn-quedarse" id="modal-quedarse">Quedarme</button>
+        </div>
+      </div>
     </div>
 
     <script src="perfil.js"></script>
