@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portafolio 3D</title>
+    <!-- Iconos BoxIcon -->
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Estilos -->
+    <link rel="stylesheet" href="manual.css" />
+  </head>
+  <body>
+    <div class="contenedor">
+      <div class="cubierta cubierta-izq"></div>
+      <div class="cubierta cubierta-der"></div>
+
+      <div class="libro">
+        <!-- Página de perfil -->
+        <div class="pagina-libro pagina-izq">
+          <div class="pagina-perfil">
+            <img src="./Logo.png" alt="" />
+            <h1>Sr. Esqueleto</h1>
+            <h3>Desarrollador Web</h3>
+
+            <div class="redes-sociales">
+              <a href="#"><i class="bx bxl-facebook"></i></a>
+              <a href="#"><i class="bx bxl-twitter"></i></a>
+              <a href="#"><i class="bx bxl-instagram"></i></a>
+              <a href="#"><i class="bx bxl-linkedin-square"></i></a>
+            </div>
+
+            <p>
+              Hola, soy Desarrollador Web. Neque commodi numquam dolor a
+              deserunt incidunt esse molestias voluptatum porro ullam.
+            </p>
+
+            <div class="caja-botones">
+              <a href="#" class="boton">Descargar CV</a>
+              <a href="#" class="boton contactame">¡Contáctame!</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Página 1 y 2 -->
+        <div class="pagina-libro pagina-der giro" id="giro-1">
+          <!-- Página 1 (Experiencia laboral) -->
+          <div class="frente-pagina">
+            <h1 class="titulo">Experiencia Laboral</h1>
+
+            <div class="caja-trabajo-educ">
+              <div class="contenido-trabajo-educ">
+                <span class="anio"
+                  ><i class="bx bxs-calendar"></i>2018 - 2020</span
+                >
+                <h3>Desarrollador Web - Software Pro</h3>
+                <p>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Molestiae minus eius nemo. Optio cupiditate.
+                </p>
+              </div>
+
+              <div class="contenido-trabajo-educ">
+                <span class="anio"
+                  ><i class="bx bxs-calendar"></i>2021 - 2022</span
+                >
+                <h3>Diseñador Web - Software Pro</h3>
+                <p>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Molestiae minus eius nemo. Optio cupiditate.
+                </p>
+              </div>
+
+              <div class="contenido-trabajo-educ">
+                <span class="anio"
+                  ><i class="bx bxs-calendar"></i>2022 - 2023</span
+                >
+                <h3>Diseñador Gráfico - Software Pro</h3>
+                <p>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Molestiae minus eius nemo. Optio cupiditate.
+                </p>
+              </div>
+            </div>
+            <span class="numero-pagina">1</span>
+
+            <!-- Botón siguiente -->
+            <span class="btn-sig-ant" data-page="giro-1">
+              <i class="bx bx-chevron-right"></i>
+            </span>
+          </div>
+
+          <!-- Página 2 (Educación) -->
+          <div class="dorso-pagina">
+            <h1 class="titulo">Educación</h1>
+
+            <div class="caja-trabajo-educ">
+              <div class="contenido-trabajo-educ">
+                <span class="anio"
+                  ><i class="bx bxs-calendar"></i>2016 - 2018</span
+                >
+                <h3>Universidad</h3>
+                <p>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Molestiae minus eius nemo. Optio cupiditate.
+                </p>
+              </div>
+
+              <div class="contenido-trabajo-educ">
+                <span class="anio"
+                  ><i class="bx bxs-calendar"></i>2018 - 2020</span
+                >
+                <h3>Intermedio</h3>
+                <p>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Molestiae minus eius nemo. Optio cupiditate.
+                </p>
+              </div>
+
+              <div class="contenido-trabajo-educ">
+                <span class="anio"
+                  ><i class="bx bxs-calendar"></i>2020 - 2024</span
+                >
+                <h3>Licenciatura en Computación</h3>
+                <p>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Molestiae minus eius nemo. Optio cupiditate.
+                </p>
+              </div>
+            </div>
+
+            <span class="numero-pagina">2</span>
+
+            <!-- Botón anterior -->
+            <span class="btn-sig-ant atras" data-page="giro-1">
+              <i class="bx bx-chevron-left"></i>
+            </span>
+          </div>
+        </div>
+
+
+        <!-- Página 3 y 4 -->
+        <div class="pagina-libro pagina-der giro" id="giro-2">
+          <!-- Página 3 (Mis servicios) -->
+          <div class="frente-pagina">
+            <h1 class="titulo">Mis Servicios</h1>
+
+            <div class="caja-servicios">
+              <div class="contenido-servicios">
+                <i class="bx bx-code-alt"></i>
+                <h3>Desarrollo Web</h3>
+                <p>
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi
+                  quae accusamus aliquam.
+                </p>
+                <a href="#" class="boton">Leer Más</a>
+              </div>
+
+              <div class="contenido-servicios">
+                <i class="bx bxs-paint"></i>
+                <h3>Diseño Creativo</h3>
+                <p>
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi
+                  quae accusamus aliquam.
+                </p>
+                <a href="#" class="boton">Leer Más</a>
+              </div>
+
+              <div class="contenido-servicios">
+                <i class="bx bx-bar-chart-alt"></i>
+                <h3>Marketing Digital</h3>
+                <p>
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi
+                  quae accusamus aliquam.
+                </p>
+                <a href="#" class="boton">Leer Más</a>
+              </div>
+
+              <div class="contenido-servicios">
+                <i class="bx bx-search"></i>
+                <h3>SEO</h3>
+                <p>
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi
+                  quae accusamus aliquam.
+                </p>
+                <a href="#" class="boton">Leer Más</a>
+              </div>
+            </div>
+
+            <span class="numero-pagina">3</span>
+
+            <!-- Botón siguiente -->
+            <span class="btn-sig-ant" data-page="giro-2">
+              <i class="bx bx-chevron-right"></i>
+            </span>
+
+          </div>
+          <!-- Página 4 (Mis habilidades) -->
+          <div class="dorso-pagina">
+            <h1 class="titulo">Mis Habilidades</h1>
+
+            <div class="caja-habilidades">
+              <div class="contenido-habilidades">
+                <h3>Front-End</h3>
+                <div class="contenido">
+                  <span><i class="bx bxl-html5"></i> HTML</span>
+                  <span><i class="bx bxl-css3"></i>CSS</span>
+                  <span><i class="bx bxl-javascript"></i>JS</span>
+                  <span><i class="bx bxl-angular"></i>Angular</span>
+                  <span><i class="bx bxl-react"></i>React Js</span>
+                  <span><i class="bx bxl-bootstrap"></i>Bootstrap</span>
+                  <span><i class="bx bxl-jquery"></i>jQuery</span>
+                </div>
+              </div>
+
+              <div class="contenido-habilidades">
+                <h3>Back-End</h3>
+                <div class="contenido">
+                  <span><i class="bx bxl-python"></i>Python</span>
+                  <span><i class="bx bxl-java"></i>Java</span>
+                  <span><i class="bx bxl-nodejs"></i>Node JS</span>
+                  <span><i class="bx bxl-php"></i>PHP</span>
+                </div>
+              </div>
+
+              <div class="contenido-habilidades">
+                <h3>Diseño UI/UX</h3>
+                <div class="contenido">
+                  <span><i class="bx bxl-figma"></i>Figma</span>
+                </div>
+              </div>
+            </div>
+
+            <span class="numero-pagina">4</span>
+
+            <!-- Botón siguiente -->
+            <span class="btn-sig-ant atras" data-page="giro-2">
+              <i class="bx bx-chevron-left"></i>
+            </span>
+          </div>
+        </div>
+
+            <!-- Página 5 y 6 -->
+            <div class="pagina-libro pagina-der giro" id="giro-3">
+                <!-- Página 5 (Galería de Proyectos) -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">Galería de Proyectos</h1>
+
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="website 3.png" alt="">
+                        </div>
+
+                        <div class="caja-info">
+                            <div class="titulo-info">
+                                <h3>Proyecto Destacado 1</h3>
+                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                            </div>
+                            <p>Tecnologías Usadas:</p>
+                            <p>Desarrollo personalizado integrando herramientas de Front-End para experiencia responsiva.</p>
+                        </div>
+                        <div class="caja-botones">
+                            <a href="#" class="boton">Saber Más</a>
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">5</span>
+
+                    <!-- Botón siguiente -->
+                    <span class="btn-sig-ant" data-page="giro-3">
+                      <i class="bx bx-chevron-right"></i>
+                    </span>
+                </div>
+
+
+                <!-- Página 6 (Diseños Creativos) -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">Diseños Creativos</h1>
+
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="website 3.png" alt="">
+                        </div>
+
+                        <div class="caja-info">
+                            <div class="titulo-info">
+                                <h3>Interfaz UI/UX Avanzada</h3>
+                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                            </div>
+                            <p>Innovación visual:</p>
+                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
+                        </div>
+                        <div class="caja-botones">
+                            <a href="#" class="boton">Saber Más</a>
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">6</span>
+
+                    <!-- Botón siguiente -->
+                    <span class="btn-sig-ant atras" data-page="giro-3">
+                      <i class="bx bx-chevron-left"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Página 7 y 8 -->
+            <div class="pagina-libro pagina-der giro" id="giro-4">
+                <!-- Página 7 (Testimonios) -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">Testimonios</h1>
+
+                    <div class="caja-trabajo-educ">
+                        <div class="contenido-trabajo-educ">
+                            <span class="anio"><i class="bx bxs-star"></i> Cliente A</span>
+                            <h3>Director Creativo</h3>
+                            <p>"El nivel de inmersión y detalle en las interfaces construidas es simplemente espectacular y moderno."</p>
+                        </div>
+
+                        <div class="contenido-trabajo-educ">
+                            <span class="anio"><i class="bx bxs-star"></i> Cliente B</span>
+                            <h3>Fundador Startup</h3>
+                            <p>"Logramos un producto mínimo viable elegante con animaciones de lujo para convertir clientes de alto valor."</p>
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">7</span>
+
+                    <!-- Botón siguiente -->
+                    <span class="btn-sig-ant" data-page="giro-4">
+                      <i class="bx bx-chevron-right"></i>
+                    </span>
+                </div>
+
+                <!-- Página 8 (Logros) -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">Logros</h1>
+
+                    <div class="caja-trabajo-educ">
+                        <div class="contenido-trabajo-educ">
+                            <span class="anio"><i class="bx bx-trophy"></i> 2025</span>
+                            <h3>Diseño Innovador del Año</h3>
+                            <p>Otorgado por la excelencia en interacción dinámica y modelado para libros 3D en plataformas web.</p>
+                        </div>
+
+                        <div class="contenido-trabajo-educ">
+                            <span class="anio"><i class="bx bx-medal"></i> 2026</span>
+                            <h3>Rendimiento UI Excepcional</h3>
+                            <p>Logro alcanzado gracias a construcciones modulares robustas minimizando repintados complejos.</p>
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">8</span>
+
+                    <!-- Botón siguiente -->
+                    <span class="btn-sig-ant atras" data-page="giro-4">
+                      <i class="bx bx-chevron-left"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Página 9 y 10 -->
+            <div class="pagina-libro pagina-der giro" id="giro-5">
+                <!-- Página 9 (Último proyecto) -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">Último Proyecto</h1>
+
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="website 3.png" alt="">
+                        </div>
+
+                        <div class="caja-info">
+                            <div class="titulo-info">
+                                <h3>Nombre del Proyecto</h3>
+                                <a href="#">Vista Previa <i class="bx bx-link-external"></i></a>
+                            </div>
+                            <p>Tecnologías Usadas:</p>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio, vel ipsum quis possimus quaerat voluptatem temporibus saepe veniam?</p>
+                        </div>
+                        <div class="caja-botones">
+                            <a href="#" class="boton">Código Fuente</a>
+                            <a href="#" class="boton">Más Proyectos</a>
+    
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">9</span>
+
+                    <!-- Botón siguiente -->
+                    <span class="btn-sig-ant" data-page="giro-5">
+                      <i class="bx bx-chevron-right"></i>
+                    </span>
+                </div>
+
+
+                <!-- Página 10 (¡Contáctame!) -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">¡Contáctame!</h1>
+
+                    <div class="caja-contacto">
+                      <form action="">
+                        <input type="text" class="campo-texto" placeholder="Nombre Completo" required>
+                        <input type="email" class="campo-texto" placeholder="Correo Electrónico" required>
+                        <textarea name="" id="" cols="30" rows="10" class="campo-texto" placeholder="Tu Mensaje"></textarea>
+                        <input type="submit" value="Enviar Mensaje" class="boton">
+                      </form>
+                    </div>
+
+                    <span class="numero-pagina">10</span>
+
+                    <!-- Botón siguiente -->
+                    <span class="btn-sig-ant atras" data-page="giro-5">
+                      <i class="bx bx-chevron-left"></i>
+                    </span>
+
+                    <a href="#" class="volver-perfil">
+                      <p>Perfil</p>
+                      <i class="bx bxs-user"></i>
+                    </a>
+                </div>
+
+            </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="manual.js"></script>
+  </body>
+</html>
