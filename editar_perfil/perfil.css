@@ -138,6 +138,11 @@ body {
     transform: translateX(-5px);
 }
 
+/* Alineación específica para el botón de Regresar coincidiendo con la orilla de la tarjeta de 650px */
+#regresar-a-informacion {
+    left: max(0px, calc(50% - 325px));
+}
+
 .titulo-pagina {
     font-size: 1.5rem;
     /* Reducido de 2rem */

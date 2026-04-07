@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             panelSeguridad.style.transform = 'translateY(0)';
             if (tituloEstado) tituloEstado.textContent = 'Seguridad de la Cuenta';
             if (botonVolverHeader) botonVolverHeader.style.display = 'none';
+            if (botonRegresarPerfil) botonRegresarPerfil.style.display = 'flex';
         });
     }
 
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             panelInformacion.style.display = 'grid';
             if (tituloEstado) tituloEstado.textContent = 'Configuración de Perfil';
             if (botonVolverHeader) botonVolverHeader.style.display = 'flex';
+            if (botonRegresarPerfil) botonRegresarPerfil.style.display = 'none';
         });
     }
 
