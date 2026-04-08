@@ -1563,3 +1563,150 @@ footer {
 .chat-send-btn:active {
   transform: scale(0.95);
 }
+
+/* =======================================
+   RESPONSIVIDAD GLOBAL (TABLET Y MÓVIL)
+======================================= */
+
+/* Redesigned body overflow to prevent horizontal scroll */
+body {
+  overflow-x: hidden;
+}
+
+/* Tablet (max-width: 992px) */
+@media (max-width: 992px) {
+  .menu-wrapper {
+    position: static;
+    transform: none;
+    order: 3;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .menu {
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .menu button {
+    margin-right: 0;
+    font-size: 16px;
+  }
+
+  .contenido {
+    padding-top: 140px;
+    /* Adjusting for taller wrapped header */
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+}
+
+/* Móvil (max-width: 768px) */
+@media (max-width: 768px) {
+  .caja-logo .texto-logo {
+    font-size: 1rem;
+  }
+
+  .faq-layout {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .faq-title {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .faq-icon {
+    font-size: 1rem;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .footer-logos {
+    justify-content: center;
+  }
+
+  .footer-brand p {
+    margin: 10px auto;
+  }
+
+  .chat-content {
+    width: 95%;
+    height: 90vh;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+  }
+
+  /* Reposicionar opciones de usuario flotante en pantallas chicas */
+  .contenedor-flotante {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+  }
+}
+
+/* SmartPhones pequeños (max-width: 480px) */
+@media (max-width: 480px) {
+  .menu {
+    gap: 10px;
+  }
+
+  .menu button {
+    font-size: 14px;
+    padding: 5px 0;
+  }
+
+  .caja-logo .texto-logo {
+    display: none;
+  }
+
+  .faq-item {
+    font-size: 0.95rem;
+    padding: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .faq-icon {
+    align-self: flex-end;
+  }
+
+  .chat-bubble {
+    max-width: 95%;
+  }
+
+  .boton-principal {
+    width: 50px;
+    height: 50px;
+  }
+
+  .boton-principal img {
+    width: 24px;
+  }
+
+  .opciones-flotantes {
+    right: 60px;
+  }
+
+  .boton-opcion {
+    width: 40px;
+    height: 40px;
+  }
+
+  .boton-opcion img {
+    width: 20px;
+  }
+}

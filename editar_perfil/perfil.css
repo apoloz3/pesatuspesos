@@ -619,10 +619,122 @@ body {
     top: 0;
 }
 
-/* RESPONSIVIDAD */
+/* ===== RESPONSIVIDAD ===== */
+
+.modal-cancelar__acciones {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+@media (max-width: 900px) {
+    .tarjeta-perfil {
+        padding: 25px 30px;
+        gap: 20px;
+    }
+
+    #regresar-a-informacion {
+        left: 0;
+    }
+}
+
 @media (max-width: 768px) {
+    body {
+        align-items: flex-start;
+        padding-top: 80px;
+        /* Previene el solapamiento con el logo flotante */
+    }
+
+    .encabezado-logo {
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        /* Centrado automático para tablet */
+    }
+
     .tarjeta-perfil {
         grid-template-columns: 1fr;
-        padding: 40px 20px;
+        padding: 30px 25px;
+    }
+
+    .cabecera {
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .cabecera .izquierda {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .boton-volver {
+        position: relative;
+        left: auto;
+    }
+
+    #regresar-a-informacion {
+        position: relative;
+        left: auto;
+        margin: 0 auto;
+    }
+
+    .acciones-dentro-tarjeta {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-top: 15px;
+    }
+
+    .encabezado-logo {
+        position: static;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: center;
+        transform: none;
+    }
+
+    .titulo-pagina {
+        font-size: 1.25rem;
+        text-align: center;
+    }
+
+    .contenedor-foto {
+        width: 150px;
+        height: 150px;
+    }
+
+    .acciones-dentro-tarjeta {
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .boton-guardar,
+    .boton-cancelar {
+        width: 100%;
+    }
+
+    .toast {
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        text-align: center;
+        width: auto;
+    }
+
+    .modal-cancelar__contenido {
+        padding: 25px 20px;
+    }
+
+    .modal-cancelar__acciones {
+        flex-direction: column;
+    }
+
+    .modal-btn-salir,
+    .modal-btn-quedarse {
+        width: 100%;
     }
 }

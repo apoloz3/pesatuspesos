@@ -42,6 +42,7 @@ body {
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
+  overflow-x: hidden;
   color: var(--text-on-dark);
   padding: clamp(12px, 3vw, 28px);
   padding-bottom: 0;
@@ -309,8 +310,8 @@ body {
 }
 
 .moneda video {
-  width: min(100%, 380px);
-  max-width: 380px;
+  width: min(100%, 350px);
+  max-width: 350px;
   border-radius: 50%;
   aspect-ratio: 1;
   object-fit: cover;
@@ -909,19 +910,24 @@ footer {
 @media (max-width: 1024px) {
   .principal {
     flex-direction: column;
-    align-items: stretch;
-    flex-wrap: wrap;
+    align-items: center;
   }
 
   .graficas-crecimiento {
-    flex: 1 1 100%;
     width: 100%;
-    max-width: none;
+    max-width: 100%;
   }
 
   .centro-principal {
-    flex: 1 1 100%;
     width: 100%;
+    margin: 20px 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
   }
 }
 
@@ -930,13 +936,16 @@ footer {
     position: static;
     transform: none;
     width: 100%;
-    order: 2;
+    order: 3;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
   }
 
   .menu {
-    justify-content: center;
-    gap: 15px;
+    gap: 20px;
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   .menu button {
@@ -945,26 +954,28 @@ footer {
   }
 
   .contenedor-flotante {
-    margin-left: auto;
-    order: 1;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+  }
+
+  /* Ajuste para que la barra crecida no tape el contenido */
+  .contenido {
+    padding-top: 140px;
+  }
+
+  /* El panel de usuario también debe bajar más */
+  .usuario {
+    position: fixed;
+    right: 15px;
+    left: auto;
+    top: 130px;
+    width: min(300px, calc(100vw - 30px));
   }
 
   .principal {
-    flex-direction: column;
-    align-items: stretch;
     gap: 24px;
-  }
-
-  .moneda video {
-    max-width: 280px;
-  }
-
-  .usuario {
-    position: fixed;
-    right: 8px;
-    left: auto;
-    top: 88px;
-    width: min(300px, calc(100vw - 24px));
+    margin-top: 10px;
   }
 
   .cards {
@@ -973,44 +984,86 @@ footer {
   }
 
   .card {
-    width: 90%;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  /* CARRUSEL TIPO SCROLL FLUIDO EN MÓVIL (Nativo) */
+  .carrusel-wrapper {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
+    margin-left: -5vw;
+    margin-right: -5vw;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    width: 110vw;
+  }
+
+  .carrusel-track {
+    width: max-content;
+    padding-right: 5vw;
+    /* espacio extra al final */
   }
 
   .carrusel-item {
-    flex: 0 0 100%;
-    min-width: 100%;
-    max-width: 100%;
+    flex: 0 0 80vw;
+    /* Ocupa 80% de la pantalla */
+    min-width: 80vw;
+    max-width: 80vw;
+    scroll-snap-align: center;
   }
 
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 28px;
-  }
-
-  .footer-brand {
-    grid-column: 1 / -1;
+  /* Ocultar botones de JS en móvil porque usamos scroll nativo fluido */
+  .carrusel-puntos {
+    display: none;
   }
 }
 
 @media (max-width: 480px) {
-  .titulo {
-    font-size: 24px;
+  .caja-logo .texto-logo {
+    display: none;
+    /* Dejar solo la moneda dorada salva espacio */
+  }
+
+  .menu {
+    gap: 12px;
   }
 
   .menu button {
-    font-size: 13px;
+    font-size: 14px;
     padding: 6px 0;
   }
 
-  .graficas-crecimiento {
-    border-radius: 12px;
+  .contenido {
+    padding-top: 120px;
   }
 
   .footer-grid {
     grid-template-columns: 1fr;
+    text-align: center;
   }
 
-  .carrusel-item {
-    height: 160px;
+  .footer-logos {
+    justify-content: center;
+  }
+
+  .boton-principal {
+    width: 45px;
+    height: 45px;
+  }
+
+  .boton-principal img {
+    width: 22px;
+  }
+
+  .opciones-flotantes {
+    right: 55px;
+  }
+
+  .boton-opcion {
+    width: 40px;
+    height: 40px;
   }
 }

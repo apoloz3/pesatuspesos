@@ -223,6 +223,7 @@ function iniciarCarrusel() {
   const porPagina = window.innerWidth <= 768 ? 1 : 4;
 
   function irA(index) {
+    if (window.innerWidth <= 768) return; // En móvil usamos scroll nativo táctil por CSS
     const ancho = (items[0].offsetWidth + 20) * porPagina;
     track.style.transform = `translateX(-${index * ancho}px)`;
     puntos.forEach(p => p.classList.remove("activo"));
