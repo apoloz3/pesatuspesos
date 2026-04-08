@@ -38,13 +38,16 @@ body {
 ::-webkit-scrollbar {
     width: 8px;
 }
+
 ::-webkit-scrollbar-track {
     background: var(--bg-color);
 }
+
 ::-webkit-scrollbar-thumb {
     background: var(--main-color);
     border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-color);
 }
@@ -573,6 +576,7 @@ body {
     html {
         font-size: 60%;
     }
+
     .contenedor {
         padding: 0;
     }
@@ -580,7 +584,7 @@ body {
 
 @media (max-width: 600px) {
     html {
-        font-size: 45%; 
+        font-size: 45%;
     }
 }
 

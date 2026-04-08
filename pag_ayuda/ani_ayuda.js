@@ -28,6 +28,16 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ===============================
+       SINCRONIZAR AVATAR DE USUARIO
+     =============================== */
+  const avatarPrincipal = document.getElementById("avatarPrincipal");
+  const avatarGuardado = localStorage.getItem("pesa-tus-pesos-avatar");
+
+  if (avatarGuardado && avatarPrincipal) {
+    avatarPrincipal.src = avatarGuardado;
+  }
+
+  /* ===============================
        BOTÓN CONFIGURACIÓN ⚙️
     =============================== */
 
@@ -57,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  const avatarPrincipal = document.getElementById("avatarPrincipal");
   const opcionesAvatar = document.querySelectorAll(".opcion-avatar");
   const contenedorAvatar = document.getElementById("contenedorAvatar");
   const panelEdicion = document.getElementById("panelEdicion");
