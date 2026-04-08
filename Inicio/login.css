@@ -693,12 +693,14 @@ input:-webkit-autofill:active {
         padding: 20px;
     }
 
-    .caja-formulario.iniciar-sesion {
+    .caja-formulario.iniciar-sesion,
+    .caja-formulario.registro {
         padding: 0 30px;
     }
 
-    .caja-formulario.registro {
-        padding: 0 30px;
+    /* Prevenir que el modal reviente en tablets */
+    .contenedor-modal {
+        padding: 30px;
     }
 }
 
@@ -721,7 +723,7 @@ input:-webkit-autofill:active {
         position: relative;
         top: 0;
         left: 0;
-        padding: 20px;
+        padding: 15px;
         display: flex;
         justify-content: center;
         width: 100%;
@@ -734,35 +736,45 @@ input:-webkit-autofill:active {
         /* Ocultar formas complejas en móvil para mejorar rendimiento y claridad */
     }
 
+    /* Cancelar todos los Transforms y Transitions que vienen de escritorio */
     .contenedor-principal .caja-formulario,
-    .contenido-info {
+    .contenido-info,
+    .caja-formulario .animacion,
+    .contenido-info .animacion {
         position: relative;
         width: 100%;
         height: auto;
-        padding: 20px !important;
+        padding: 15px !important;
         left: 0 !important;
         right: 0 !important;
         top: 0 !important;
         transform: none !important;
-        opacity: 1 !important;
         filter: none !important;
         transition: none !important;
+        opacity: 1 !important;
     }
 
-    /* Manejar visibilidad de formularios en móvil */
+    /* Manejar visibilidad de formularios en móvil mediante bloques y display */
     .caja-formulario.registro,
     .contenido-info.registro {
-        display: none;
+        display: none !important;
     }
 
     .contenedor-principal.active .caja-formulario.iniciar-sesion,
     .contenedor-principal.active .contenido-info.iniciar-sesion {
-        display: none;
+        display: none !important;
     }
 
     .contenedor-principal.active .caja-formulario.registro,
     .contenedor-principal.active .contenido-info.registro {
-        display: block;
+        display: block !important;
+        animation: mobileFadeIn 0.5s ease-in-out forwards;
+    }
+
+    .contenedor-principal:not(.active) .caja-formulario.iniciar-sesion,
+    .contenedor-principal:not(.active) .contenido-info.iniciar-sesion {
+        display: block !important;
+        animation: mobileFadeIn 0.5s ease-in-out forwards;
     }
 
     .cuadro-blanco {
@@ -773,7 +785,7 @@ input:-webkit-autofill:active {
     .contenido-info {
         order: -1;
         /* Poner el texto de bienvenida arriba del formulario */
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
 
     .caja-input {
@@ -781,22 +793,33 @@ input:-webkit-autofill:active {
     }
 
     .contenedor-animacion-monedas {
-        width: 130px;
-        height: 130px;
+        width: 120px;
+        height: 120px;
     }
 
     .bolsa-dinero {
-        font-size: 4rem;
+        font-size: 3.5rem;
     }
 
     .moneda {
         font-size: 1rem;
     }
+
+    /* Modales autoajustables en tablet o móviles grandes */
+    .contenedor-modal {
+        padding: 25px 20px;
+        margin: 15px;
+    }
+
+    .logo i,
+    .logo-cambio i {
+        font-size: 50px;
+    }
 }
 
 @media (max-width: 480px) {
     .caja-formulario h2 {
-        font-size: 24px;
+        font-size: 22px;
     }
 
     .texto-logo {
@@ -806,5 +829,24 @@ input:-webkit-autofill:active {
     .boton {
         font-size: 15px;
         height: 45px;
+    }
+
+    .caja-formulario.iniciar-sesion,
+    .caja-formulario.registro {
+        padding: 0 10px !important;
+    }
+
+    .contenedor-modal h2 {
+        font-size: 1.25rem;
+    }
+}
+
+@keyframes mobileFadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
     }
 }
