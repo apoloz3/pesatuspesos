@@ -1,39 +1,570 @@
 <!doctype html>
-<html>
+<html lang="es">
   <head>
-    <title>Panel Admin</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de Administración</title>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style_admin.css" />
+    <script>
+      window.onerror = function (msg, url, lineNo, columnNo, error) {
+        document.addEventListener("DOMContentLoaded", () => {
+          const el = document.createElement("h1");
+          el.style.color = "red";
+          el.style.position = "absolute";
+          el.style.zIndex = "99999";
+          el.innerText = "SYNTAX ERROR: " + msg + " en linea " + lineNo;
+          document.body.appendChild(el);
+        });
+        return false;
+      };
+    </script>
   </head>
   <body>
-    <div class="container">
-      <div class="sidebar">
-        <h2>PesaTusPesos</h2>
-        <a href="#">Dashboard</a>
-        <a href="#">Usuarios</a>
-        <a href="#">Transacciones</a>
-        <a href="#">Reportes</a>
-      </div>
-
-      <div class="main">
-        <h1>Panel de Administración</h1>
-
-        <div class="cards">
-          <div class="card usuarios">
-            <h3>Usuarios</h3>
-            <p>120</p>
-          </div>
-
-          <div class="card ingresos">
-            <h3>Ingresos</h3>
-            <p>$2.000.000</p>
-          </div>
-
-          <div class="card gastos">
-            <h3>Gastos</h3>
-            <p>$1.200.000</p>
-          </div>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <i
+            class="fa-solid fa-scale-balanced"
+            style="color: #d4b455; margin-right: 10px"
+          ></i>
+          PesaTusPesos
         </div>
+        <nav class="sidebar-nav">
+          <a href="#" class="nav-item active" data-target="resumen">
+            <i class="fa-solid fa-house"></i> Resumen
+          </a>
+          <a href="#" class="nav-item" data-target="usuarios">
+            <i class="fa-solid fa-users"></i> Usuarios
+          </a>
+          <a href="#" class="nav-item" data-target="roles">
+            <i class="fa-solid fa-key"></i> Roles y Permisos
+          </a>
+          <a href="#" class="nav-item" data-target="configuracion">
+            <i class="fa-solid fa-gear"></i> Configuración
+          </a>
+          <a href="#" class="nav-item" data-target="reportes">
+            <i class="fa-solid fa-chart-simple"></i> Reportes
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <a href="#" class="nav-item text-danger" id="logout-btn">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+          <h1 id="page-title">
+            Panel de Administración -
+            <span class="text-gold">Resumen General</span>
+          </h1>
+          <div class="topbar-right">
+            <i class="fa-solid fa-gear topbar-icon"></i>
+            <div class="user-profile">
+              <img
+                src="https://ui-avatars.com/api/?name=Admin&background=EAE2CE&color=000"
+                alt="Admin"
+                class="avatar"
+              />
+              <span>Admin <i class="fa-solid fa-chevron-down"></i></span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+          <!-- SECTION: RESUMEN -->
+          <section id="section-resumen" class="page-section active">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon bg-gold">
+                  <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="stat-info">
+                  <h4>Usuarios registrados</h4>
+                  <h2 id="stat-total-users">100</h2>
+                </div>
+                <div class="stat-footer text-blue">
+                  <i class="fa-solid fa-circle-info"></i> Total registrados
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-green text-white">
+                  <i class="fa-solid fa-thumbs-up"></i>
+                </div>
+                <div class="stat-info">
+                  <h4>Usuarios activos</h4>
+                  <h2 id="stat-active-users">44</h2>
+                </div>
+                <div class="stat-footer text-green">
+                  <i class="fa-solid fa-circle-check"></i> Usuarios activo
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-gold">
+                  <i class="fa-solid fa-code-branch"></i>
+                </div>
+                <div class="stat-info">
+                  <h4>Roles total</h4>
+                  <h2 id="stat-total-roles">11</h2>
+                </div>
+                <div class="stat-footer text-blue">
+                  <i class="fa-solid fa-circle-info"></i> Roles total
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-gold">
+                  <i class="fa-solid fa-file-circle-exclamation"></i>
+                </div>
+                <div class="stat-info">
+                  <h4>Permisos sin asignar</h4>
+                  <h2 id="stat-pending">0</h2>
+                </div>
+                <div class="stat-footer text-red">
+                  <i class="fa-solid fa-circle-exclamation"></i> Permisiones
+                  pendientes
+                </div>
+              </div>
+            </div>
+
+            <div class="charts-grid">
+              <div class="panel">
+                <h3>Usuarios Registrados</h3>
+                <canvas id="barChart"></canvas>
+              </div>
+              <div class="panel">
+                <h3>Usuarios Tendenciales</h3>
+                <canvas id="lineChart"></canvas>
+              </div>
+            </div>
+
+            <div class="bottom-grid">
+              <div class="panel">
+                <div class="panel-header">
+                  <h3>Últimos 5 Usuarios Registrados</h3>
+                  <button class="btn btn-gold">
+                    <i class="fa-solid fa-plus"></i> Añadir Usuario
+                  </button>
+                </div>
+                <table class="table" id="dashboard-recent-users">
+                  <tbody>
+                    <!-- Rendered implicitly by JS -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="panel">
+                <h3>Alertas Recientes</h3>
+                <div id="alertas-resumen">
+                  <!-- JS content -->
+                </div>
+              </div>
+              <div class="panel">
+                <h3>Dashboard Control Center</h3>
+                <div class="control-buttons">
+                  <button class="btn btn-gold btn-block" id="btn-cc-res-1">
+                    <i class="fa-solid fa-gear"></i> Ajustes Generales
+                  </button>
+                  <button class="btn btn-gold btn-block" id="btn-cc-res-2">
+                    <i class="fa-solid fa-eye"></i> Modo Visualización
+                  </button>
+                  <button class="btn btn-gold btn-block" id="btn-cc-res-3">
+                    <i class="fa-solid fa-lock"></i> Protocolo Emergencia
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- SECTION: USUARIOS -->
+          <section
+            id="section-usuarios"
+            class="page-section"
+            style="display: none"
+          >
+            <div class="panel">
+              <h3>Usuarios Registrados</h3>
+              <div class="toolbar">
+                <div class="search-box">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input
+                    type="text"
+                    id="search-user"
+                    placeholder="Buscar por nombre, correo o ID..."
+                  />
+                </div>
+                <div class="filter-box">
+                  <label>Estado: </label>
+                  <select id="filter-status">
+                    <option value="Todos">Todos</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                  </select>
+                </div>
+                <button class="btn btn-blue" id="btn-add-user">
+                  <i class="fa-solid fa-plus"></i> Añadir Nuevo Usuario
+                </button>
+              </div>
+              <table class="table custom-table" id="main-users-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo Electrónico</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Fecha de Registro</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Rendered internally by JS -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- SECTION: ROLES Y PERMISOS -->
+          <section
+            id="section-roles"
+            class="page-section"
+            style="display: none"
+          >
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Gestión de Roles</h3>
+                <button class="btn btn-gold" id="btn-add-role">
+                  <i class="fa-solid fa-plus"></i> Añadir Rol
+                </button>
+              </div>
+              <table class="table custom-table" id="roles-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre de Rol</th>
+                    <th>Descripción</th>
+                    <th>Usuarios Asignados</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Rendered internally by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="roles-bottom-grid mt-20">
+              <div class="panel flex-2">
+                <h3>Matriz de Permisos por Rol</h3>
+                <table
+                  class="table text-center table-bordered"
+                  id="matrix-table"
+                >
+                  <thead></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <div class="flex-column flex-1">
+                <div class="panel mb-20">
+                  <h3>Asignación Rápida</h3>
+                  <div style="display: flex; gap: 10px; align-items: center">
+                    <select
+                      class="form-control"
+                      id="quick-assign-user"
+                      style="flex: 1"
+                    >
+                      <option value="">Selecciona un usuario...</option>
+                    </select>
+                    <select
+                      class="form-control"
+                      id="quick-assign-role"
+                      style="flex: 1"
+                    >
+                      <option value="">Selecciona rol...</option>
+                    </select>
+                    <button class="btn btn-gold" id="btn-quick-assign">
+                      Asignar
+                    </button>
+                  </div>
+                </div>
+                <div class="panel mb-20">
+                  <h3>Alertas Recientes</h3>
+                  <div id="alertas-roles"></div>
+                </div>
+                <div class="panel">
+                  <h3>Dashboard Control Center</h3>
+                  <div class="control-buttons">
+                    <button class="btn btn-gold btn-block" id="btn-cc-roles1">
+                      <i class="fa-solid fa-gear"></i> Editar Permisos
+                    </button>
+                    <button class="btn btn-gold btn-block" id="btn-cc-roles2">
+                      <i class="fa-solid fa-shield-halved"></i> Auditoría de
+                      Roles
+                    </button>
+                    <button class="btn btn-gold btn-block" id="btn-cc-roles3">
+                      <i class="fa-solid fa-lock"></i> Bloquear Accesos
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- SECTION: CONFIGURACIÓN -->
+          <section
+            id="section-configuracion"
+            class="page-section"
+            style="display: none"
+          >
+            <div class="panel">
+              <h2>Ajustes de Sistema</h2>
+              <hr />
+              <div class="config-section">
+                <h3>General</h3>
+                <div class="form-row">
+                  <div class="form-group flex-1">
+                    <label>Nombre de la Aplicación</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="config-app-name"
+                      value="PesaTusPesos"
+                    />
+                  </div>
+                  <div class="form-group flex-1">
+                    <label>Idioma Predeterminado</label>
+                    <select class="form-control" id="config-lang">
+                      <option value="es" selected>Español</option>
+                      <option value="en">English</option>
+                    </select>
+                  </div>
+                  <div class="form-group flex-1">
+                    <label>Zona Horaria</label>
+                    <select class="form-control" id="config-timezone">
+                      <option value="GMT-5">GMT-5 (América/Bogotá)</option>
+                      <option value="GMT-6">GMT-6 (América/CDMX)</option>
+                      <option value="UTC">UTC (Universal)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class="config-section">
+                <h3>Seguridad</h3>
+                <div class="form-row mb-20">
+                  <div class="form-group checkbox-group flex-1">
+                    <input type="checkbox" id="config-2fa" />
+                    <label>Habilitar 2FA Obligatorio</label>
+                  </div>
+                  <div class="form-group checkbox-group flex-1">
+                    <input type="checkbox" id="config-pwd" checked />
+                    <label>Longitud Mínima de Contraseña: 10</label>
+                  </div>
+                  <div class="flex-1 text-right">
+                    <button
+                      class="btn btn-gold btn-block"
+                      id="btn-ssl"
+                      style="width: 100%"
+                    >
+                      <i class="fa-solid fa-shield-cat"></i> Gestionar
+                      Certificados SSL
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class="config-section">
+                <h3>Notificaciones</h3>
+                <div class="form-row mb-20">
+                  <div class="form-group checkbox-group flex-1">
+                    <input type="checkbox" id="config-mail" checked />
+                    <label>Enviar correos de alerta</label>
+                  </div>
+                  <div class="form-group checkbox-group flex-1">
+                    <input type="checkbox" id="config-inapp" checked />
+                    <label>Notificaciones in-app</label>
+                  </div>
+                </div>
+                <a href="#" class="link-dark" id="btn-smtp"
+                  ><i class="fa-solid fa-envelope"></i> Configurar Servidor
+                  SMTP</a
+                >
+              </div>
+              <hr />
+              <button
+                class="btn btn-gold mt-20"
+                id="btn-save-config"
+                style="font-size: 16px; padding: 10px 20px"
+              >
+                <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+              </button>
+            </div>
+          </section>
+
+          <!-- SECTION: REPORTES -->
+          <section
+            id="section-reportes"
+            class="page-section"
+            style="display: none"
+          >
+            <div class="panel">
+              <h2>Generación de Reportes</h2>
+
+              <div class="form-row mt-20">
+                <div class="form-group flex-1">
+                  <label>Tipo de Reporte</label>
+                  <select class="form-control">
+                    <option>Uso de la Aplicación</option>
+                  </select>
+                </div>
+                <div class="form-group flex-1">
+                  <label>Fecha de Rango</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    value="1 Mar 2024 - 31 Mar 2024"
+                  />
+                </div>
+                <div class="form-group flex-1">
+                  <label>Módulos</label>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 5px;
+                      background: #e0d8c0;
+                      padding: 5px;
+                      border-radius: 4px;
+                      max-width: max-content;
+                    "
+                  >
+                    <span class="badge bg-light">Generales</span>
+                    <span class="badge bg-light">Seguridad</span>
+                    <span class="badge bg-light">Notificaciones</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="charts-grid mt-20">
+                <div class="chart-container" style="flex: 2">
+                  <canvas id="reportLineChart"></canvas>
+                </div>
+                <div class="chart-container" style="flex: 1">
+                  <canvas id="reportPieChart"></canvas>
+                </div>
+              </div>
+
+              <div class="mt-20">
+                <h3>Reportes Recientes Generados</h3>
+                <table class="table custom-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Tipo</th>
+                      <th>Periodo</th>
+                      <th>Creado por</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Actividad del Usuario</td>
+                      <td>1 Mar - 31 Mar 2024</td>
+                      <td>Luis Pérez</td>
+                      <td>Completado</td>
+                      <td>
+                        <a href="#">Ver PDF</a> | <a href="#">Descargar CSV</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>Actividad del Usuario</td>
+                      <td>1 Mar - 31 Mar 2024</td>
+                      <td>Luis Pérez</td>
+                      <td>Completado</td>
+                      <td>
+                        <a href="#">Ver PDF</a> | <a href="#">Descargar CSV</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>Logs de Seguridad</td>
+                      <td>1 Mar - 31 Mar 2024</td>
+                      <td>Luis Pérez</td>
+                      <td>Completado</td>
+                      <td>
+                        <a href="#">Ver PDF</a> | <a href="#">Descargar CSV</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-right mt-20">
+                  <button class="btn btn-gold">Generar Nuevo Reporte</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="generic-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-title">Añadir Nuevo Elemento</h3>
+          <button class="modal-close" id="close-modal">&times;</button>
+        </div>
+        <form id="generic-form">
+          <input type="hidden" id="item-id" />
+          <div class="form-group" id="group-name">
+            <label>Nombre</label>
+            <input type="text" id="item-name" class="form-control" required />
+          </div>
+          <div class="form-group" id="group-email">
+            <label>Correo Electrónico</label>
+            <input type="email" id="item-email" class="form-control" />
+          </div>
+          <div class="form-group" id="group-role">
+            <label>Rol</label>
+            <select id="item-role" class="form-control">
+              <option>Usuario</option>
+              <option>Admin</option>
+              <option>Editor</option>
+              <option>Moderador</option>
+            </select>
+          </div>
+          <div class="form-group checkbox-group" id="group-active">
+            <input type="checkbox" id="item-active" checked />
+            <label>Elemento Activo</label>
+          </div>
+          <button type="submit" class="btn btn-gold btn-block">Guardar</button>
+        </form>
       </div>
     </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="admin.js"></script>
   </body>
 </html>
