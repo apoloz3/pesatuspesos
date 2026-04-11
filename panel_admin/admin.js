@@ -1,656 +1,674 @@
-// Base de datos estática simulada
-let users = [
-    { id: 1, name: "Ana García", email: "ana.garcia@mail.com", role: "Usuario", active: true, date: "12/03/2024" },
-    { id: 2, name: "Luis Pérez", email: "luis.perez@mail.com", role: "Admin", active: true, date: "01/02/2024" },
-    { id: 3, name: "María Rodríguez", email: "maria.rodriguez@mail.com", role: "Usuario", active: false, date: "25/04/2024" },
-    { id: 4, name: "Carlos López", email: "carlos.lopez@mail.com", role: "Editor", active: true, date: "05/01/2024" },
-    { id: 5, name: "Sofía Martínez", email: "sofia.martinez@mail.com", role: "Moderador", active: true, date: "15/03/2024" }
+// Base de datos estática simulada en español
+let usuarios = [
+    { id: 1, nombre: "Ana García", email: "ana.garcia@mail.com", rol: "Usuario", activo: true, fecha: "12/03/2024" },
+    { id: 2, nombre: "Luis Pérez", email: "luis.perez@mail.com", rol: "Admin", activo: true, fecha: "01/02/2024" },
+    { id: 3, nombre: "María Rodríguez", email: "maria.rodriguez@mail.com", rol: "Usuario", activo: false, fecha: "25/04/2024" },
+    { id: 4, nombre: "Carlos López", email: "carlos.lopez@mail.com", rol: "Editor", activo: true, fecha: "05/01/2024" },
+    { id: 5, nombre: "Sofía Martínez", email: "sofia.martinez@mail.com", rol: "Moderador", activo: true, fecha: "15/03/2024" }
 ];
 
 let roles = [
-    { id: 1, name: "Admin", desc: "Full system control", perms: 50, active: true },
-    { id: 2, name: "Editor", desc: "Content creation", perms: 25, active: true },
-    { id: 3, name: "Moderador", desc: "Community management", perms: 15, active: true },
-    { id: 4, name: "Visor", desc: "Read-only access", perms: 5, active: false },
-    { id: 5, name: "Custom-User", desc: "Custom permission set", perms: 30, active: true },
-    { id: 6, name: "Usuario", desc: "Permisos básicos", perms: 1, active: true } // Agregado Usuario
+    { id: 1, nombre: "Admin", desc: "Control total del sistema", permisos: 50, activo: true },
+    { id: 2, nombre: "Editor", desc: "Creación de contenido", permisos: 25, activo: true },
+    { id: 3, nombre: "Moderador", desc: "Gestión de comunidad", permisos: 15, activo: true },
+    { id: 4, nombre: "Visor", desc: "Acceso de solo lectura", permisos: 5, activo: false },
+    { id: 5, nombre: "Usuario-Custom", desc: "Conjunto de permisos personalizado", permisos: 30, activo: true },
+    { id: 6, nombre: "Usuario", desc: "Permisos básicos", permisos: 1, activo: true }
 ];
 
-let globalAlerts = [
-    { text: "Sistema iniciado correctamente por Admin", type: "info" }
+let alertasGlobales = [
+    { texto: "Sistema iniciado correctamente por Administrador", tipo: "info" }
 ];
 
-// Instancias globales de gráficos (Requisito 6)
-let myBarChart = null, myLineChart = null, myReportLineChart = null, myReportPieChart = null;
+// Instancias globales de gráficos
+let miGraficoBarras = null, miGraficoLineas = null, miGraficoLineasReporte = null, miGraficoPastelReporte = null;
 
-// Esperar a que el DOM esté cargado (Requisito 1)
+// Esperar a que el DOM esté cargado
 window.addEventListener('DOMContentLoaded', () => {
     try {
-        console.log("Starting JS Initialization...");
-        initNavigation();
-        initCharts();
-        initTables();
-        initModals();
-        initToastsForStaticButtons();
-        initTopbar();
-        initControlCenter();
-        initConfig();
-        updateDashboardStats(); // Generamos stats
-        renderAlerts(); // Renderizar las alertas estaticas inicial
-    } catch (err) {
-        console.error("FATAL CRASH: ", err);
-        showToast("FATAL CRASH: " + err.message, "error");
-        document.body.innerHTML = "<h1 style='color:red;'>FATAL ERROR: " + err.message + "</h1>" + document.body.innerHTML;
+        console.log("Iniciando Inicialización de JS...");
+        inicializarNavegacion();
+        inicializarGraficos();
+        inicializarTablas();
+        inicializarModales();
+        inicializarNotificacionesBotones();
+        inicializarBarraSuperior();
+        inicializarCentroControl();
+        inicializarConfiguracion();
+        inicializarMenuMovil();
+        actualizarEstadisticasDashboard();
+        renderizarAlertas();
+    } catch (error) {
+        console.error("ERROR FATAL: ", error);
+        mostrarNotificacion("ERROR FATAL: " + error.message, "error");
+        document.body.innerHTML = "<h1 style='color:red; padding: 20px;'>ERROR CRÍTICO: " + error.message + "</h1>" + document.body.innerHTML;
     }
 });
 
-// --- NAVIGATION ---
-function initNavigation() {
-    const navItems = document.querySelectorAll('.nav-item[data-target]');
-    const sections = document.querySelectorAll('.page-section');
-    const pageTitle = document.getElementById('page-title');
+// --- NAVEGACIÓN ---
+function inicializarNavegacion() {
+    const elementosNav = document.querySelectorAll('.item-navegacion[data-target]');
+    const secciones = document.querySelectorAll('.seccion-pagina');
+    const tituloPagina = document.getElementById('titulo-pagina');
 
-    const titles = {
+    const titulos = {
         'resumen': 'Resumen General',
         'usuarios': 'Gestión de Usuarios',
         'roles': 'Roles y Permisos',
         'configuracion': 'Configuración de Sistema',
-        'reportes': 'Configuración - Reportes'
+        'reportes': 'Reportes y Estadísticas'
     };
 
-    window.switchTab = function (target) {
-        navItems.forEach(nav => nav.classList.remove('active'));
-        const activeNav = document.querySelector(`.nav-item[data-target="${target}"]`);
-        if (activeNav) activeNav.classList.add('active');
+    window.cambiarTab = function (objetivo) {
+        elementosNav.forEach(nav => nav.classList.remove('activo'));
+        const navActivo = document.querySelector(`.item-navegacion[data-target="${objetivo}"]`);
+        if (navActivo) navActivo.classList.add('activo');
 
-        sections.forEach(sec => sec.style.display = 'none');
-        const targetSec = document.getElementById('section-' + target);
-        if (targetSec) targetSec.style.display = 'block';
-        pageTitle.innerHTML = `Panel de Administración - <span class="text-gold">${titles[target] || 'Panel'}</span>`;
+        secciones.forEach(sec => sec.style.display = 'none');
+        const seccionObjetivo = document.getElementById('seccion-' + objetivo);
+        if (seccionObjetivo) seccionObjetivo.style.display = 'block';
+        
+        tituloPagina.innerHTML = `Panel de Administración - <span class="texto-primario">${titulos[objetivo] || 'Panel'}</span>`;
     }
 
-    navItems.forEach(item => {
+    elementosNav.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
-            switchTab(item.getAttribute('data-target'));
+            cambiarTab(item.getAttribute('data-target'));
         });
     });
 
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
+    const botonCerrarSesion = document.getElementById('boton-cerrar-sesion');
+    if (botonCerrarSesion) {
+        botonCerrarSesion.addEventListener('click', (e) => {
             e.preventDefault();
-            showToast('Cerrando sesión... Redirigiendo...', 'info');
-            setTimeout(() => window.location.href = "../Inicio/index.html", 1500);
+            mostrarNotificacion('Cerrando sesión... Redirigiendo...', 'info');
+            setTimeout(() => window.location.reload(), 1500); // Recarga simulada
         });
     }
 }
 
-function initTopbar() {
-    const gearIcon = document.querySelector('.topbar-icon');
-    const userProfile = document.querySelector('.user-profile');
+function inicializarMenuMovil() {
+    const botonMenu = document.getElementById('boton-menu-movil');
+    const barraLateral = document.querySelector('.barra-lateral');
+    const contenidoPrincipal = document.querySelector('.contenido-principal');
 
-    if (gearIcon) {
-        gearIcon.addEventListener('click', () => {
-            window.switchTab('configuracion');
-            showToast('Ajustes del sistema abiertos', 'info');
+    if (botonMenu && barraLateral) {
+        botonMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+            barraLateral.classList.toggle('abierta');
         });
-    }
 
-    if (userProfile) {
-        userProfile.addEventListener('click', () => {
-            showToast('Opciones de perfil de administrador', 'info');
+        // Cerrar al hacer clic en el contenido principal en móvil
+        if (contenidoPrincipal) {
+            contenidoPrincipal.addEventListener('click', () => {
+                if (barraLateral.classList.contains('abierta')) {
+                    barraLateral.classList.remove('abierta');
+                }
+            });
+        }
+
+        // Cerrar al cambiar de tab en móvil
+        const itemsNav = document.querySelectorAll('.item-navegacion');
+        itemsNav.forEach(item => {
+            item.addEventListener('click', () => {
+                barraLateral.classList.remove('abierta');
+            });
         });
     }
 }
 
-// --- RENDERING TABLES & DROPDOWNS ---
-function initTables() {
-    renderUsers();
-    renderRoles();
+function inicializarBarraSuperior() {
+    const iconoAjustes = document.querySelector('.icono-barra-superior');
+    const perfilUsuario = document.querySelector('.perfil-usuario');
 
-    const searchUser = document.getElementById('search-user');
-    if (searchUser) searchUser.addEventListener('input', () => renderUsers());
+    if (iconoAjustes) {
+        iconoAjustes.addEventListener('click', () => {
+            window.cambiarTab('configuracion');
+            mostrarNotificacion('Abriendo ajustes del sistema', 'info');
+        });
+    }
 
-    const filterStatus = document.getElementById('filter-status');
-    if (filterStatus) filterStatus.addEventListener('change', () => renderUsers());
+    if (perfilUsuario) {
+        perfilUsuario.addEventListener('click', () => {
+            mostrarNotificacion('Opciones de perfil cargadas', 'info');
+        });
+    }
+}
 
-    // Asignación rápida
-    const assignBtn = document.getElementById('btn-quick-assign');
-    if (assignBtn) {
-        assignBtn.addEventListener('click', (e) => {
+// --- RENDERIZADO DE TABLAS ---
+function inicializarTablas() {
+    renderizarUsuarios();
+    renderizarRoles();
+
+    const buscadorUsuario = document.getElementById('buscar-usuario');
+    if (buscadorUsuario) buscadorUsuario.addEventListener('input', () => renderizarUsuarios());
+
+    const filtroEstado = document.getElementById('filtrar-estado');
+    if (filtroEstado) filtroEstado.addEventListener('change', () => renderizarUsuarios());
+
+    const botonAsignar = document.getElementById('boton-asignacion-rapida');
+    if (botonAsignar) {
+        botonAsignar.addEventListener('click', (e) => {
             e.preventDefault();
-            const userId = document.getElementById('quick-assign-user').value;
-            const newRole = document.getElementById('quick-assign-role').value;
+            const idUsuario = document.getElementById('asignacion-rapida-usuario').value;
+            const nuevoRol = document.getElementById('asignacion-rapida-rol').value;
 
-            if (!userId || !newRole) {
-                showToast('Por favor selecciona un usuario y un rol', 'error');
+            if (!idUsuario || !nuevoRol) {
+                mostrarNotificacion('Selecciona un usuario y un rol', 'error');
                 return;
             }
 
-            const id = parseInt(userId);
-            const index = users.findIndex(u => u.id === id);
-            if (index !== -1) {
-                users[index].role = newRole;
-                logAlert(`Rol de ${users[index].name} actualizado a ${newRole}`, 'success');
-                renderUsers();
+            const id = parseInt(idUsuario);
+            const indice = usuarios.findIndex(u => u.id === id);
+            if (indice !== -1) {
+                usuarios[indice].rol = nuevoRol;
+                registrarAlerta(`Rol de ${usuarios[indice].nombre} actualizado a ${nuevoRol}`, 'success');
+                renderizarUsuarios();
             }
         });
     }
 }
 
-function updateDropdowns() {
-    const userSelect = document.getElementById('quick-assign-user');
-    const roleSelect = document.getElementById('quick-assign-role');
+function actualizarDropdowns() {
+    const selectUsuario = document.getElementById('asignacion-rapida-usuario');
+    const selectRol = document.getElementById('asignacion-rapida-rol');
 
-    if (userSelect) {
-        userSelect.innerHTML = '<option value="">Selecciona un usuario...</option>';
-        users.forEach(u => {
-            if (u.active) {
-                userSelect.innerHTML += `<option value="${u.id}">${u.name} - ${u.role}</option>`;
+    if (selectUsuario) {
+        selectUsuario.innerHTML = '<option value="">Selecciona un usuario...</option>';
+        usuarios.forEach(u => {
+            if (u.activo) {
+                selectUsuario.innerHTML += `<option value="${u.id}">${u.nombre} - ${u.rol}</option>`;
             }
         });
     }
 
-    if (roleSelect) {
-        roleSelect.innerHTML = '<option value="">Selecciona rol...</option>';
+    if (selectRol) {
+        selectRol.innerHTML = '<option value="">Selecciona rol...</option>';
         roles.forEach(r => {
-            if (r.active) {
-                roleSelect.innerHTML += `<option value="${r.name}">${r.name}</option>`;
+            if (r.activo) {
+                selectRol.innerHTML += `<option value="${r.nombre}">${r.nombre}</option>`;
             }
         });
     }
 
-    const modalRoleSelect = document.getElementById('item-role');
-    if (modalRoleSelect) {
-        const currentVal = modalRoleSelect.value;
-        modalRoleSelect.innerHTML = '';
+    const selectRolModal = document.getElementById('rol-elemento');
+    if (selectRolModal) {
+        const valorActual = selectRolModal.value;
+        selectRolModal.innerHTML = '';
         roles.forEach(r => {
-            if (r.active) {
-                modalRoleSelect.innerHTML += `<option value="${r.name}">${r.name}</option>`;
+            if (r.activo) {
+                selectRolModal.innerHTML += `<option value="${r.nombre}">${r.nombre}</option>`;
             }
         });
-        if (currentVal) modalRoleSelect.value = currentVal;
+        if (valorActual) selectRolModal.value = valorActual;
     }
 }
 
-function renderUsers() {
-    const searchVal = document.getElementById('search-user').value.toLowerCase();
-    const filterStatus = document.getElementById('filter-status').value;
+function renderizarUsuarios() {
+    const valorBusqueda = document.getElementById('buscar-usuario').value.toLowerCase();
+    const filtroEstado = document.getElementById('filtrar-estado').value;
 
-    const filteredUsers = users.filter(u => {
-        const matchesSearch = u.name.toLowerCase().includes(searchVal) ||
-            u.email.toLowerCase().includes(searchVal) ||
-            u.id.toString() === searchVal;
-        const matchesStatus = filterStatus === 'Todos' ||
-            (filterStatus === 'Activo' && u.active) ||
-            (filterStatus === 'Inactivo' && !u.active);
-        return matchesSearch && matchesStatus;
+    const usuariosFiltrados = usuarios.filter(u => {
+        const coincideBusqueda = u.nombre.toLowerCase().includes(valorBusqueda) ||
+            u.email.toLowerCase().includes(valorBusqueda) ||
+            u.id.toString() === valorBusqueda;
+        const coincideEstado = filtroEstado === 'Todos' ||
+            (filtroEstado === 'Activo' && u.activo) ||
+            (filtroEstado === 'Inactivo' && !u.activo);
+        return coincideBusqueda && coincideEstado;
     });
 
-    const mainTbody = document.querySelector('#main-users-table tbody');
-    mainTbody.innerHTML = '';
-    filteredUsers.forEach(u => {
-        const statusBadge = u.active ? '<span class="badge badge-green">Activo</span>' : '<span class="badge badge-red">Inactivo</span>';
-        mainTbody.innerHTML += `
+    const cuerpoTablaPrincipal = document.querySelector('#tabla-usuarios-principal tbody');
+    if (cuerpoTablaPrincipal) {
+        cuerpoTablaPrincipal.innerHTML = '';
+        usuariosFiltrados.forEach(u => {
+            const etiquetaEstado = u.activo ? '<span class="etiqueta etiqueta-verde">Activo</span>' : '<span class="etiqueta etiqueta-roja">Inactivo</span>';
+            cuerpoTablaPrincipal.innerHTML += `
+                <tr>
+                    <td>${u.id}</td><td>${u.nombre}</td><td>${u.email}</td><td>${u.rol}</td>
+                    <td>${etiquetaEstado}</td><td>${u.fecha}</td>
+                    <td class="acciones">
+                        <button class="boton-icono boton-primario" onclick="editarUsuario(${u.id})"><i class="fa-solid fa-pencil"></i></button>
+                        <button class="boton-icono boton-rojo" onclick="eliminarUsuario(${u.id})"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    const cuerpoTablaRecientes = document.querySelector('#tabla-usuarios-recientes tbody');
+    if (cuerpoTablaRecientes) {
+        cuerpoTablaRecientes.innerHTML = '';
+        usuarios.slice(-5).reverse().forEach(u => {
+            cuerpoTablaRecientes.innerHTML += `<tr><td><strong>ID ${u.id}</strong></td><td>${u.nombre}</td><td>${u.email}</td></tr>`;
+        });
+    }
+
+    actualizarDropdowns();
+    actualizarEstadisticasDashboard();
+}
+
+function renderizarRoles() {
+    const cuerpoTabla = document.querySelector('#tabla-roles tbody');
+    if (!cuerpoTabla) return;
+    
+    cuerpoTabla.innerHTML = '';
+    roles.forEach(r => {
+        const textoEstado = r.activo ? 'Activo' : 'Inactivo';
+        const usuariosAsignados = usuarios.filter(u => u.rol === r.nombre).length;
+        
+        const htmlEliminar = (r.nombre === 'Admin' || r.nombre === 'Usuario') ?
+            '' : `<button class="boton-icono boton-rojo" onclick="eliminarRol(${r.id})"><i class="fa-solid fa-trash"></i></button>`;
+
+        cuerpoTabla.innerHTML += `
             <tr>
-                <td>${u.id}</td><td>${u.name}</td><td>${u.email}</td><td>${u.role}</td>
-                <td>${statusBadge}</td><td>${u.date}</td>
-                <td class="actions">
-                    <button class="btn-icon btn-blue" onclick="editUser(${u.id})"><i class="fa-solid fa-pencil"></i></button>
-                    <button class="btn-icon btn-red" onclick="deleteUser(${u.id})"><i class="fa-solid fa-trash"></i></button>
+                <td>${r.id}</td><td><strong>${r.nombre}</strong></td><td>${r.desc}</td>
+                <td style="font-weight:700; color:#1c84ee;">${usuariosAsignados}</td><td>${textoEstado}</td>
+                <td class="acciones">
+                    ${htmlEliminar}
                 </td>
             </tr>
         `;
     });
 
-    const recentTbody = document.querySelector('#dashboard-recent-users tbody');
-    recentTbody.innerHTML = '';
-    users.slice(-5).reverse().forEach(u => {
-        recentTbody.innerHTML += `<tr><td>ID ${u.id}</td><td>${u.name}</td><td>${u.email}</td></tr>`;
-    });
-
-    updateDropdowns();
-    updateDashboardStats();
+    actualizarDropdowns();
+    renderizarMatriz();
 }
 
-function renderRoles() {
-    const tbody = document.querySelector('#roles-table tbody');
-    tbody.innerHTML = '';
+function renderizarMatriz() {
+    const tabla = document.getElementById('tablas-matriz');
+    if (!tabla) return;
+
+    const thead = tabla.querySelector('thead');
+    let htmlEncabezado = '<tr><th>Permisos / Módulos</th>';
     roles.forEach(r => {
-        const statusText = r.active ? 'Activo' : 'Inactivo';
-        const assignedUsers = users.filter(u => u.role === r.name).length;
-        // Impedir que se elimine Admin o Usuario para mantener lógica
-        const deleteHTML = (r.name === 'Admin' || r.name === 'Usuario') ?
-            '' : `<button class="btn-icon btn-red" onclick="deleteRole(${r.id})"><i class="fa-solid fa-trash"></i></button>`;
-
-        tbody.innerHTML += `
-            <tr>
-                <td>${r.id}</td><td>${r.name}</td><td>${r.desc}</td><td style="font-weight:bold; color:var(--g-blue);">${assignedUsers}</td><td>${statusText}</td>
-                <td class="actions">
-                    ${deleteHTML}
-                </td>
-            </tr>
-        `;
+        if (r.activo) htmlEncabezado += `<th><i class="fa-solid fa-user-shield"></i> ${r.nombre}</th>`;
     });
+    htmlEncabezado += '</tr>';
+    thead.innerHTML = htmlEncabezado;
 
-    updateDropdowns();
-    renderMatrix();
-    updateDashboardStats();
-}
+    const tbody = tabla.querySelector('tbody');
+    const permisos = ['Ver Informes', 'Editar Usuarios', 'Crear Contenido', 'Gestión de Sistema', 'Ajustes Base'];
+    let htmlCuerpo = '';
 
-function renderMatrix() {
-    const table = document.getElementById('matrix-table');
-    if (!table) return;
-
-    const thead = table.querySelector('thead');
-    let headerHTML = '<tr><th>Permisos</th>';
-    roles.forEach(r => {
-        if (r.active) headerHTML += `<th><i class="fa-solid fa-user"></i> ${r.name}</th>`;
-    });
-    headerHTML += '</tr>';
-    thead.innerHTML = headerHTML;
-
-    const tbody = table.querySelector('tbody');
-    const permissions = ['Ver Informes', 'Editar Usuarios', 'Crear Contenido', 'Gestión de Sistema', 'Ajustes Base'];
-    let bodyHTML = '';
-
-    permissions.forEach((perm, index) => {
-        let row = `<tr><td class="text-left">${perm}</td>`;
+    permisos.forEach((perm, index) => {
+        let fila = `<tr><td style="text-align: left; font-weight: 600;">${perm}</td>`;
         roles.forEach(r => {
-            if (r.active) {
-                // Generamos estado marcado basado en el nivel de array para simular la visualización.
-                const isChecked = r.perms >= (index * 10) ? 'checked' : '';
-                row += `<td><input type="checkbox" ${isChecked} onchange="logAlert('Permisos guardados para rol \\'${r.name}\\'', 'success')"></td>`;
+            if (r.active || r.activo) {
+                const estaMarcado = r.permisos >= (index * 10) ? 'checked' : '';
+                fila += `<td><input type="checkbox" ${estaMarcado} onchange="registrarAlerta('Permisos actualizados para el rol \\'${r.nombre}\\'', 'success')"></td>`;
             }
         });
-        row += `</tr>`;
-        bodyHTML += row;
+        fila += `</tr>`;
+        htmlCuerpo += fila;
     });
-    tbody.innerHTML = bodyHTML;
+    tbody.innerHTML = htmlCuerpo;
 }
 
-// --- CRUD OPERATIONS & MODALS ---
-let currentModalContext = null;
+// --- OPERACIONES CRUD Y MODALES ---
+let contextoModalActual = null;
 
-function initModals() {
-    const modal = document.getElementById('generic-modal');
-    const closeBtn = document.getElementById('close-modal');
-    const form = document.getElementById('generic-form');
+function inicializarModales() {
+    const modal = document.getElementById('modal-generico');
+    const botonCerrar = document.getElementById('cerrar-modal-btn');
+    const formulario = document.getElementById('formulario-generico');
 
-    if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.classList.remove('active');
+    if (botonCerrar) {
+        botonCerrar.addEventListener('click', () => {
+            modal.classList.remove('activo');
         });
     }
 
-    document.querySelectorAll('.btn-gold:has(.fa-plus)').forEach(btn => {
-        if (btn.textContent.includes('Usuario')) {
-            btn.addEventListener('click', (e) => { e.preventDefault(); openModal('add-user'); });
-        }
-    });
+    const btnAddResumen = document.getElementById('boton-agregar-usuario-resumen');
+    const btnAddMain = document.getElementById('boton-agregar-usuario');
+    const btnAddRole = document.getElementById('boton-agregar-rol');
 
-    const addUsr = document.getElementById('btn-add-user');
-    const addRole = document.getElementById('btn-add-role');
-    if (addUsr) addUsr.addEventListener('click', (e) => { e.preventDefault(); openModal('add-user'); });
-    if (addRole) addRole.addEventListener('click', (e) => { e.preventDefault(); openModal('add-role'); });
+    if (btnAddResumen) btnAddResumen.addEventListener('click', () => abrirModal('agregar-usuario'));
+    if (btnAddMain) btnAddMain.addEventListener('click', () => abrirModal('agregar-usuario'));
+    if (btnAddRole) btnAddRole.addEventListener('click', () => abrirModal('agregar-rol'));
 
-    if (form) {
-        form.addEventListener('submit', (e) => {
+    if (formulario) {
+        formulario.addEventListener('submit', (e) => {
             e.preventDefault();
-
-            if (currentModalContext === 'add-user' || currentModalContext === 'edit-user') {
-                saveUser();
-            } else if (currentModalContext === 'add-role') {
-                saveRole();
+            if (contextoModalActual === 'agregar-usuario' || contextoModalActual === 'editar-usuario') {
+                guardarUsuario();
+            } else if (contextoModalActual === 'agregar-rol') {
+                guardarRol();
             }
-
-            if (modal) modal.classList.remove('active');
+            modal.classList.remove('activo');
         });
     }
 }
 
-function openModal(context, itemData = null) {
-    const modal = document.getElementById('generic-modal');
-    const title = document.getElementById('modal-title');
-    const form = document.getElementById('generic-form');
+function abrirModal(contexto, datosItem = null) {
+    const modal = document.getElementById('modal-generico');
+    const titulo = document.getElementById('titulo-modal');
+    const formulario = document.getElementById('formulario-generico');
 
-    currentModalContext = context;
-    form.reset();
+    contextoModalActual = contexto;
+    formulario.reset();
 
-    document.getElementById('group-email').style.display = 'flex';
-    document.getElementById('group-role').style.display = 'flex';
+    document.getElementById('grupo-email').style.display = 'flex';
+    document.getElementById('grupo-rol').style.display = 'flex';
 
-    if (context === 'add-user') {
-        title.innerText = 'Añadir Nuevo Usuario';
-        document.getElementById('item-id').value = '';
+    if (contexto === 'agregar-usuario') {
+        titulo.innerText = 'Registar Nuevo Usuario';
+        document.getElementById('id-elemento').value = '';
     }
-    else if (context === 'edit-user') {
-        title.innerText = 'Editar Usuario';
-        document.getElementById('item-id').value = itemData.id;
-        document.getElementById('item-name').value = itemData.name;
-        document.getElementById('item-email').value = itemData.email;
-        document.getElementById('item-role').value = itemData.role;
-        document.getElementById('item-active').checked = itemData.active;
+    else if (contexto === 'editar-usuario') {
+        titulo.innerText = 'Editar Información de Usuario';
+        document.getElementById('id-elemento').value = datosItem.id;
+        document.getElementById('nombre-elemento').value = datosItem.nombre;
+        document.getElementById('email-elemento').value = datosItem.email;
+        document.getElementById('rol-elemento').value = datosItem.rol;
+        document.getElementById('activo-elemento').checked = datosItem.activo;
     }
-    else if (context === 'add-role') {
-        title.innerText = 'Añadir Nuevo Rol';
-        document.getElementById('group-email').style.display = 'none';
-        document.getElementById('group-role').style.display = 'none';
+    else if (contexto === 'agregar-rol') {
+        titulo.innerText = 'Configurar Nuevo Rol';
+        document.getElementById('grupo-email').style.display = 'none';
+        document.getElementById('grupo-rol').style.display = 'none';
     }
 
-    modal.classList.add('active');
+    modal.classList.add('activo');
 }
 
-function saveUser() {
-    const idStr = document.getElementById('item-id').value;
-    const name = document.getElementById('item-name').value;
-    const email = document.getElementById('item-email').value;
-    const role = document.getElementById('item-role').value;
-    const active = document.getElementById('item-active').checked;
+function guardarUsuario() {
+    const idSrt = document.getElementById('id-elemento').value;
+    const nombre = document.getElementById('nombre-elemento').value;
+    const email = document.getElementById('email-elemento').value;
+    const rol = document.getElementById('rol-elemento').value;
+    const activo = document.getElementById('activo-elemento').checked;
 
-    if (idStr) {
-        const id = parseInt(idStr);
-        const index = users.findIndex(u => u.id === id);
-        if (index !== -1) {
-            users[index] = { ...users[index], name, email, role, active };
-            logAlert(`Usuario ${name} actualizado con éxito`, 'success');
+    if (idSrt) {
+        const id = parseInt(idSrt);
+        const indice = usuarios.findIndex(u => u.id === id);
+        if (indice !== -1) {
+            usuarios[indice] = { ...usuarios[indice], nombre, email, rol, activo };
+            registrarAlerta(`Usuario ${nombre} actualizado correctamente`, 'success');
         }
     } else {
-        const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-        const date = new Date().toLocaleDateString('es-ES');
-        users.push({ id: newId, name, email, role, active, date });
-        logAlert(`Nuevo usuario creado: ${name}`, 'success');
+        const nuevoId = usuarios.length > 0 ? Math.max(...usuarios.map(u => u.id)) + 1 : 1;
+        const fecha = new Date().toLocaleDateString('es-ES');
+        usuarios.push({ id: nuevoId, nombre, email, rol, activo, fecha });
+        registrarAlerta(`Nuevo usuario registrado: ${nombre}`, 'success');
     }
-    renderUsers();
+    renderizarUsuarios();
 }
 
-function saveRole() {
-    const name = document.getElementById('item-name').value;
-    const active = document.getElementById('item-active').checked;
-    const newId = roles.length > 0 ? Math.max(...roles.map(r => r.id)) + 1 : 1;
-    roles.push({ id: newId, name, desc: 'Rol personalizado añadido', perms: 20, active });
-    logAlert(`Nuevo rol añadido: ${name}`, 'success');
-    renderRoles();
+function guardarRol() {
+    const nombre = document.getElementById('nombre-elemento').value;
+    const activo = document.getElementById('activo-elemento').checked;
+    const nuevoId = roles.length > 0 ? Math.max(...roles.map(r => r.id)) + 1 : 1;
+    roles.push({ id: nuevoId, nombre: nombre, desc: 'Rol personalizado del sistema', permisos: 20, activo });
+    registrarAlerta(`Nuevo rol añadido: ${nombre}`, 'success');
+    renderizarRoles();
 }
 
-window.editUser = function (id) {
-    const user = users.find(u => u.id === id);
-    if (user) openModal('edit-user', user);
+window.editarUsuario = function (id) {
+    const usuario = usuarios.find(u => u.id === id);
+    if (usuario) abrirModal('editar-usuario', usuario);
 }
 
-window.deleteUser = function (id) {
-    if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-        const userName = users.find(u => u.id === id)?.name || "Usuario";
-        users = users.filter(u => u.id !== id);
-        logAlert(`${userName} ha sido eliminado`, 'error');
-        renderUsers();
-        // Al eliminar usuario y renderUsers, actualizamos los stats de roles
-        renderRoles();
+window.eliminarUsuario = function (id) {
+    if (confirm('¿Estás seguro de eliminar este usuario permanentemente?')) {
+        const nombreUsr = usuarios.find(u => u.id === id)?.nombre || "Usuario";
+        usuarios = usuarios.filter(u => u.id !== id);
+        registrarAlerta(`${nombreUsr} eliminado del sistema`, 'error');
+        renderizarUsuarios();
+        renderizarRoles();
     }
 }
 
-window.deleteRole = function (id) {
-    if (confirm("¿Estás seguro de eliminar este Rol? Los perfiles que dependan de este rol volverán a ser 'Usuario'.")) {
-        const targetRole = roles.find(r => r.id === id);
-        if (!targetRole) return;
+window.eliminarRol = function (id) {
+    if (confirm("¿Eliminar este rol? Los usuarios asociados pasarán a ser rol 'Usuario'.")) {
+        const rolObjetivo = roles.find(r => r.id === id);
+        if (!rolObjetivo) return;
 
-        // Limpiar usuarios con este rol
-        users.forEach(u => {
-            if (u.role === targetRole.name) u.role = 'Usuario';
+        usuarios.forEach(u => {
+            if (u.rol === rolObjetivo.nombre) u.rol = 'Usuario';
         });
 
         roles = roles.filter(r => r.id !== id);
-        logAlert(`Rol temporal '${targetRole.name}' ha sido desmantelado`, 'error');
-        renderUsers();
-        renderRoles();
+        registrarAlerta(`Rol '${rolObjetivo.nombre}' deshabilitado`, 'error');
+        renderizarUsuarios();
+        renderizarRoles();
     }
 }
 
-// --- LOGGING & ALERTS ---
-
-function renderAlerts() {
-    const resumenContainer = document.getElementById('alertas-resumen');
-    const rolesContainer = document.getElementById('alertas-roles');
+// --- LOGS Y ALERTAS ---
+function renderizarAlertas() {
+    const contenedorResumen = document.getElementById('alertas-resumen');
+    const contenedorRoles = document.getElementById('alertas-roles');
 
     let html = '';
-    globalAlerts.slice(-4).reverse().forEach(a => {
-        let iconColor = 'text-gold';
-        if (a.type === 'error') iconColor = 'text-red';
-        if (a.type === 'info') iconColor = 'text-blue';
+    alertasGlobales.slice(-4).reverse().forEach(a => {
+        let colorIcono = 'texto-primario';
+        if (a.tipo === 'error') colorIcono = 'texto-peligro';
+        if (a.tipo === 'success') colorIcono = 'fondo-verde';
 
-        let iconClass = 'fa-circle-check';
-        if (a.type === 'error') iconClass = 'fa-circle-xmark';
-        if (a.type === 'info' || a.type === 'gold') iconClass = 'fa-circle-exclamation';
+        let classIcono = 'fa-circle-check';
+        if (a.tipo === 'error') classIcono = 'fa-circle-xmark';
+        if (a.tipo === 'info') classIcono = 'fa-circle-exclamation';
 
         html += `
-            <div class="alert-item">
-                <i class="fa-solid ${iconClass} ${iconColor}"></i>
-                <div><p>${a.text}</p><small>Hace unos instantes</small></div>
+            <div class="item-alerta">
+                <i class="fa-solid ${classIcono} ${colorIcono}"></i>
+                <div><p>${a.texto}</p><small>Hace un momento</small></div>
             </div>
         `;
     });
 
-    if (resumenContainer) resumenContainer.innerHTML = html;
-    if (rolesContainer) rolesContainer.innerHTML = html;
+    if (contenedorResumen) contenedorResumen.innerHTML = html;
+    if (contenedorRoles) contenedorRoles.innerHTML = html;
 }
 
-function logAlert(message, type = 'success') {
-    let alertType = type;
-    if (type === 'success') alertType = 'gold'; // para darle color de la marca
-
-    globalAlerts.push({ text: message, type: alertType });
-    renderAlerts();
-    showToast(message, type);
+function registrarAlerta(mensaje, tipo = 'success') {
+    alertasGlobales.push({ texto: mensaje, tipo: tipo });
+    renderizarAlertas();
+    mostrarNotificacion(mensaje, tipo);
 }
 
-// --- TOASTS & STATIC ACTIONS ---
-function showToast(message, type = 'success') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
+// --- NOTIFICACIONES TIPO TOAST ---
+function mostrarNotificacion(mensaje, tipo = 'success') {
+    const contenedor = document.getElementById('contenedor-notificaciones');
+    if (!contenedor) return;
 
-    let icon = '<i class="fa-solid fa-circle-check"></i>';
-    if (type === 'error') icon = '<i class="fa-solid fa-circle-xmark"></i>';
-    if (type === 'info') icon = '<i class="fa-solid fa-circle-info"></i>';
+    const notificacion = document.createElement('div');
+    notificacion.className = `notificacion ${tipo}`;
 
-    toast.innerHTML = `${icon} <span>${message}</span>`;
-    container.appendChild(toast);
+    let icono = '<i class="fa-solid fa-circle-check"></i>';
+    if (tipo === 'error') icono = '<i class="fa-solid fa-circle-xmark"></i>';
+    if (tipo === 'info') icono = '<i class="fa-solid fa-circle-info"></i>';
+
+    notificacion.innerHTML = `${icono} <span>${mensaje}</span>`;
+    contenedor.appendChild(notificacion);
 
     setTimeout(() => {
-        toast.style.animation = 'slideIn 0.3s ease-out reverse forwards';
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+        notificacion.style.animation = 'slideIn 0.3s ease-out reverse forwards';
+        setTimeout(() => notificacion.remove(), 300);
+    }, 3500);
 }
 
-// Interceptamos clic estaticos
-function initToastsForStaticButtons() {
-    document.querySelectorAll('.btn-gold, .link-dark').forEach(btn => {
+function inicializarNotificacionesBotones() {
+    document.querySelectorAll('.boton, .enlace-oscuro').forEach(btn => {
         btn.addEventListener('click', (e) => {
             if (btn.type === 'submit') return;
-            if (btn.id === 'btn-quick-assign' || btn.id.startsWith('btn-cc-')) return; // ignora asignacion y tableros
+            const id = btn.id || "";
+            if (id.includes('agregar-usuario') || id.includes('agregar-rol') || id.startsWith('btn-')) return;
 
-            const text = btn.textContent.trim().toLowerCase();
-            if (text.includes('añadir') || btn.classList.contains('nav-item')) return;
+            const texto = btn.textContent.trim().toLowerCase();
+            if (texto.includes('añadir') || btn.classList.contains('item-navegacion')) return;
 
             e.preventDefault();
 
-            if (text.includes('guardar cambios')) {
-                logAlert('Configuraciones guardadas', 'success');
-            } else if (text.includes('generar')) {
-                logAlert('Generando reporte... Descarga iniciada', 'success');
-            } else if (text.includes('configurar')) {
-                showToast('Abriendo configuración avanzada...', 'info');
+            if (texto.includes('guardar cambios')) {
+                registrarAlerta('Ajustes guardados con éxito', 'success');
+            } else if (texto.includes('generar')) {
+                registrarAlerta('Generando documento PDF...', 'success');
+            } else if (texto.includes('configurar')) {
+                mostrarNotificacion('Iniciando panel de configuración...', 'info');
             } else {
-                showToast('Esta función se encuentra en desarrollo', 'info');
+                mostrarNotificacion('Operación en proceso de despliegue', 'info');
             }
         });
     });
 }
 
-function initControlCenter() {
-    // Control Center de Resumen
-    const ccr1 = document.getElementById('btn-cc-res-1');
-    const ccr2 = document.getElementById('btn-cc-res-2');
-    const ccr3 = document.getElementById('btn-cc-res-3');
+function inicializarCentroControl() {
+    // Centro de Control Resumen
+    const ccr1 = document.getElementById('btn-ajustes-res');
+    const ccr2 = document.getElementById('btn-visualizacion-res');
+    const ccr3 = document.getElementById('btn-emergencia-res');
 
-    if (ccr1) ccr1.addEventListener('click', () => { window.switchTab('configuracion'); showToast('Ajustes Abiertos', 'info'); });
-    if (ccr2) ccr2.addEventListener('click', () => { logAlert('Modo visualización activado en tu cuenta', 'info'); });
-    if (ccr3) ccr3.addEventListener('click', () => { logAlert('Emergencia: Operaciones pausadas temporalmente', 'error'); });
+    if (ccr1) ccr1.addEventListener('click', () => { window.cambiarTab('configuracion'); });
+    if (ccr2) ccr2.addEventListener('click', () => { registrarAlerta('Vista enriquecida activada', 'info'); });
+    if (ccr3) ccr3.addEventListener('click', () => { registrarAlerta('EMERGENCIA: Accesos restringidos', 'error'); });
 
-    // Control Center de Roles
-    const ccl1 = document.getElementById('btn-cc-roles1');
-    const ccl2 = document.getElementById('btn-cc-roles2');
-    const ccl3 = document.getElementById('btn-cc-roles3');
+    // Centro de Control Roles
+    const ccl1 = document.getElementById('btn-editar-permisos');
+    const ccl2 = document.getElementById('btn-auditoria-roles');
+    const ccl3 = document.getElementById('btn-bloquear-roles');
 
-    if (ccl1) ccl1.addEventListener('click', () => { logAlert('Modo editar matriz activado. Utiliza los checkboxes.', 'info'); });
-    if (ccl2) ccl2.addEventListener('click', () => { logAlert('Petición de auditoría generada (PDF)', 'success'); });
-    if (ccl3) ccl3.addEventListener('click', () => { logAlert('Todos los permisos han sido revocados por seguridad.', 'error'); });
+    if (ccl1) ccl1.addEventListener('click', () => { mostrarNotificacion('Modo edición selectiva activado', 'info'); });
+    if (ccl2) ccl2.addEventListener('click', () => { registrarAlerta('Informe de auditoría preparado', 'success'); });
+    if (ccl3) ccl3.addEventListener('click', () => { registrarAlerta('Seguridad: Matriz bloqueada', 'error'); });
 }
 
-function initConfig() {
-    const btnSave = document.getElementById('btn-save-config');
-    const appNameInput = document.getElementById('config-app-name');
-    const sidebarLogo = document.querySelector('.sidebar-logo');
+function inicializarConfiguracion() {
+    const btnGuardar = document.getElementById('boton-guardar-config');
+    const inputNombreApp = document.getElementById('config-nombre-app');
+    const logoSidebar = document.querySelector('.logo-barra-lateral');
 
-    // Botones adicionales de configuración
-    const btnSsl = document.getElementById('btn-ssl');
-    const btnSmtp = document.getElementById('btn-smtp');
-
-    if (btnSsl) btnSsl.addEventListener('click', (e) => { e.preventDefault(); showToast('Redirigiendo a pasarela de SSL...', 'info'); });
-    if (btnSmtp) btnSmtp.addEventListener('click', (e) => { e.preventDefault(); showToast('Buscando servidor SMTP local...', 'info'); });
-
-    if (btnSave && appNameInput && sidebarLogo) {
-        btnSave.addEventListener('click', (e) => {
+    if (btnGuardar && inputNombreApp && logoSidebar) {
+        btnGuardar.addEventListener('click', (e) => {
             e.preventDefault();
-
-            // Reemplazamos el logo de la barra lateral, preservando el icono si es posible
-            const iconHTML = sidebarLogo.querySelector('i') ? sidebarLogo.querySelector('i').outerHTML : '<i class="fa-solid fa-scale-balanced" style="color:#d4b455; margin-right: 10px;"></i>';
-            sidebarLogo.innerHTML = iconHTML + ' ' + appNameInput.value;
-
-            logAlert(`Ajustes del sistema guardados. Nuevo nombre: ${appNameInput.value}`, 'success');
+            const iconoHTML = logoSidebar.querySelector('i') ? logoSidebar.querySelector('i').outerHTML : '<i class="fa-solid fa-scale-balanced"></i>';
+            logoSidebar.innerHTML = iconoHTML + ' ' + inputNombreApp.value;
+            registrarAlerta(`Ajustes globales actualizados. App: ${inputNombreApp.value}`, 'success');
         });
     }
+
+    const btnSsl = document.getElementById('boton-ssl');
+    const btnSmtp = document.getElementById('boton-smtp');
+
+    if (btnSsl) btnSsl.addEventListener('click', (e) => { e.preventDefault(); mostrarNotificacion('Verificando certificados SSL...', 'info'); });
+    if (btnSmtp) btnSmtp.addEventListener('click', (e) => { e.preventDefault(); mostrarNotificacion('Probando conexión SMTP...', 'info'); });
 }
 
-// --- CHART.JS INIT & DYNAMIC STATS ---
-
-function updateDashboardStats() {
-    const totalUsers = users.length;
-    const activeUsers = users.filter(u => u.active).length;
+// --- ACTUALIZACIÓN DE ESTADÍSTICAS Y GRÁFICOS ---
+function actualizarEstadisticasDashboard() {
+    const totalUsuarios = usuarios.length;
+    const usuariosActivos = usuarios.filter(u => u.activo).length;
     const totalRoles = roles.length;
 
-    // Inyectar en los recuadros de Resumen Superior
-    const elTotal = document.getElementById('stat-total-users');
-    const elActive = document.getElementById('stat-active-users');
-    const elRoles = document.getElementById('stat-total-roles');
-    if (elTotal) elTotal.innerText = totalUsers;
-    if (elActive) elActive.innerText = activeUsers;
+    const elTotal = document.getElementById('est-usuarios-totales');
+    const elActivo = document.getElementById('est-usuarios-activos');
+    const elRoles = document.getElementById('est-roles-totales');
+    
+    if (elTotal) elTotal.innerText = totalUsuarios;
+    if (elActivo) elActivo.innerText = usuariosActivos;
     if (elRoles) elRoles.innerText = totalRoles;
 
-    updateCharts();
+    actualizarGraficos();
 }
 
-function initCharts() {
-    // Al cargar llamamos la actualización, lo que inicializará nativamente
-    updateCharts();
+function inicializarGraficos() {
+    actualizarGraficos();
 }
 
-function updateCharts() {
-    // 1. Distribución de Roles por Usuario (Pie Chart) -> Reportes
-    const rolesLabels = roles.map(r => r.name);
-    const rolesData = roles.map(r => users.filter(u => u.role === r.name).length);
+function actualizarGraficos() {
+    const colorPrimario = '#1c84ee';
+    const colorVerde = '#10b981';
+    const colorDark = '#001524';
 
-    const repPieCtx = document.getElementById('reportPieChart');
-    if (repPieCtx) {
-        if (myReportPieChart) {
-            myReportPieChart.data.labels = rolesLabels;
-            myReportPieChart.data.datasets[0].data = rolesData;
-            myReportPieChart.update();
+    // 1. Gráfico de Pastel (Reportes)
+    const etiquetasRoles = roles.map(r => r.nombre);
+    const datosRoles = roles.map(r => usuarios.filter(u => u.rol === r.nombre).length);
+
+    const ctxPastel = document.getElementById('graficoPastelReporte');
+    if (ctxPastel) {
+        if (miGraficoPastelReporte) {
+            miGraficoPastelReporte.data.labels = etiquetasRoles;
+            miGraficoPastelReporte.data.datasets[0].data = datosRoles;
+            miGraficoPastelReporte.update();
         } else {
-            myReportPieChart = new Chart(repPieCtx, {
+            miGraficoPastelReporte = new Chart(ctxPastel, {
                 type: 'pie',
                 data: {
-                    labels: rolesLabels,
+                    labels: etiquetasRoles,
                     datasets: [{
-                        data: rolesData,
-                        backgroundColor: ['#164863', '#d4b455', '#EAE2CE', '#2e81a3', '#8b1c1c', '#4e9a73']
+                        data: datosRoles,
+                        backgroundColor: [colorPrimario, '#334155', colorVerde, '#64748b', '#ef4444', '#f1f5f9']
                     }]
                 },
-                options: { responsive: true, plugins: { legend: { position: 'top' } } }
+                options: { responsive: true }
             });
         }
     }
 
-    // 2. Registro de Nuevos Usuarios por Mes (Bar Chart) -> Resumen
-    const monthCounts = Array(12).fill(0);
-    users.forEach(u => {
-        if (u.date) {
-            const parts = u.date.split('/');
-            if (parts.length > 1) {
-                const mes = parseInt(parts[1], 10) - 1; // 0 index
-                if (mes >= 0 && mes <= 11) monthCounts[mes]++;
+    // 2. Gráfico de Barras (Resumen)
+    const conteoMeses = Array(12).fill(0);
+    usuarios.forEach(u => {
+        if (u.fecha) {
+            const partes = u.fecha.split('/');
+            if (partes.length > 1) {
+                const mes = parseInt(partes[1], 10) - 1;
+                if (mes >= 0 && mes <= 11) conteoMeses[mes]++;
             }
         }
     });
 
-    const barCtx = document.getElementById('barChart');
-    if (barCtx) {
-        if (myBarChart) {
-            myBarChart.data.datasets[0].data = monthCounts;
-            myBarChart.update();
+    const ctxBarras = document.getElementById('graficoBarras');
+    if (ctxBarras) {
+        if (miGraficoBarras) {
+            miGraficoBarras.data.datasets[0].data = conteoMeses;
+            miGraficoBarras.update();
         } else {
-            myBarChart = new Chart(barCtx, {
+            miGraficoBarras = new Chart(ctxBarras, {
                 type: 'bar',
                 data: {
                     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                    datasets: [{ label: 'Nuevos Usuarios', data: monthCounts, backgroundColor: '#d4b455' }]
+                    datasets: [{ label: 'Registros', data: conteoMeses, backgroundColor: colorPrimario }]
                 },
                 options: { responsive: true, plugins: { legend: { display: false } } }
             });
         }
     }
 
-    // 3. Line Chart de Conexiones ficticias proporcionales (Resumen)
-    const lineCtx = document.getElementById('lineChart');
-    const uTotal = users.length;
-    if (lineCtx) {
-        const lineData = [uTotal * 0.2, uTotal * 0.8, uTotal, uTotal * 0.5, uTotal * 0.9, uTotal * 0.3, uTotal * 0.1];
-        if (myLineChart) {
-            myLineChart.data.datasets[0].data = lineData;
-            myLineChart.update();
+    // 3. Gráfico de Líneas (Resumen)
+    const ctxLineas = document.getElementById('graficoLineas');
+    if (ctxLineas) {
+        const uTotal = usuarios.length;
+        const datosConexion = [uTotal * 0.3, uTotal * 0.7, uTotal, uTotal * 0.6, uTotal * 0.8];
+        if (miGraficoLineas) {
+            miGraficoLineas.data.datasets[0].data = datosConexion;
+            miGraficoLineas.update();
         } else {
-            myLineChart = new Chart(lineCtx, {
+            miGraficoLineas = new Chart(ctxLineas, {
                 type: 'line',
                 data: {
-                    labels: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
-                    datasets: [{ label: 'Conexiones Estimadas', data: lineData, borderColor: '#2e81a3', tension: 0.4, fill: true, backgroundColor: 'rgba(46, 129, 163, 0.1)' }]
+                    labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
+                    datasets: [{ label: 'Actividad', data: datosConexion, borderColor: colorVerde, tension: 0.4, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.1)' }]
                 },
                 options: { responsive: true, plugins: { legend: { display: false } } }
             });
         }
     }
 
-    // 4. Report Line Chart (Reportes)
-    const repLineCtx = document.getElementById('reportLineChart');
-    if (repLineCtx) {
-        const activeCount = users.filter(u => u.active).length;
-        const opsData = [roles.length * 2, roles.length * 3, roles.length * 4, roles.length * 5];
-        const activeData = [uTotal * 0.5, uTotal * 0.7, uTotal * 0.9, activeCount];
-
-        if (myReportLineChart) {
-            myReportLineChart.data.datasets[0].data = activeData;
-            myReportLineChart.data.datasets[1].data = opsData;
-            myReportLineChart.update();
+    // 4. Gráfico Reporte (Líneas)
+    const ctxReporte = document.getElementById('graficoLineasReporte');
+    if (ctxReporte) {
+        if (miGraficoLineasReporte) {
+            miGraficoLineasReporte.update();
         } else {
-            myReportLineChart = new Chart(repLineCtx, {
+            miGraficoLineasReporte = new Chart(ctxReporte, {
                 type: 'line',
                 data: {
-                    labels: ['1 Sem', '2 Sem', '3 Sem', '4 Sem'],
+                    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
                     datasets: [
-                        { label: 'Usuarios Activos Constantes', data: activeData, borderColor: '#164863', tension: 0.4 },
-                        { label: 'Operaciones', data: opsData, borderColor: '#d4b455', tension: 0.4 }
+                        { label: 'Usuarios Activos', data: [10, 25, 45, 60], borderColor: colorPrimario, tension: 0.4 },
+                        { label: 'Alertas', data: [5, 12, 8, 15], borderColor: '#ef4444', tension: 0.4 }
                     ]
                 },
                 options: { responsive: true }
