@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PesatusPesos - Home</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/coins-solid.png">
+    <link rel="stylesheet" href="movimientos.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </head>
+
+  <body>
+    <div class="contenedor-flotante-app">
+      <header class="barra">
+        <div class="caja-logo">
+          <i class="fa-solid fa-coins" style="font-size: 2rem; color: #CFB53B;"></i>
+          <span class="texto-logo">PESATUSPESOS</span>
+        </div>
+        <div class="menu-wrapper">
+          <nav class="menu">
+            <button>Inicio</button>
+            <button>Movimientos</button>
+            <button>Deuda</button>
+            <button>Ahorro</button>
+          </nav>
+        </div>
+
+        <div class="contenedor-flotante">
+          <div class="opciones-flotantes">
+            <button class="boton-opcion boton-manual">
+              <img src="img\informacion (1).png" alt="Manual" />
+            </button>
+            <button class="boton-opcion boton-atencion">
+              <img src="img/apoyo (1).png" alt="Atencion" />
+            </button>
+            <button class="boton-opcion boton-editar" id="botonPerfil">
+              <img src="img/avatar-de-usuario (1).png" alt="Editar" />
+            </button>
+          </div>
+
+          <button class="boton-principal" id="botonConfiguracion">
+            <img src="img\ajustes.png" alt="Configuración" />
+          </button>
+        </div>
+      </header>
+
+      <main class="contenido">
+
+        <section class="principal">
+          <section class="seccion-tablero">
+            <div class="cuadricula-tablero">
+              <!-- TARJETA BALANCE PRINCIPAL -->
+              <div class="tarjeta-panel tarjeta-balance-principal">
+                <div class="info-balance">
+                  <h2 class="titulo-tarjeta">Balance total</h2>
+                  <div class="monto-balance">$ 12.540</div>
+                  <div class="variacion-positiva">+1.5% Este mes</div>
+                </div>
+                <div class="contenedor-grafico-linea">
+                  <svg viewBox="0 0 400 150" class="grafico-svg">
+                    <defs>
+                      <linearGradient id="gradiente-linea" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:var(--gold-bright);stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:var(--gold-glow);stop-opacity:1" />
+                      </linearGradient>
+                      <filter id="resplandor">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                          <feMergeNode in="coloredBlur"/>
+                          <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                      </filter>
+                    </defs>
+                    <path d="M0,120 C50,110 80,140 120,130 C160,120 200,80 250,90 C300,100 350,40 400,30" 
+                          fill="none" stroke="url(#gradiente-linea)" stroke-width="4" filter="url(#resplandor)" />
+                    <circle cx="400" cy="30" r="5" fill="var(--gold-glow)" filter="url(#resplandor)" />
+                    <!-- Cuadrícula de fondo sutil -->
+                    <line x1="0" y1="0" x2="0" y2="150" stroke="rgba(255,255,255,0.05)" />
+                    <line x1="100" y1="0" x2="100" y2="150" stroke="rgba(255,255,255,0.05)" />
+                    <line x1="200" y1="0" x2="200" y2="150" stroke="rgba(255,255,255,0.05)" />
+                    <line x1="300" y1="0" x2="300" y2="150" stroke="rgba(255,255,255,0.05)" />
+                    <line x1="0" y1="150" x2="400" y2="150" stroke="rgba(255,255,255,0.05)" />
+                    <line x1="0" y1="100" x2="400" y2="100" stroke="rgba(255,255,255,0.05)" />
+                    <line x1="0" y1="50" x2="400" y2="50" stroke="rgba(255,255,255,0.05)" />
+                  </svg>
+                  <span class="etiqueta-mes">Enero</span>
+                </div>
+              </div>
+
+              <!-- ESTADÍSTICAS LATERALES -->
+              <div class="columna-estadisticas">
+                <!-- INGRESOS -->
+                <button class="tarjeta-panel tarjeta-estadistica" id="btnIngresos">
+                  <div class="info-estadistica">
+                    <h3 class="titulo-small">Ingresos</h3>
+                    <div class="monto-small">$ 7,200</div>
+                    <div class="porcentaje-crecimiento">+5.2%</div>
+                  </div>
+                  <div class="visualizacion-barras-mini">
+                    <div class="icono-flotante-verde"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+                    <div class="barras-silueta">
+                      <div class="barra-silueta" style="height: 40%;"></div>
+                      <div class="barra-silueta" style="height: 60%;"></div>
+                      <div class="barra-silueta" style="height: 100%;"></div>
+                    </div>
+                  </div>
+                </button>
+
+                <!-- EGRESOS -->
+                <button class="tarjeta-panel tarjeta-estadistica" id="btnEgresos">
+                  <div class="info-estadistica">
+                    <h3 class="titulo-small">Egresos</h3>
+                    <div class="monto-small">$ 5,200</div>
+                    <div class="porcentaje-caida">+3.1%</div>
+                  </div>
+                  <div class="visualizacion-barras-mini">
+                    <div class="icono-flotante-rojo"><i class="fa-solid fa-arrow-down-right-dots"></i></div>
+                    <div class="barras-silueta">
+                      <div class="barra-silueta opaca" style="height: 80%;"></div>
+                      <div class="barra-silueta opaca" style="height: 50%;"></div>
+                      <div class="barra-silueta opaca" style="height: 30%;"></div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+
+              <!-- MOVIMIENTOS RECIENTES -->
+              <div class="tarjeta-panel tarjeta-movimientos-anchura">
+                <h3 class="titulo-tarjeta-mov">Movimientos Recientes</h3>
+                <div class="contenedor-lista-movimientos">
+                  <!-- Columna Izquierda (Fila 1) -->
+                  <div class="fila-movimiento">
+                    <div class="item-izquierda">
+                      <div class="circulo-icono ingreso">
+                        <i class="fa-solid fa-plus"></i>
+                      </div>
+                      <div class="detalles-mov">
+                        <span class="nombre-mov">Salario</span>
+                        <span class="tipo-mov">- Ingreso -</span>
+                      </div>
+                    </div>
+                    <div class="item-derecha">
+                      <span class="monto-mov positivo">+$1.700.000</span>
+                      <span class="fecha-mov">Hoy</span>
+                    </div>
+                  </div>
+                  <!-- Columna Derecha (Fila 1) -->
+                  <div class="fila-movimiento">
+                    <div class="item-izquierda">
+                      <div class="circulo-icono egreso">
+                        <i class="fa-solid fa-minus"></i>
+                      </div>
+                      <div class="detalles-mov">
+                        <span class="nombre-mov">Transporte</span>
+                        <span class="tipo-mov">- Egreso -</span>
+                      </div>
+                    </div>
+                    <div class="item-derecha">
+                      <span class="monto-mov negativo">-$150.000</span>
+                      <span class="fecha-mov">Ayer</span>
+                    </div>
+                  </div>
+                  <!-- Columna Izquierda (Fila 2) -->
+                  <div class="fila-movimiento">
+                    <div class="item-izquierda">
+                      <div class="circulo-icono egreso">
+                        <i class="fa-solid fa-utensils"></i>
+                      </div>
+                      <div class="detalles-mov">
+                        <span class="nombre-mov">Alimentación</span>
+                        <span class="tipo-mov">- Egreso -</span>
+                      </div>
+                    </div>
+                    <div class="item-derecha">
+                      <span class="monto-mov negativo">-$450.000</span>
+                      <span class="fecha-mov">Ayer</span>
+                    </div>
+                  </div>
+                  <!-- Columna Derecha (Fila 2) -->
+                  <div class="fila-movimiento">
+                    <div class="item-izquierda">
+                      <div class="circulo-icono egreso">
+                        <i class="fa-solid fa-shirt"></i>
+                      </div>
+                      <div class="detalles-mov">
+                        <span class="nombre-mov">Ropa</span>
+                        <span class="tipo-mov">- Egreso -</span>
+                      </div>
+                    </div>
+                    <div class="item-derecha">
+                      <span class="monto-mov negativo">-$200.000</span>
+                      <span class="fecha-mov">2 días ago</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <!-- Panel usuario FUERA de .principal -->
+        <aside class="usuario" id="panelUsuario">
+          <button class="cerrar-panel" id="cerrarPanel">✕</button>
+          <h2 id="nombre_usuario">Usuario</h2>
+          <div class="avatar-wrapper">
+            <img
+              src="img/hucha.png"
+              class="avatar"
+              id="avatarPrincipal"
+              alt="avatar"
+            />
+            <div class="avatar-lapiz">
+              <img src="img/lapiz.png" alt="editar" width="14" height="14" />
+            </div>
+          </div>
+          <p class="frase" id="frase_motivadora"></p>
+          <button class="boton-cerrar">Cerrar sesión</button>
+        </aside>
+
+
+      </main>
+      <!--FOOTER-->
+      <footer>
+        <div class="footer-grid">
+          <!-- Logo + descripción -->
+          <div class="footer-brand">
+            <div class="footer-logos">
+              <img
+                src="img/logoSenaNaranja.png"
+                alt="SENA"
+                style="width: 50px"
+              />
+              <img
+                src="img\Gemini_Generated_Image_1f5if41f5if41f5i-removebg-preview.png"
+                alt="Logo 2"
+                style="width: 50px"
+              />
+              <img
+                src="img\Gemini_Generated_Image_8j74rx8j74rx8j74-removebg-preview.png"
+                alt="Logo 3"
+                style="width: 50px"
+              />
+            </div>
+            <p>PesatusPesos · Herramienta de educación financiera</p>
+          </div>
+
+          <!-- Contacto -->
+          <div class="footer-col">
+            <h4>Contacto</h4>
+            <p>jpjcompany10@gmail.com</p>
+            <p>Lunes a viernes 8:00 a.m. – 6:00 p.m.</p>
+            <p>Tel: +57 310 520 4819</p>
+          </div>
+
+          <!-- Ubicación -->
+          <div class="footer-col">
+            <h4>Ubicación</h4>
+            <p>Medellín, Antioquia</p>
+            <p>Colombia</p>
+            <p>Aprendizaje en línea y seguimiento presencial según programa.</p>
+          </div>
+
+          <!-- Legal -->
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <a
+              href="https://drive.google.com/file/d/1niNl3BNnppZKtocOjVEMd492v4KXjG2V/view?usp=sharing"
+              class="politicas-link"
+              >Políticas de privacidad y datos</a
+            >
+            <a
+              href="https://drive.google.com/file/d/1U7qVxJ6KrGPEQ5WMXAMO16hA1F6firyb/view?usp=sharing"
+              class="terminos-link"
+              >Términos y condiciones</a
+            >
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          © 2026 PesatusPesos · Proyecto formativo · SENA
+        </div>
+      </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="movimientos.js"></script>
+  </body>
+</html>
