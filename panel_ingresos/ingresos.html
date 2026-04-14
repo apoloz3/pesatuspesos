@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Ingresos - Dashboard Financiero</title>
+    <link rel="stylesheet" href="ingresos.css">
+    <!-- Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="contenedor-dashboard">
+        <!-- Encabezado -->
+        <header class="encabezado-dashboard">
+            <a href="movimientos.html" class="btn-regresar" id="btnRegresar">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </a>
+            <div class="selector-mes">
+                <button class="flecha-nav" id="mesPrevio"><i class="fas fa-chevron-left"></i></button>
+                <span class="mes-actual" id="nombreMes">ABRIL 2026</span>
+                <button class="flecha-nav" id="mesSiguiente"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div style="width: 100px;"></div> <!-- Spacer for centering -->
+        </header>
+
+        <!-- Resumen Superior -->
+        <section class="resumen-superior">
+            <div class="tarjeta-resumen">
+                <h3>Ingresos</h3>
+                <div class="monto" id="resumenIngresos">$ 0</div>
+            </div>
+            <div class="tarjeta-resumen">
+                <h3>Gastos</h3>
+                <div class="monto" id="resumenGastos">$ 0</div>
+            </div>
+            <div class="tarjeta-resumen">
+                <h3>Saldo</h3>
+                <div class="monto" id="resumenSaldo">$ 0</div>
+            </div>
+        </section>
+
+        <!-- Gestión de Ingresos -->
+        <section class="seccion-tabla">
+            <h2>Gestión de Ingresos - Detalle</h2>
+            <div class="contenedor-tabla">
+                <table id="tablaIngresos">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Descripción</th>
+                            <th>Método</th>
+                            <th>Concepto</th>
+                            <th>Monto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla">
+                        <!-- Filas insertadas dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="pie-tabla" style="display: flex; justify-content: flex-end; gap: 1rem;">
+                <button class="btn-agregar" id="btnAgregar">
+                    <i class="fas fa-plus"></i> AGREGAR
+                </button>
+                <button class="btn-agregar" id="btnGuardar" style="background: linear-gradient(135deg, var(--gold-light), var(--matte-gold));">
+                    <i class="fas fa-save"></i> GUARDAR
+                </button>
+            </div>
+        </section>
+
+        <!-- Sección de Análisis -->
+        <section class="seccion-analisis">
+            <!-- Estadísticas -->
+            <div class="estadisticas-lista">
+                <h2>Análisis Gráfico</h2>
+                <div class="item-estadistica">
+                    <span>Ingresos totales</span>
+                    <span id="analisisIngresos">$ 0</span>
+                </div>
+                <div class="item-estadistica">
+                    <span>Gastos totales</span>
+                    <span id="analisisGastos">$ 0</span>
+                </div>
+                <div class="item-estadistica">
+                    <span>Saldo restante</span>
+                    <span id="analisisSaldo" style="color: var(--growth-green);">$ 0</span>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="panel-graficos">
+                <div class="contenedor-grafico">
+                    <h3 style="font-size: 0.75rem; text-transform: uppercase; color: var(--gold-light); margin-bottom: 1rem; text-align: center;">Presupuesto vs Real</h3>
+                    <canvas id="graficoBarras"></canvas>
+                </div>
+                <div class="contenedor-grafico">
+                    <h3 style="font-size: 0.75rem; text-transform: uppercase; color: var(--gold-light); margin-bottom: 1rem; text-align: center;">Distribución</h3>
+                    <canvas id="graficoCircular"></canvas>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="ingresos.js"></script>
+</body>
+</html>
