@@ -10,9 +10,9 @@ const nombresMeses = [
 
 // Opciones para Selects
 const opcionesMetodo = ["Efectivo", "Banco", "Tarjeta", "Transferencia"];
-const opcionesConceptoIngreso = ["Sueldo", "Venta", "Inversión", "Regalo", "Otro"];
-// Combinados para el select concepto simple, solo ingresos para este panel
-const opcionesConcepto = [...opcionesConceptoIngreso];
+const opcionesConceptoEgreso = ["Vivienda", "Alimentación", "Transporte", "Servicios", "Entretenimiento", "Salud", "Otro"];
+// Combinados para el select concepto simple, solo Egresos para este panel
+const opcionesConcepto = [...opcionesConceptoEgreso];
 
 // Variables de paginación
 let paginaActual = 1;
@@ -24,11 +24,11 @@ const cuerpoTabla = document.getElementById('cuerpoTabla');
 const btnAgregar = document.getElementById('btnAgregar');
 const btnGuardar = document.getElementById('btnGuardar');
 
-const resumenIngresosEl = document.getElementById('resumenIngresos');
+const resumenEgresosEl = document.getElementById('resumenEgresos');
 const resumenGastosEl = document.getElementById('resumenGastos');
 const resumenSaldoEl = document.getElementById('resumenSaldo');
 
-const analisisIngresosEl = document.getElementById('analisisIngresos');
+const analisisEgresosEl = document.getElementById('analisisEgresos');
 const analisisSaldoEl = document.getElementById('analisisSaldo');
 
 // Controles paginación
@@ -134,11 +134,11 @@ function obtenerRegistrosMesActual() {
     return registros.filter(reg => {
         const fechaReg = new Date(reg.fecha);
         const esMismoMes = fechaReg.getMonth() === mes && fechaReg.getFullYear() === anio;
+
+        // Mostrar egresos guardados, o filas vacías creadas exclusivamente en el panel de egresos
+        const esEgreso = opcionesConceptoEgreso.includes(reg.concepto) || (!reg.concepto && reg.tipo === 'egreso');
         
-        // Mostrar si es un ingreso conocido, o si es una fila nueva sin guardar creada en este panel
-        const esIngreso = opcionesConceptoIngreso.includes(reg.concepto) || (!reg.concepto && reg.tipo === 'ingreso');
-        
-        return esMismoMes && esIngreso;
+        return esMismoMes && esEgreso;
     });
 }
 
@@ -157,7 +157,7 @@ function agregarFilaVacia() {
         metodo: "",
         concepto: "",
         monto: "",
-        tipo: 'ingreso'
+        tipo: 'egreso'
     };
     
     registros.push(nuevoReg);
@@ -212,26 +212,37 @@ function enfocarFila(boton) {
 function actualizarResumen() {
     const registrosMes = obtenerRegistrosMesActual();
     
-    let totalIngresos = 0;
-    let totalGastos = 0;
+    let totalEgresos = 0;
     
     registrosMes.forEach(reg => {
-        if (opcionesConceptoIngreso.includes(reg.concepto)) {
-            totalIngresos += parseFloat(reg.monto) || 0;
+        if (opcionesConceptoEgreso.includes(reg.concepto)) {
+            totalEgresos += parseFloat(reg.monto) || 0;
         }
     });
     
-    const saldo = totalIngresos; // Ya no hay gastos en este panel
+    // Saldo Total (Todos los registros globalmente, Ingesos - Egresos)
+    let globalIngresos = 0;
+    let globalEgresos = 0;
     
-    if (resumenIngresosEl) resumenIngresosEl.textContent = formatCurrency(totalIngresos);
+    registros.forEach(reg => {
+        if (opcionesConceptoEgreso.includes(reg.concepto)) {
+            globalEgresos += parseFloat(reg.monto) || 0;
+        } else {
+            globalIngresos += parseFloat(reg.monto) || 0;
+        }
+    });
+
+    const saldo = globalIngresos - globalEgresos;
+    
+    if (resumenEgresosEl) resumenEgresosEl.textContent = formatCurrency(totalEgresos);
     if (resumenSaldoEl) resumenSaldoEl.textContent = formatCurrency(saldo);
     
-    if (analisisIngresosEl) analisisIngresosEl.textContent = formatCurrency(totalIngresos);
+    if (analisisEgresosEl) analisisEgresosEl.textContent = formatCurrency(totalEgresos);
     if (analisisSaldoEl) analisisSaldoEl.textContent = formatCurrency(saldo);
     
     // Color según saldo
     if (analisisSaldoEl) analisisSaldoEl.style.color = saldo >= 0 ? 'var(--growth-green)' : 'var(--danger)';
-    if (resumenSaldoEl) resumenSaldoEl.style.color = saldo >= 0 ? 'var(--text-on-dark)' : 'var(--danger)';
+    if (resumenSaldoEl) resumenSaldoEl.style.color = saldo >= 0 ? 'var(--growth-green)' : 'var(--danger)';
 }
 
 function formatCurrency(valor) {
@@ -249,8 +260,8 @@ function actualizarGraficos() {
     const anioPasado = mesAct === 0 ? anioAct - 1 : anioAct;
     const mesPas = mesAct === 0 ? 11 : mesAct - 1;
 
-    let totalIngActual = 0;
-    let totalIngPasado = 0;
+    let totalEgrActual = 0;
+    let totalEgrPasado = 0;
     const conceptosContador = {};
 
     registros.forEach(reg => {
@@ -260,13 +271,13 @@ function actualizarGraficos() {
         const anioReg = fechaReg.getFullYear();
         const monto = parseFloat(reg.monto) || 0;
 
-        if (opcionesConceptoIngreso.includes(reg.concepto)) {
+        if (opcionesConceptoEgreso.includes(reg.concepto)) {
             if (mesReg === mesAct && anioReg === anioAct) {
-                totalIngActual += monto;
+                totalEgrActual += monto;
                 // Doughnut chart uses current month data
                 conceptosContador[reg.concepto] = (conceptosContador[reg.concepto] || 0) + monto;
             } else if (mesReg === mesPas && anioReg === anioPasado) {
-                totalIngPasado += monto;
+                totalEgrPasado += monto;
             }
         }
     });
@@ -274,32 +285,32 @@ function actualizarGraficos() {
     const labelsCircular = Object.keys(conceptosContador);
     const dataCircular = Object.values(conceptosContador);
 
-    // Gráfico de Barras con gradientes diferenciados (diseño pro)
+    // Gráfico de Barras con gradientes diferenciados
     if (graficoBarras) graficoBarras.destroy();
     const ctxBarras = document.getElementById('graficoBarras').getContext('2d');
     
-    // Gradiente sutil y apagado para el mes pasado (Crema/Plata)
+    // Gradiente sutil para el mes pasado
     let gradientePasado = ctxBarras.createLinearGradient(0, 0, 0, 300);
     gradientePasado.addColorStop(0, 'rgba(255, 248, 220, 0.4)'); 
     gradientePasado.addColorStop(1, 'rgba(255, 248, 220, 0.0)');
 
-    // Gradiente brillante y vibrante para el mes actual (Verde de crecimiento)
+    // Gradiente rojo brillante y vibrante para el mes actual (Alerta/Egresos)
     let gradienteActual = ctxBarras.createLinearGradient(0, 0, 0, 300);
-    gradienteActual.addColorStop(0, 'rgba(22, 163, 74, 0.9)'); 
-    gradienteActual.addColorStop(1, 'rgba(22, 163, 74, 0.1)');
+    gradienteActual.addColorStop(0, 'rgba(255, 77, 77, 0.9)'); 
+    gradienteActual.addColorStop(1, 'rgba(255, 77, 77, 0.1)');
 
     graficoBarras = new Chart(ctxBarras, {
         type: 'bar',
         data: {
             labels: ['Mes Pasado', 'Mes Actual'],
             datasets: [{
-                label: 'Ingresos',
-                data: [totalIngPasado, totalIngActual],
+                label: 'Egresos',
+                data: [totalEgrPasado, totalEgrActual],
                 backgroundColor: [gradientePasado, gradienteActual],
-                borderColor: ['#fff8dc', '#16a34a'],
+                borderColor: ['#fff8dc', '#ff4d4f'],
                 borderWidth: 2,
                 borderRadius: 6,
-                hoverBackgroundColor: ['rgba(255, 248, 220, 0.6)', '#4ade80'],
+                hoverBackgroundColor: ['rgba(255, 248, 220, 0.6)', '#ff7875'],
                 barPercentage: 0.55
             }]
         },
@@ -333,12 +344,12 @@ function actualizarGraficos() {
                 }
             },
             plugins: { 
-                legend: { display: false }, // Ocultar leyenda redundante
+                legend: { display: false }, 
                 tooltip: { 
                     backgroundColor: 'rgba(0, 10, 18, 0.9)', 
                     titleColor: '#fff', 
-                    bodyColor: '#4ade80',
-                    borderColor: '#16a34a', 
+                    bodyColor: '#ff4d4f',
+                    borderColor: '#ff4d4f', 
                     borderWidth: 1,
                     callbacks: {
                         label: function(context) { return '$ ' + context.parsed.y.toLocaleString(); }
@@ -348,7 +359,7 @@ function actualizarGraficos() {
         }
     });
 
-    // Gráfico Circular futurista mezclando paleta (Oro, Verde, Crema)
+    // Gráfico Circular futurista mezclando paleta de rojos (Egresos)
     if (graficoCircular) graficoCircular.destroy();
     const ctxCircular = document.getElementById('graficoCircular').getContext('2d');
     
@@ -359,12 +370,12 @@ function actualizarGraficos() {
             datasets: [{
                 data: dataCircular,
                 backgroundColor: [
-                    '#16a34a', // Growth green
-                    '#fedc00', // Gold glow
-                    '#fff8dc', // Cream
-                    '#cfb53c', // Matte gold
-                    '#4ade80', // Light green
-                    '#b38b00'  // Dark gold
+                    '#ff4d4f', // Red danger
+                    '#ff7875', // Light red
+                    '#ffa39e', // Peach red
+                    '#cf1322', // Deep red
+                    '#a8071a', // Dark red
+                    '#f5222d'  // Primary red
                 ],
                 borderWidth: 3,
                 borderColor: '#000c17', // Color de fondo profundo para separar tajos
@@ -410,3 +421,4 @@ function actualizarGraficos() {
         }
     });
 }
+
