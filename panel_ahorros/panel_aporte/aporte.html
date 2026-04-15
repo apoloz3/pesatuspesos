@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aportar a la Meta</title>
+    <!-- Incluir CSS -->
+    <link rel="stylesheet" href="est_aporte.css">
+    <!-- Fuentes y Iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="modal-overlay">
+        <!-- Contenedor Principal (Modal) -->
+        <main class="modal-container">
+            <!-- Header -->
+            <header class="modal-header">
+                <div class="header-titles">
+                    <h2>APORTAR A LA META</h2>
+                    <p>Haz un aporte para avanzar hacia tu meta</p>
+                </div>
+                <button class="close-btn" aria-label="Cerrar ventana"><i class="fas fa-times"></i></button>
+            </header>
+
+            <!-- Goal Info Card -->
+            <section class="goal-info-card">
+                <div class="goal-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=200&h=120" alt="Moto" class="goal-image">
+                </div>
+                <div class="goal-details">
+                    <span class="goal-label">Mi meta:</span>
+                    <h3 class="goal-title">Comprar moto</h3>
+                </div>
+                <div class="goal-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Monto actual:</span>
+                        <span class="stat-value">€3,250</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Meta:</span>
+                        <span class="stat-value">€5,000</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Progreso:</span>
+                        <span class="stat-value highlight">65%</span>
+                    </div>
+                </div>
+                <div class="goal-chart-wrapper">
+                    <svg viewBox="0 0 36 36" class="circular-chart">
+                        <path class="circle-bg"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path class="circle"
+                            stroke-dasharray="65, 100"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <text x="18" y="20.8" class="percentage">65%</text>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Main Grid Content -->
+            <div class="main-content-grid">
+                
+                <!-- Left Column: Calendar -->
+                <section class="calendar-section">
+                    <div class="calendar-header-nav">
+                        <button class="cal-nav-btn"><i class="fas fa-chevron-left"></i></button>
+                        <h4 class="cal-month-title">DICIEMBRE 2025</h4>
+                        <button class="cal-nav-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendar-grid">
+                        <!-- Generado por JS -->
+                    </div>
+
+                    <div class="calendar-footer">
+                        <div class="cal-footer-info">
+                            <div class="cal-info-icon"><i class="fas fa-info"></i></div>
+                            <span class="cal-footer-text">Aportes este mes: <strong class="white-text">€320</strong></span>
+                        </div>
+                        <span class="cal-separator">|</span>
+                        <span class="cal-footer-subtext">Faltan: €180 para el hito mensual</span>
+                    </div>
+                </section>
+
+                <!-- Right Column: Input & Info -->
+                <section class="input-section">
+                    
+                    <!-- Selected Date -->
+                    <div class="info-box date-box">
+                        <p class="box-label">Día seleccionado</p>
+                        <div class="date-selector">
+                            <div class="calendar-icon">
+                                <i class="far fa-calendar"></i>
+                                <span class="cal-icon-day">15</span>
+                            </div>
+                            <h4 class="date-text">15 de Diciembre</h4>
+                        </div>
+                    </div>
+
+                    <!-- Input Amount -->
+                    <div class="info-box amount-box">
+                        <p class="box-label">¿Cuánto quieres aportar?</p>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">€</span>
+                            <input type="text" id="aporte-input" value="150.00" aria-label="Cantidad a aportar">
+                        </div>
+                        <div class="quick-amounts">
+                            <button class="quick-amount-btn" data-amount="20">+€20</button>
+                            <button class="quick-amount-btn" data-amount="50">+€50</button>
+                            <button class="quick-amount-btn" data-amount="100">+€100</button>
+                            <button class="quick-amount-btn outline">Otro</button>
+                        </div>
+                    </div>
+
+                    <!-- Milestone Info -->
+                    <div class="info-box milestone-box">
+                        <div class="milestone-content">
+                            <div class="milestone-icon-wrapper">
+                                <i class="far fa-lightbulb"></i>
+                            </div>
+                            <p class="milestone-text">
+                                Con este aporte alcanzarás<br>
+                                <strong class="white-text">€1,250 / €1,500 este mes</strong>
+                            </p>
+                        </div>
+                        <div class="milestone-progress-bar">
+                            <div class="milestone-progress-fill" style="width: 83%;"></div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Footer Actions -->
+            <footer class="modal-actions-footer">
+                <div class="action-buttons">
+                    <button class="btn-primary" id="btn-aportar">
+                        <i class="fas fa-coins" style="margin-right: 8px;"></i> APORTAR €150.00
+                    </button>
+                    <button class="btn-secondary">CANCELAR</button>
+                </div>
+                <a href="#" class="history-link">
+                    <i class="fas fa-wallet" style="margin-right: 5px;"></i> Ver historial <i class="fas fa-chevron-right arrow-sm"></i>
+                </a>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Script de Animación e Interacción -->
+    <script src="ani_aporte.js"></script>
+</body>
+</html>

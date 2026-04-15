@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PesatusPesos - Home</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/coins-solid.png">
+    <link rel="stylesheet" href="est_ahorro.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </head>
+
+  <body>
+    <div class="contenedor-flotante-app">
+      <header class="barra">
+        <div class="caja-logo">
+          <i class="fa-solid fa-coins" style="font-size: 2rem; color: #CFB53B;"></i>
+          <span class="texto-logo">PESATUSPESOS</span>
+        </div>
+        <div class="menu-wrapper">
+          <nav class="menu">
+            <button onclick="window.location.href='../Home/index.html'">Inicio</button>
+            <button onclick="window.location.href='../panel_movimientos/movimientos.html'">Movimientos</button>
+            <button>Deuda</button>
+            <button>Ahorro</button>
+          </nav>
+        </div>
+
+        <div class="contenedor-flotante">
+          <div class="opciones-flotantes">
+            <button class="boton-opcion boton-manual">
+              <img src="img\informacion (1).png" alt="Manual" />
+            </button>
+            <button class="boton-opcion boton-atencion">
+              <img src="img/apoyo (1).png" alt="Atencion" />
+            </button>
+            <button class="boton-opcion boton-editar" id="botonPerfil">
+              <img src="img/avatar-de-usuario (1).png" alt="Editar" />
+            </button>
+          </div>
+
+          <button class="boton-principal" id="botonConfiguracion">
+            <img src="img\ajustes.png" alt="Configuración" />
+          </button>
+        </div>
+      </header>
+
+      <main class="contenido">
+
+        <section class="principal">
+          <div class="seccion-metas">
+            <h1 class="titulo-seccion">Crea tus sueños</h1>
+            
+            <div class="carousel-container">
+              <button class="nav-btn prev" id="prevBtn">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+
+              <div class="carousel-track-container">
+                <div class="carousel-track" id="carouselTrack">
+                  <!-- Tarjeta: Moto -->
+                  <div class="meta-card" style="background-image: url('img/moto_meta.png');">
+                    <div class="card-overlay">
+                      <div class="card-header">
+                        <span class="meta-label">Mi meta:</span>
+                        <h2 class="meta-titulo">Comprar moto</h2>
+                      </div>
+                      <div class="card-footer">
+                        <div class="progreso-info">
+                          <div class="progreso-texto">Progreso: <span>$3,250 de $5,000</span></div>
+                          <div class="progreso-bar">
+                            <div class="progreso-fill" style="width: 65%;"></div>
+                          </div>
+                        </div>
+                        <button class="boton-aportar">Aportar</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tarjeta: Japón -->
+                  <div class="meta-card" style="background-image: url('img/japon_meta.png');">
+                    <div class="card-overlay">
+                      <div class="card-header">
+                        <h2 class="meta-titulo">Viaje a Japón</h2>
+                      </div>
+                      <div class="card-footer">
+                        <div class="progreso-info">
+                          <div class="progreso-texto">Progreso: <span>$10.000 ahorrado</span> <span class="porcentaje">83%</span></div>
+                          <div class="progreso-bar">
+                            <div class="progreso-fill" style="width: 83%;"></div>
+                          </div>
+                        </div>
+                        <button class="boton-aportar">Aportar</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tarjeta: Crear Nueva -->
+                  <div class="meta-card card-crear" style="background-image: url('img/textura_oro.png');">
+                    <div class="card-overlay-crear">
+                      <div class="icon-plus">
+                        <i class="fa-solid fa-plus"></i>
+                      </div>
+                      <p>Crear tu propia meta</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="nav-btn next" id="nextBtn">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+
+            <div class="carousel-indicators" id="carouselIndicators">
+              <!-- Los puntos se generarán dinámicamente con JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel usuario FUERA de .principal -->
+        <aside class="usuario" id="panelUsuario">
+          <button class="cerrar-panel" id="cerrarPanel">✕</button>
+          <h2 id="nombre_usuario">Usuario</h2>
+          <div class="avatar-wrapper">
+            <img
+              src="img/hucha.png"
+              class="avatar"
+              id="avatarPrincipal"
+              alt="avatar"
+            />
+            <div class="avatar-lapiz">
+              <img src="img/lapiz.png" alt="editar" width="14" height="14" />
+            </div>
+          </div>
+          <p class="frase" id="frase_motivadora"></p>
+          <button class="boton-cerrar">Cerrar sesión</button>
+        </aside>
+
+
+        <!-- Modal Crear Meta -->
+        <div class="modal" id="modalCrearMeta">
+          <div class="modal-crear-content">
+            <button class="cerrar-modal-crear" id="cerrarModalCrear">✕</button>
+            <div class="crear-header">
+              <h2>CREAR NUEVA META</h2>
+              <p>Personaliza tu próximo objetivo de ahorro</p>
+            </div>
+            
+            <div class="crear-body-grid">
+              <!-- Left Column -->
+              <div class="crear-col">
+                <div class="crear-section">
+                  <div class="crear-sec-title">
+                    <span class="sec-num">1</span> DATOS BÁSICOS
+                  </div>
+                  <label class="crear-label">TÍTULO DE LA META</label>
+                  <input type="text" class="crear-input" placeholder="[Ej. Coche Nuevo]">
+                  
+                  <label class="crear-label" style="margin-top: 20px;">ÍCONO Y ESTILO</label>
+                  <div class="grid-iconos">
+                    <div class="icono-btn foto-btn">
+                      <i class="fa-solid fa-camera"></i>
+                      <span>SUBIR<br>FOTO</span>
+                    </div>
+                    <button class="icono-btn"><i class="fa-solid fa-piggy-bank"></i></button>
+                    <button class="icono-btn"><i class="fa-solid fa-car"></i></button>
+                    <button class="icono-btn active"><i class="fa-solid fa-laptop"></i></button>
+                    <button class="icono-btn"><i class="fa-solid fa-mountain-sun"></i></button>
+                    <button class="icono-btn"><i class="fa-solid fa-coins"></i></button>
+                    <button class="icono-btn"><i class="fa-regular fa-handshake"></i></button>
+                    <button class="icono-btn"><i class="fa-solid fa-hand-holding-dollar"></i></button>
+                    <button class="icono-btn"><i class="fa-solid fa-house"></i></button>
+                  </div>
+                  
+                  <div class="crear-toggle-row" style="margin-top: 25px;">
+                    <label class="crear-label">MOSTRAR EN CARRUSEL</label>
+                    <label class="switch-toggle">
+                      <input type="checkbox" checked>
+                      <span class="slider-toggle round"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="crear-col">
+                <div class="crear-section">
+                  <div class="crear-sec-title">
+                    <span class="sec-num">2</span> OBJETIVOS FINANCIEROS
+                  </div>
+                  <label class="crear-label">MONTO TOTAL A AHORRAR</label>
+                  <div class="input-icon-wrapper">
+                    <span class="simbolo">€</span>
+                    <input type="text" class="crear-input with-icon" value="">
+                    <i class="fa-solid fa-calculator trailing-icon"></i>
+                  </div>
+
+                  <label class="crear-label" style="margin-top: 20px;">DURACIÓN O FECHA LÍMITE</label>
+                  <div class="slider-wrapper">
+                    <div class="double-slider-track">
+                      <div class="double-slider-fill" style="left: 0%; width: 50%;"></div>
+                      <div class="thumb" style="left: 0%;"></div>
+                      <div class="thumb" style="left: 50%;"></div>
+                    </div>
+                    <i class="fa-regular fa-calendar trailing-icon"></i>
+                  </div>
+                  
+                  <div class="fechas-row" style="margin-top: 15px;">
+                    <div class="fecha-col">
+                      <span class="fecha-sub">DÍA DE AHORRO</span>
+                      <div class="select-group">
+                        <select class="crear-select"><option>Mes</option></select>
+                        <select class="crear-select"><option>Años</option></select>
+                      </div>
+                    </div>
+                    <div class="fecha-col">
+                      <span class="fecha-sub">FECHA META</span>
+                      <div class="select-group">
+                        <select class="crear-select"><option>Meta</option></select>
+                        <select class="crear-select"><option>Años</option></select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="crear-section" style="margin-top: 35px;">
+                  <div class="crear-sec-title">
+                    <span class="sec-num">3</span> CONTRIBUCIONES
+                  </div>
+                  
+                  <div class="fechas-row">
+                    <div class="fecha-col" style="flex:1;">
+                      <label class="crear-label">FRECUENCIA DE APORTES</label>
+                      <div class="slider-wrapper">
+                        <input type="range" min="1" max="3" value="1" class="styled-slider small-slider">
+                      </div>
+                      <div class="frecuencia-labels">
+                        <span>SEMANAL</span><span>MENSUAL</span><span>QUINCENAL</span>
+                      </div>
+                    </div>
+                    <div class="fecha-col" style="width: 140px;">
+                      <label class="crear-label">MONTO DEL APORTE</label>
+                      <input type="text" class="crear-input right-align" value="">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="crear-footer-actions">
+              <button class="btn-primary-gold" id="btnGuardarMeta"><i class="fa-solid fa-plus"></i> GUARDAR Y CREAR META</button>
+              <button class="btn-secondary-transparent" id="btnCancelarCrear">CANCELAR</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+      <!--FOOTER-->
+      <footer>
+        <div class="footer-grid">
+          <!-- Logo + descripción -->
+          <div class="footer-brand">
+            <div class="footer-logos">
+              <img
+                src="img/logoSenaNaranja.png"
+                alt="SENA"
+                style="width: 50px"
+              />
+              <img
+                src="img\Gemini_Generated_Image_1f5if41f5if41f5i-removebg-preview.png"
+                alt="Logo 2"
+                style="width: 50px"
+              />
+              <img
+                src="img\Gemini_Generated_Image_8j74rx8j74rx8j74-removebg-preview.png"
+                alt="Logo 3"
+                style="width: 50px"
+              />
+            </div>
+            <p>PesatusPesos · Herramienta de educación financiera</p>
+          </div>
+
+          <!-- Contacto -->
+          <div class="footer-col">
+            <h4>Contacto</h4>
+            <p>jpjcompany10@gmail.com</p>
+            <p>Lunes a viernes 8:00 a.m. – 6:00 p.m.</p>
+            <p>Tel: +57 310 520 4819</p>
+          </div>
+
+          <!-- Ubicación -->
+          <div class="footer-col">
+            <h4>Ubicación</h4>
+            <p>Medellín, Antioquia</p>
+            <p>Colombia</p>
+            <p>Aprendizaje en línea y seguimiento presencial según programa.</p>
+          </div>
+
+          <!-- Legal -->
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <a
+              href="https://drive.google.com/file/d/1niNl3BNnppZKtocOjVEMd492v4KXjG2V/view?usp=sharing"
+              class="politicas-link"
+              >Políticas de privacidad y datos</a
+            >
+            <a
+              href="https://drive.google.com/file/d/1U7qVxJ6KrGPEQ5WMXAMO16hA1F6firyb/view?usp=sharing"
+              class="terminos-link"
+              >Términos y condiciones</a
+            >
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          © 2026 PesatusPesos · Proyecto formativo · SENA
+        </div>
+      </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="ani_ahorro.js"></script>
+  </body>
+</html>
