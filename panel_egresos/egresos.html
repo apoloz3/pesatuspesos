@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Ingresos - Dashboard Financiero</title>
-    <link rel="stylesheet" href="ingresos.css">
+    <title>Panel de Egresos - Dashboard Financiero</title>
+    <link rel="stylesheet" href="egresos.css">
     <!-- Fonts and Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -26,16 +26,20 @@
         <!-- Resumen Superior -->
         <section class="resumen-superior">
             <div class="tarjeta-resumen">
-                <h3>Ingresos del Periodo</h3>
-                <div class="monto" id="resumenIngresos">$ 0</div>
+                <h3>Gastos</h3>
+                <div class="monto" id="resumenEgresos" style="color: var(--danger); text-shadow: 0 0 15px rgba(255, 77, 77, 0.3);">$ 0</div>
+            </div>
+            <div class="tarjeta-resumen">
+                <h3>Saldo Total</h3>
+                <div class="monto" id="resumenSaldo" style="color: var(--growth-green);">$ 0</div>
             </div>
         </section>
 
-        <!-- Gestión de Ingresos -->
+        <!-- Gestión de Egresos -->
         <section class="seccion-tabla">
-            <h2>Gestión de Ingresos - Detalle</h2>
+            <h2>Gestión de Egresos - Detalle</h2>
             <div class="contenedor-tabla">
-                <table id="tablaIngresos">
+                <table id="tablaEgresos">
                     <thead>
                         <tr>
                             <th>Fecha</th>
@@ -77,13 +81,13 @@
                 <div class="tarjeta-analisis tarjeta-izq">
                     <!-- Barras -->
                     <div class="contenedor-grafico-barras">
-                        <h3 style="font-size: 0.75rem; text-transform: uppercase; color: var(--gold-light); margin-bottom: 1rem; text-align: center;">Evolución de Ingresos</h3>
+                        <h3 style="font-size: 0.75rem; text-transform: uppercase; color: var(--gold-light); margin-bottom: 1rem; text-align: center;">Evolución de Egresos</h3>
                         <canvas id="graficoBarras"></canvas>
                     </div>
                     <!-- Resumen Inferior -->
                     <div class="resumen-inferior" style="width: 90%; margin: 1.5rem auto 0 auto; border-top: 1px solid var(--glass-border); padding-top: 1rem; display: flex; justify-content: center; align-items: center; gap: 0.8rem;">
-                        <span style="color: var(--text-muted); font-size: 0.70rem; text-transform: uppercase;">Total de Ingresos:</span>
-                        <span id="analisisIngresos" style="color: var(--growth-green); font-size: 1.15rem; font-weight: bold; text-shadow: 0 0 10px rgba(22, 163, 74, 0.4);">$ 0</span>
+                        <span style="color: var(--text-muted); font-size: 0.70rem; text-transform: uppercase;">Total de Egresos:</span>
+                        <span id="analisisEgresos" style="color: var(--danger); font-size: 1.15rem; font-weight: bold; text-shadow: 0 0 10px rgba(255, 77, 77, 0.5);">$ 0</span>
                     </div>
                 </div>
 
@@ -100,6 +104,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="ingresos.js"></script>
+    <script src="Egresos.js"></script>
 </body>
 </html>
+
