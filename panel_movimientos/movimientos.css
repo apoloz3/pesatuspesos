@@ -1025,6 +1025,10 @@ footer {
    DISEÑO ESPECÍFICO MOVIMIENTOS
    ============================================================ */
 
+/* ============================================================ 
+   DISEÑO ESPECÍFICO MOVIMIENTOS - MEJORADO
+   ============================================================ */
+
 .seccion-tablero {
   width: 100%;
   max-width: 1400px;
@@ -1035,32 +1039,53 @@ footer {
 
 @keyframes aparecer {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .cuadricula-tablero {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
-  gap: 32px;
+  gap: 24px;
 }
 
+/* ── TARJETA BASE ── */
 .tarjeta-panel {
-  background: linear-gradient(160deg, #001a2d 0%, #000c17 100%);
+  background: linear-gradient(145deg, #001e35 0%, #000d1a 100%);
   border-radius: 20px;
-  border: 1px solid rgba(207, 181, 60, 0.15);
-  padding: 32px;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(207, 181, 60, 0.18);
+  padding: 28px 32px;
+  box-shadow:
+    0 2px 0 rgba(207, 181, 60, 0.12) inset,   /* borde superior dorado sutil */
+    0 16px 40px rgba(0, 0, 0, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
   position: relative;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              box-shadow 0.35s ease,
+              border-color 0.35s ease;
+}
+
+/* Brillo esquina superior izquierda */
+.tarjeta-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle at top left, rgba(207,181,60,0.07) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .tarjeta-panel:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(207, 181, 60, 0.08);
+  transform: translateY(-4px);
+  border-color: rgba(207, 181, 60, 0.35);
+  box-shadow:
+    0 2px 0 rgba(207, 181, 60, 0.2) inset,
+    0 24px 50px rgba(0, 0, 0, 0.7),
+    0 0 30px rgba(207, 181, 60, 0.06);
 }
 
+/* ── TARJETA BALANCE ── */
 .tarjeta-balance-principal {
   display: flex;
   flex-direction: column;
@@ -1069,28 +1094,35 @@ footer {
 }
 
 .titulo-tarjeta {
-  color: var(--text-on-dark);
-  font-size: 1.1rem;
-  font-weight: 300;
-  margin-bottom: 8px;
-  opacity: 0.8;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
 }
 
 .monto-balance {
   color: var(--gold-light);
-  font-size: 2.5rem;
+  font-size: 2.6rem;
   font-weight: 700;
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
+  line-height: 1;
+  text-shadow: 0 0 40px rgba(243, 217, 137, 0.25);
 }
 
 .variacion-positiva {
-  color: var(--growth-green);
-  background: var(--growth-green-soft);
-  display: inline-block;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 4px 12px;
   border-radius: 20px;
-  font-size: 0.85rem;
-  margin-top: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 10px;
 }
 
 .contenedor-grafico-linea {
@@ -1099,168 +1131,337 @@ footer {
   width: 100%;
 }
 
-.grafico-svg {
-  width: 100%;
-  height: 120px;
-  margin-top: 20px;
-}
-
-.etiqueta-mes {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-}
-
+/* ── TARJETAS INGRESOS / EGRESOS ── */
 .columna-estadisticas {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .tarjeta-estadistica {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 32px;
+  padding: 28px 32px;
   width: 100%;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
   color: inherit;
-  border: var(--borde-premium);
+  border: 1px solid rgba(207, 181, 60, 0.18);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform     0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow    0.32s ease,
+    border-color  0.32s ease,
+    background    0.32s ease;
+  will-change: transform, box-shadow;
 }
 
+/* Brillo interior que se activa en hover */
+.tarjeta-estadistica::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tarjeta-estadistica:hover::before {
+  opacity: 1;
+}
+
+/* Acento de color lateral */
+.tarjeta-estadistica#btnIngresos::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, #4ade80, #16a34a);
+  transition: top 0.32s ease, bottom 0.32s ease,
+              box-shadow 0.32s ease;
+}
+
+.tarjeta-estadistica#btnEgresos::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, #ff6060, #cc0000);
+  transition: top 0.32s ease, bottom 0.32s ease,
+              box-shadow 0.32s ease;
+}
+
+/* Acento lateral se expande en hover */
+.tarjeta-estadistica#btnIngresos:hover::after {
+  top: 10%;
+  bottom: 10%;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.6);
+}
+
+.tarjeta-estadistica#btnEgresos:hover::after {
+  top: 10%;
+  bottom: 10%;
+  box-shadow: 0 0 12px rgba(255, 60, 60, 0.6);
+}
+
+/* ── HOVER INGRESOS ── */
+.tarjeta-estadistica#btnIngresos:hover {
+  transform: translateY(-5px) scale(1.015);
+  border-color: rgba(74, 222, 128, 0.35);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.55),
+    0 0 28px rgba(74, 222, 128, 0.12),
+    0 2px 0 rgba(74, 222, 128, 0.15) inset;
+}
+
+/* ── HOVER EGRESOS ── */
+.tarjeta-estadistica#btnEgresos:hover {
+  transform: translateY(-5px) scale(1.015);
+  border-color: rgba(255, 60, 60, 0.35);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.55),
+    0 0 28px rgba(255, 60, 60, 0.12),
+    0 2px 0 rgba(255, 60, 60, 0.15) inset;
+}
+
+/* ── ACTIVE: efecto de presión física ── */
 .tarjeta-estadistica:active {
-  transform: scale(0.96) translateY(2px);
-  filter: brightness(1.2);
+  transform: scale(0.975) translateY(2px);
+  transition:
+    transform  0.1s cubic-bezier(0.36, 0.07, 0.19, 0.97),
+    box-shadow 0.1s ease;
+}
+
+.tarjeta-estadistica#btnIngresos:active {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(74, 222, 128, 0.08);
+}
+
+.tarjeta-estadistica#btnEgresos:active {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(255, 60, 60, 0.08);
 }
 
 .titulo-small {
-  color: var(--text-on-dark);
-  font-size: 1rem;
-  font-weight: 400;
-  margin-bottom: 4px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
 }
 
 .monto-small {
   color: var(--gold-light);
-  font-size: 1.3rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1;
 }
 
-.porcentaje-crecimiento { color: var(--growth-green); font-size: 0.85rem; }
-.porcentaje-caida { color: var(--danger); font-size: 0.85rem; }
+.porcentaje-crecimiento {
+  color: #4ade80;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
 
+.porcentaje-caida {
+  color: #ff6060;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ── ICONOS DE ESTADÍSTICA (reemplaza imágenes) ── */
 .visualizacion-barras-mini {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  flex-shrink: 0;
+}
+
+#btnIngresos .visualizacion-barras-mini {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+  font-size: 22px;
+}
+
+#btnEgresos .visualizacion-barras-mini {
+  background: rgba(255, 60, 60, 0.1);
+  border: 1px solid rgba(255, 60, 60, 0.2);
+  color: #ff6060;
+  font-size: 22px;
+}
+
+.barras-silueta { display: none; }
+.icono-flotante-verde { display: none; }
+.icono-flotante-rojo  { display: none; }
+
+/* ── TARJETA MOVIMIENTOS ── */
+.tarjeta-movimientos-anchura {
+  grid-column: 1 / span 2;
+}
+
+.titulo-tarjeta-mov {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(207, 181, 60, 0.12);
+  display: flex;
+  align-items: center;
   gap: 10px;
 }
 
-.barras-silueta {
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  height: 50px;
+.titulo-tarjeta-mov::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 16px;
+  background: linear-gradient(180deg, var(--matte-gold), var(--gold-bright));
+  border-radius: 2px;
 }
 
-.barra-silueta {
-  width: 8px;
-  background: var(--matte-gold);
-  border-radius: 4px 4px 0 0;
-  opacity: 0.8;
+.contenedor-lista-movimientos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-.barra-silueta.opaca { opacity: 0.4; }
-
-.icono-flotante-verde {
-  color: var(--growth-green);
-  font-size: 1.5rem;
-  filter: drop-shadow(0 0 5px var(--growth-green));
-}
-
-.icono-flotante-rojo {
-  color: var(--danger);
-  font-size: 1.5rem;
-  filter: drop-shadow(0 0 5px var(--danger));
-}
-
-.tarjeta-movimientos-anchura { grid-column: 1 / span 2; }
-
-.titulo-tarjeta-mov {
-  color: var(--text-on-dark);
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding-bottom: 12px;
-}
-
-.contenedor-lista-movimientos { 
-  display: grid; 
-  grid-template-columns: 1fr 1fr; 
-  gap: 16px; 
-}
-
+/* ── FILA MOVIMIENTO ── */
 .fila-movimiento {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid transparent;
-  transition: all 0.3s ease;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.fila-movimiento::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
 }
 
 .fila-movimiento:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(207, 181, 60, 0.25);
-  transform: translateX(4px);
-  box-shadow: -4px 4px 15px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(207, 181, 60, 0.2);
+  transform: translateX(6px);
+  box-shadow: -6px 0 20px rgba(0,0,0,0.3), 4px 0 0 rgba(207,181,60,0.15) inset;
 }
 
-.item-izquierda, .item-derecha { display: flex; align-items: center; gap: 16px; }
-.item-derecha { flex-direction: column; align-items: flex-end; gap: 4px; }
+.item-izquierda { display: flex; align-items: center; gap: 14px; }
+.item-derecha   { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 
+/* ── CÍRCULO ICONO ── */
 .circulo-icono {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.fila-movimiento:hover .circulo-icono {
+  transform: scale(1.1);
 }
 
 .circulo-icono.ingreso {
   background: rgba(22, 163, 74, 0.15);
-  color: var(--growth-green);
-  border: 1px solid rgba(22, 163, 74, 0.3);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.1);
 }
 
 .circulo-icono.egreso {
-  background: rgba(255, 0, 0, 0.15);
-  color: var(--danger);
-  border: 1px solid rgba(255, 0, 0, 0.3);
+  background: rgba(255, 60, 60, 0.12);
+  color: #ff6060;
+  border: 1px solid rgba(255, 60, 60, 0.25);
+  box-shadow: 0 0 12px rgba(255, 60, 60, 0.1);
 }
 
-.nombre-mov { color: var(--text-on-dark); font-weight: 500; font-size: 1rem; }
-.tipo-mov { color: var(--text-muted); font-size: 0.8rem; }
-.monto-mov { font-weight: 700; font-size: 1.1rem; }
-.monto-mov.positivo { color: var(--growth-green); }
-.monto-mov.negativo { color: var(--danger); }
-.fecha-mov { color: var(--text-soft); font-size: 0.8rem; }
+.detalles-mov {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
 
-/* MEDIA QUERIES MOVIMIENTOS */
+.nombre-mov {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.tipo-mov {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.monto-mov {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.3px;
+}
+
+.monto-mov.positivo {
+  color: #4ade80;
+  text-shadow: 0 0 16px rgba(74, 222, 128, 0.3);
+}
+
+.monto-mov.negativo {
+  color: #ff6060;
+  text-shadow: 0 0 16px rgba(255, 60, 60, 0.3);
+}
+
+.fecha-mov {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.75rem;
+}
+
+/* ── MEDIA QUERIES ── */
 @media (max-width: 900px) {
-  .cuadricula-tablero { 
-    grid-template-columns: 1fr; 
-    gap: 20px;
+  .cuadricula-tablero {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   .tarjeta-movimientos-anchura { grid-column: 1; }
-  .tarjeta-balance-principal { min-height: 320px; }
-  .tarjeta-panel { padding: 24px; }
+  .contenedor-lista-movimientos { grid-template-columns: 1fr; }
+  .tarjeta-balance-principal { min-height: 300px; }
+  .tarjeta-panel { padding: 22px 20px; }
 }
