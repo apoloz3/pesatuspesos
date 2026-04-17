@@ -122,128 +122,199 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /**
- * Inicializa el gráfico del balance principal con Chart.js
+ * Inicializa el gráfico del balance principal.
+ * - Línea VERDE con área rellena para Ingresos acumulados
+ * - Línea ROJA  con área rellena para Egresos acumulados
+ * Estilo oscuro inspirado en dashboards de criptomonedas.
  */
 function inicializarGraficos() {
-    const ctx = document.getElementById('graficoBalancePrincipal');
-    if (!ctx) return;
+    const canvas = document.getElementById('graficoBalancePrincipal');
+    if (!canvas) return;
 
     const registros = JSON.parse(localStorage.getItem('registros_financieros')) || [];
     const opcionesConceptoIngreso = ["Sueldo", "Venta", "Inversión", "Regalo", "Otro"];
+    const opcionesConceptoEgreso  = ["Vivienda", "Alimentación", "Transporte", "Servicios", "Entretenimiento", "Salud", "Otro"];
 
-    // Ordenar los registros por fecha
+    // Ordenar registros por fecha
     const regsSorted = registros
         .filter(r => r.fecha)
         .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
-    let dataPoints = [];
-    let labels = [];
-    let balanceActual = 0;
+    let puntosIngresos = [];
+    let puntosEgresos  = [];
+    let labels         = [];
+    let acumIngreso    = 0;
+    let acumEgreso     = 0;
 
     if (regsSorted.length === 0) {
-        // Fallback visual si no hay datos
-        dataPoints = [0, 0];
-        labels = ["Sin mes", "Sin mes"];
+        // Fallback visual cuando no hay datos
+        puntosIngresos = [100, 200, 250, 300, 320, 400, 460, 500, 560, 620, 700];
+        puntosEgresos  = [80,  150, 170, 210, 260, 290, 310, 350, 370, 400, 430];
+        labels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov'];
     } else {
         regsSorted.forEach(reg => {
-            const monto = parseFloat(reg.monto) || 0;
+            const monto     = parseFloat(reg.monto) || 0;
             const esIngreso = opcionesConceptoIngreso.includes(reg.concepto) || reg.tipo === 'ingreso';
-            const esEgreso = ["Vivienda", "Alimentación", "Transporte", "Servicios", "Entretenimiento", "Salud", "Otro"].includes(reg.concepto) || reg.tipo === 'egreso';
-            
-            if (esIngreso) {
-                balanceActual += monto; // Subida
-            } else if (esEgreso) {
-                balanceActual -= monto; // Bajada
-            }
-            dataPoints.push(balanceActual);
+            const esEgreso  = opcionesConceptoEgreso.includes(reg.concepto)  || reg.tipo === 'egreso';
 
-            // Obtener el mes y día
+            if (esIngreso)     acumIngreso += monto;
+            else if (esEgreso) acumEgreso  += monto;
+
+            puntosIngresos.push(acumIngreso);
+            puntosEgresos.push(acumEgreso);
+
             const fechaObj = new Date(reg.fecha + 'T00:00:00');
-            const mesStr = fechaObj.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
-            labels.push(mesStr);
+            labels.push(fechaObj.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' }));
         });
     }
 
-    let chartGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 180);
-    chartGradient.addColorStop(0, 'rgba(255, 204, 0, 0.15)');
-    chartGradient.addColorStop(1, 'rgba(255, 204, 0, 0)');
+    const ctx2d = canvas.getContext('2d');
+    const h = canvas.parentElement ? canvas.parentElement.offsetHeight || 180 : 180;
 
-    new Chart(ctx, {
+    // Gradiente VERDE (ingresos)
+    const gradVerde = ctx2d.createLinearGradient(0, 0, 0, h);
+    gradVerde.addColorStop(0,   'rgba(34, 197, 94, 0.45)');
+    gradVerde.addColorStop(0.6, 'rgba(34, 197, 94, 0.10)');
+    gradVerde.addColorStop(1,   'rgba(34, 197, 94, 0.00)');
+
+    // Gradiente ROJO (egresos)
+    const gradRojo = ctx2d.createLinearGradient(0, 0, 0, h);
+    gradRojo.addColorStop(0,   'rgba(255, 60, 60, 0.45)');
+    gradRojo.addColorStop(0.6, 'rgba(255, 60, 60, 0.10)');
+    gradRojo.addColorStop(1,   'rgba(255, 60, 60, 0.00)');
+
+    // Plugin: punto activo con halo de color
+    const pluginPuntoHalo = {
+        id: 'puntoHalo',
+        afterDatasetsDraw(chart) {
+            const { ctx, tooltip } = chart;
+            if (!tooltip || !tooltip._active || tooltip._active.length === 0) return;
+            tooltip._active.forEach(punto => {
+                const x     = punto.element.x;
+                const y     = punto.element.y;
+                const color = punto.datasetIndex === 0 ? '#22c55e' : '#ff3c3c';
+                ctx.save();
+                // Halo exterior
+                ctx.beginPath();
+                ctx.arc(x, y, 10, 0, Math.PI * 2);
+                ctx.fillStyle = color.replace(')', ', 0.25)').replace('rgb', 'rgba');
+                ctx.fill();
+                // Punto central
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = color;
+                ctx.shadowBlur  = 10;
+                ctx.fill();
+                ctx.restore();
+            });
+        }
+    };
+
+    new Chart(canvas, {
         type: 'line',
+        plugins: [pluginPuntoHalo],
         data: {
             labels: labels,
-            datasets: [{
-                label: 'Balance Total',
-                data: dataPoints,
-                borderColor: '#ffcc00', // Dorado
-                borderWidth: 2,
-                backgroundColor: chartGradient,
-                fill: true,
-                tension: 0, // Líneas rectas
-                pointBackgroundColor: '#001a2d',
-                pointBorderColor: '#ffcc00',
-                pointBorderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 6
-            }]
+            datasets: [
+                {
+                    // ── INGRESOS ──
+                    label: 'Ingresos',
+                    data: puntosIngresos,
+                    borderColor: '#22c55e',
+                    borderWidth: 2.5,
+                    backgroundColor: gradVerde,
+                    fill: true,
+                    tension: 0.45,
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                },
+                {
+                    // ── EGRESOS ──
+                    label: 'Egresos',
+                    data: puntosEgresos,
+                    borderColor: '#ff3c3c',
+                    borderWidth: 2.5,
+                    backgroundColor: gradRojo,
+                    fill: true,
+                    tension: 0.45,
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                }
+            ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            layout: {
-                padding: { left: -5, bottom: -5 }
-            },
+            animation: { duration: 900, easing: 'easeInOutQuart' },
+            layout: { padding: { left: 0, right: 4, top: 8, bottom: 0 } },
             scales: {
                 y: {
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.05)',
+                        color: 'rgba(255, 255, 255, 0.04)',
                         drawBorder: false,
                     },
+                    border: { display: false },
                     ticks: {
-                        color: 'rgba(255, 255, 255, 0.4)',
-                        font: { family: "'Inter', sans-serif", size: 11 },
-                        callback: function(value) {
-                            if (Math.abs(value) >= 1000) {
-                                return (value / 1000).toFixed(0) + 'k';
-                            }
+                        color: 'rgba(255, 255, 255, 0.35)',
+                        font: { size: 10 },
+                        maxTicksLimit: 5,
+                        callback(value) {
+                            if (Math.abs(value) >= 1_000_000) return (value / 1_000_000).toFixed(1) + 'M';
+                            if (Math.abs(value) >= 1_000)     return (value / 1_000).toFixed(0) + 'k';
                             return value;
                         }
                     }
                 },
                 x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.05)',
-                        drawBorder: false
-                    },
+                    grid: { display: false },
+                    border: { display: false },
                     ticks: {
-                        display: true, // Ahora mostramos los meses abajo
-                        color: 'rgba(255, 255, 255, 0.5)',
-                        font: { family: "'Inter', sans-serif", size: 10 },
-                        maxRotation: 45,
-                        minRotation: 0
+                        color: 'rgba(255, 255, 255, 0.35)',
+                        font: { size: 10 },
+                        maxRotation: 0,
+                        maxTicksLimit: 6,
                     }
                 }
             },
             plugins: {
-                legend: { display: false },
+                legend: {
+                    display: true,
+                    position: 'top',
+                    align: 'end',
+                    labels: {
+                        color: 'rgba(255,255,255,0.6)',
+                        font: { size: 11 },
+                        boxWidth: 12,
+                        boxHeight: 3,
+                        borderRadius: 2,
+                        padding: 14,
+                        usePointStyle: true,
+                        pointStyle: 'line',
+                    }
+                },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 10, 18, 0.9)',
-                    titleColor: '#fedc00',
+                    backgroundColor: 'rgba(0, 10, 18, 0.92)',
+                    titleColor: 'rgba(255,255,255,0.5)',
                     bodyColor: '#ffffff',
-                    borderColor: '#cfb53c',
+                    borderColor: 'rgba(255,255,255,0.08)',
                     borderWidth: 1,
-                    displayColors: false,
+                    padding: 12,
+                    displayColors: true,
+                    boxWidth: 8,
+                    boxHeight: 8,
                     callbacks: {
-                        label: function(context) {
-                            return '$ ' + context.parsed.y.toLocaleString();
+                        title(items) {
+                            return items[0]?.label || '';
+                        },
+                        label(context) {
+                            const simbolo = context.datasetIndex === 0 ? '▲ Ingresos' : '▼ Egresos';
+                            return `  ${simbolo}: $ ${context.parsed.y.toLocaleString('es-CO')}`;
                         }
                     }
                 }
             },
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
+            interaction: { intersect: false, mode: 'index' },
         }
     });
 }
