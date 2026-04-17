@@ -110,15 +110,48 @@ document.addEventListener("DOMContentLoaded", function () {
   inicializarGraficos();
   aplicarEfectosEntrada();
   sincronizarTotales();
-  actualizarMovimientosRecientes();
+  actualizarMovimientosRecientes('Hoy'); // Filtro inicial por defecto
+  actualizarHistorialMes(0); // Cargar primera página del historial
 
-  // Redirección a Panel Ingresos
+  // Configurar botones de filtro de movimientos
+  const botonesFiltro = document.querySelectorAll('.btn-filtro');
+  botonesFiltro.forEach(btn => {
+      btn.addEventListener('click', () => {
+          // Cambiar estado activo
+          botonesFiltro.forEach(b => b.classList.remove('activo'));
+          btn.classList.add('activo');
+          
+          // Re-renderizar lista filtrada
+          const filtro = btn.textContent.trim();
+          actualizarMovimientosRecientes(filtro);
+      });
+  });
+
+  // Redirección a Paneles
   const btnIngresos = document.getElementById('btnIngresos');
   if (btnIngresos) {
       btnIngresos.addEventListener('click', () => {
           window.location.href = '../panel_ingresos/ingresos.html';
       });
   }
+
+  const btnEgresos = document.getElementById('btnEgresos');
+  if (btnEgresos) {
+      btnEgresos.addEventListener('click', () => {
+          window.location.href = '../panel_egresos/egresos.html';
+      });
+  }
+
+  // Configurar paginación del historial
+  const puntosPag = document.querySelectorAll('.punto-pag');
+  puntosPag.forEach(punto => {
+      punto.addEventListener('click', () => {
+          const pagina = parseInt(punto.dataset.page);
+          puntosPag.forEach(p => p.classList.remove('activo'));
+          punto.classList.add('activo');
+          actualizarHistorialMes(pagina);
+      });
+  });
 });
 
 /**
@@ -379,9 +412,9 @@ function sincronizarTotales() {
     const balance = totalIngresos - totalGastos;
 
     // Actualizar elementos en el DOM
-    const elIngresos = document.querySelector('#btnIngresos .monto-small');
-    const elEgresos = document.querySelector('#btnEgresos .monto-small');
-    const elBalance = document.querySelector('.tarjeta-balance-principal .monto-balance');
+    const elIngresos = document.querySelector('#btnIngresos .monto-resumen');
+    const elEgresos = document.querySelector('#btnEgresos .monto-resumen');
+    const elBalance = document.querySelector('.tarjeta-resumen-header .monto-balance');
     
     if (elIngresos) elIngresos.textContent = formatCurrency(totalIngresos);
     if (elEgresos) elEgresos.textContent = formatCurrency(totalGastos);
@@ -399,35 +432,78 @@ function formatCurrency(valor) {
 /**
  * Lee los datos de registros_financieros y actualiza la tarjeta de Movimientos Recientes
  */
-function actualizarMovimientosRecientes() {
+function actualizarMovimientosRecientes(filtro = 'Hoy') {
     const contenedor = document.getElementById('listaMovimientosRecientes');
     if (!contenedor) return;
 
-    const registros = JSON.parse(localStorage.getItem('registros_financieros')) || [];
+    let registros = JSON.parse(localStorage.getItem('registros_financieros')) || [];
     
-    // Sort by date descending, gracefully handling empty dates (as Epoch 0)
-    registros.sort((a, b) => {
+    // Lógica de filtrado por fechas
+    const ahora = new Date();
+    ahora.setHours(23, 59, 59, 999); // Final del día de hoy
+
+    const hoy = new Date();
+    const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+
+    if (filtro === 'Hoy') {
+        registros = registros.filter(r => r.fecha === hoyStr);
+    } else if (filtro === 'Esta semana') {
+        const haceUnaSemana = new Date();
+        haceUnaSemana.setDate(ahora.getDate() - 7);
+        haceUnaSemana.setHours(0, 0, 0, 0); 
+
+        registros = registros.filter(r => {
+            const fechaReg = new Date(r.fecha + 'T00:00:00');
+            return fechaReg >= haceUnaSemana && fechaReg <= ahora;
+        });
+    } else if (filtro === 'Mes pasado') {
+        const fechaMesPasado = new Date(ahora.getFullYear(), ahora.getMonth() - 1, 1);
+        const mesPasado = fechaMesPasado.getMonth();
+        const anioPasado = fechaMesPasado.getFullYear();
+        registros = registros.filter(r => {
+            const fechaReg = new Date(r.fecha + 'T00:00:00');
+            return fechaReg.getMonth() === mesPasado && fechaReg.getFullYear() === anioPasado;
+        });
+    }
+
+    // Sort by date descending
+    const registrosOrdenados = [...registros].sort((a, b) => {
         const da = new Date(a.fecha).getTime() || 0;
         const db = new Date(b.fecha).getTime() || 0;
         return db - da;
     });
 
     // Get the most recent 4
-    const recientes = registros.slice(0, 4);
+    const recientes = registrosOrdenados.slice(0, 4);
 
-    contenedor.innerHTML = ''; // Limpiar predeterminados
+    contenedor.innerHTML = '';
 
     if (recientes.length === 0) {
-        contenedor.innerHTML = '<p style="color: var(--text-muted); padding: 1rem;">No hay movimientos recientes.</p>';
+        contenedor.innerHTML = '<p style="color: rgba(255,255,255,0.3); padding: 1rem; text-align: center;">No hay movimientos recientes.</p>';
         return;
     }
 
     const opcionesConceptoIngreso = ["Sueldo", "Venta", "Inversión", "Regalo", "Otro"];
 
+    // Mapeo de conceptos a iconos de font-awesome
+    const iconoMapa = {
+        "Alimentación": "fa-utensils",
+        "Transporte": "fa-car",
+        "Vivienda": "fa-house",
+        "Servicios": "fa-bolt",
+        "Entretenimiento": "fa-clapperboard",
+        "Salud": "fa-heart-pulse",
+        "Sueldo": "fa-building-columns",
+        "Venta": "fa-cart-shopping",
+        "Inversión": "fa-chart-line",
+        "Regalo": "fa-gift",
+        "Otro": "fa-ellipsis"
+    };
+
     recientes.forEach(reg => {
         const esIngreso = opcionesConceptoIngreso.includes(reg.concepto) || reg.tipo === 'ingreso';
         const tipoClase = esIngreso ? 'ingreso' : 'egreso';
-        const icono = esIngreso ? 'fa-plus' : 'fa-minus'; // Se puede mejorar mapeando concepto a icono
+        const iconoName = iconoMapa[reg.concepto] || (esIngreso ? 'fa-plus' : 'fa-minus');
         const montoStr = formatCurrency(parseFloat(reg.monto) || 0);
         const montoClase = esIngreso ? 'positivo' : 'negativo';
         const signo = esIngreso ? '+' : '-';
@@ -438,22 +514,200 @@ function actualizarMovimientosRecientes() {
           <div class="fila-movimiento">
             <div class="item-izquierda">
               <div class="circulo-icono ${tipoClase}">
-                <i class="fa-solid ${icono}"></i>
+                <i class="fa-solid ${iconoName}"></i>
               </div>
               <div class="detalles-mov">
-                <span class="nombre-mov">${reg.descripcion || reg.concepto}</span>
-                <span class="tipo-mov">- ${etiquetaTipo} -</span>
+                <span class="nombre-mov">${reg.descripcion || reg.concepto || 'Sin descripción'}</span>
+                <span class="tipo-mov">${etiquetaTipo}</span>
               </div>
             </div>
-            <div class="item-derecha">
-              <span class="monto-mov ${montoClase}">${signo}${montoStr}</span>
-              <span class="fecha-mov">${fechaFormat}</span>
+            <div class="item-derecha" style="text-align: right;">
+              <div class="monto-mov ${montoClase}">${signo}${montoStr}</div>
+              <div class="fecha-mov">${fechaFormat}</div>
             </div>
           </div>
         `;
         contenedor.insertAdjacentHTML('beforeend', htmlStr);
     });
 }
+
+/**
+ * Calcula el consumo de presupuesto por categoría y actualiza la UI
+ */
+/**
+ * Renderiza el historial del mes con vista dividida y barras de progreso
+ * @param {number} pagina - 0 para Ingresos, 1 para Egresos
+ */
+function actualizarHistorialMes(pagina = 0) {
+    const contenedor = document.getElementById('listaHistorialMes');
+    if (!contenedor) return;
+
+    const registros = JSON.parse(localStorage.getItem('registros_financieros')) || [];
+    const ahora = new Date();
+    const mesActual = ahora.getMonth();
+    const anioActual = ahora.getFullYear();
+
+    // Configuración de presupuestos y objetivos
+    const limitesGastosDefecto = {
+        "Alimentación": 1200000, "Transporte": 500000, "Vivienda": 2000000,
+        "Servicios": 600000, "Entretenimiento": 400000, "Salud": 300000, "Otro": 300000
+    };
+    const objetivosIngresosDefecto = {
+        "Sueldo": 2500000, "Venta": 1000000, "Inversión": 500000, "Regalo": 100000, "Otro": 200000
+    };
+
+    const configGastos = JSON.parse(localStorage.getItem('config_presupuestos')) || limitesGastosDefecto;
+    const configIngresos = JSON.parse(localStorage.getItem('config_objetivos_ingresos')) || objetivosIngresosDefecto;
+    
+    if (!localStorage.getItem('config_objetivos_ingresos')) {
+        localStorage.setItem('config_objetivos_ingresos', JSON.stringify(objetivosIngresosDefecto));
+    }
+
+    // Agrupar datos del mes actual
+    const categoriasMes = {};
+    const opcionesConceptoIngreso = ["Sueldo", "Venta", "Inversión", "Regalo", "Otro"];
+
+    registros.forEach(reg => {
+        const fechaReg = new Date(reg.fecha + 'T00:00:00');
+        if (fechaReg.getMonth() === mesActual && fechaReg.getFullYear() === anioActual) {
+            const monto = parseFloat(reg.monto) || 0;
+            categoriasMes[reg.concepto] = (categoriasMes[reg.concepto] || 0) + monto;
+        }
+    });
+
+    contenedor.innerHTML = '';
+    let scoreTotal = 0;
+    let counts = 0;
+
+    if (pagina === 0) {
+        // VISTA DE INGRESOS
+        const catsIngreso = Object.keys(configIngresos);
+        catsIngreso.slice(0, 4).forEach(cat => {
+            const monto = categoriasMes[cat] || 0;
+            const meta = configIngresos[cat] || 1;
+            const pct = Math.min(Math.round((monto / meta) * 100), 100);
+            
+            scoreTotal += pct;
+            counts++;
+
+            const htmlBarra = `
+                <div class="item-presupuesto">
+                    <div class="label-presupuesto">
+                        <span>${cat}</span>
+                        <span class="pct-presupuesto bajo">${pct}%</span>
+                    </div>
+                    <div class="barra-fondo">
+                        <div class="barra-progreso ingreso" style="width: ${pct}%"></div>
+                    </div>
+                </div>
+            `;
+            contenedor.insertAdjacentHTML('beforeend', htmlBarra);
+        });
+        actualizarSaludFinanciera(scoreTotal / (counts || 1), "Cumplimiento de Metas", 'ingreso');
+    } else {
+        // VISTA DE EGRESOS
+        const catsEgreso = ["Alimentación", "Transporte", "Vivienda", "Entretenimiento"];
+        catsEgreso.forEach(cat => {
+            const monto = categoriasMes[cat] || 0;
+            const limite = configGastos[cat] || 1;
+            const pct = Math.min(Math.round((monto / limite) * 100), 100);
+            
+            // Salud de gasto es inversa al uso
+            scoreTotal += (100 - pct);
+            counts++;
+
+            let nivel = 'bajo';
+            if (pct >= 90) nivel = 'alto';
+            else if (pct >= 70) nivel = 'medio';
+
+            const htmlBarra = `
+                <div class="item-presupuesto">
+                    <div class="label-presupuesto">
+                        <span>${cat}</span>
+                        <span class="pct-presupuesto ${nivel}">${pct}%</span>
+                    </div>
+                    <div class="barra-fondo">
+                        <div class="barra-progreso ${nivel}" style="width: ${pct}%"></div>
+                    </div>
+                </div>
+            `;
+            contenedor.insertAdjacentHTML('beforeend', htmlBarra);
+        });
+        actualizarSaludFinanciera(scoreTotal / (counts || 1), "Salud de Gastos", 'egreso');
+    }
+}
+
+function obtenerTotalMes(tipo, offset = 0) {
+    const registros = JSON.parse(localStorage.getItem('registros_financieros')) || [];
+    const ahora = new Date();
+    const target = new Date(ahora.getFullYear(), ahora.getMonth() + offset, 1);
+    const mes = target.getMonth();
+    const anio = target.getFullYear();
+
+    const opcionesIngreso = ["Sueldo", "Venta", "Inversión", "Regalo", "Otro"];
+    
+    return registros.reduce((acc, reg) => {
+        const f = new Date(reg.fecha + 'T00:00:00');
+        if (f.getMonth() === mes && f.getFullYear() === anio) {
+            const esIng = opcionesIngreso.includes(reg.concepto) || reg.tipo === 'ingreso';
+            if (tipo === 'ingreso' && esIng) acc += (parseFloat(reg.monto) || 0);
+            if (tipo === 'egreso' && !esIng) acc += (parseFloat(reg.monto) || 0);
+        }
+        return acc;
+    }, 0);
+}
+
+function actualizarSaludFinanciera(score, etiqueta = "Salud financiera", tipo = 'egreso') {
+    const elScore = document.getElementById('valorSalud');
+    const elEstado = document.getElementById('estadoSalud');
+    const elGrafico = document.getElementById('graficoSalud');
+    const elEtiqueta = document.querySelector('.etiqueta-salud');
+    const elVariacion = document.querySelector('.variacion-salud');
+
+    if (elScore) elScore.textContent = Math.round(score);
+    if (elEtiqueta) elEtiqueta.textContent = etiqueta;
+    
+    if (elGrafico) {
+        elGrafico.style.setProperty('--porcentaje', Math.round(score));
+        const color = (tipo === 'ingreso') ? '#10b981' : '#ef4444'; // Verde Esmeralda vs Rojo Alerta
+        elGrafico.style.setProperty('--color-indicador', color);
+    }
+
+    if (elEstado) {
+        if (tipo === 'ingreso') {
+            if (score >= 80) elEstado.textContent = 'Excelente flujo este mes';
+            else if (score >= 50) elEstado.textContent = 'Buen ritmo de ingresos';
+            else elEstado.textContent = 'Aumenta tus ingresos';
+        } else {
+            if (score >= 80) elEstado.textContent = 'Gastos bajo control';
+            else if (score >= 50) elEstado.textContent = 'Cuidado con los gastos';
+            else elEstado.textContent = 'Gasto elevado';
+        }
+    }
+
+    if (elVariacion) {
+        const totalActual = obtenerTotalMes(tipo, 0);
+        const totalPasado = obtenerTotalMes(tipo, -1);
+        
+        if (totalPasado === 0) {
+            elVariacion.textContent = "Primer mes de registro";
+            elVariacion.className = "variacion-salud neutra";
+        } else {
+            const diff = ((totalActual - totalPasado) / totalPasado) * 100;
+            const signo = diff >= 0 ? '+' : '';
+            const icono = diff >= 0 ? '↗' : '↘';
+            elVariacion.textContent = `${icono} ${signo}${Math.round(diff)}% vs mes anterior`;
+            
+            // Lógica de colores para la variación
+            if (tipo === 'ingreso') {
+                elVariacion.className = diff >= 0 ? "variacion-salud" : "variacion-salud negativa";
+            } else {
+                elVariacion.className = diff <= 0 ? "variacion-salud" : "variacion-salud negativa";
+            }
+        }
+    }
+}
+
 
 function formatoFechaRelativa(fechaStr) {
     if (!fechaStr) return 'Desconocida';
