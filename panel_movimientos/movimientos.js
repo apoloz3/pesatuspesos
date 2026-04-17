@@ -210,115 +210,125 @@ function inicializarGraficos() {
             });
         }
     };
-
-    new Chart(canvas, {
-        type: 'line',
-        plugins: [pluginPuntoHalo],
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    // ── INGRESOS ──
-                    label: 'Ingresos',
-                    data: puntosIngresos,
-                    borderColor: '#22c55e',
-                    borderWidth: 2.5,
-                    backgroundColor: gradVerde,
-                    fill: true,
-                    tension: 0.45,
-                    pointRadius: 0,
-                    pointHoverRadius: 0,
+new Chart(canvas, {
+    type: 'line',
+    plugins: [pluginPuntoHalo],
+    data: {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Ingresos',
+                data: puntosIngresos,
+                borderColor: '#22c55e',
+                borderWidth: 2.5,
+                backgroundColor: gradVerde,
+                fill: true,
+                tension: 0.45,
+                pointRadius: 5,
+                pointBackgroundColor: 'transparent',
+                pointBorderColor: '#22c55e',
+                pointBorderWidth: 2,
+                pointHoverRadius: 7,
+                pointHoverBackgroundColor: 'transparent',
+                pointHoverBorderColor: '#22c55e',
+                pointHoverBorderWidth: 2.5,
+            },
+            {
+                label: 'Egresos',
+                data: puntosEgresos,
+                borderColor: '#ff3c3c',
+                borderWidth: 2.5,
+                backgroundColor: gradRojo,
+                fill: true,
+                tension: 0.45,
+                pointRadius: 5,
+                pointBackgroundColor: 'transparent',
+                pointBorderColor: '#ff3c3c',
+                pointBorderWidth: 2,
+                pointHoverRadius: 7,
+                pointHoverBackgroundColor: 'transparent',
+                pointHoverBorderColor: '#ff3c3c',
+                pointHoverBorderWidth: 2.5,
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 900, easing: 'easeInOutQuart' },
+        layout: { padding: { left: 0, right: 4, top: 8, bottom: 0 } },
+        scales: {
+            y: {
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.08)',
+                    drawBorder: false,
                 },
-                {
-                    // ── EGRESOS ──
-                    label: 'Egresos',
-                    data: puntosEgresos,
-                    borderColor: '#ff3c3c',
-                    borderWidth: 2.5,
-                    backgroundColor: gradRojo,
-                    fill: true,
-                    tension: 0.45,
-                    pointRadius: 0,
-                    pointHoverRadius: 0,
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: { duration: 900, easing: 'easeInOutQuart' },
-            layout: { padding: { left: 0, right: 4, top: 8, bottom: 0 } },
-            scales: {
-                y: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.04)',
-                        drawBorder: false,
-                    },
-                    border: { display: false },
-                    ticks: {
-                        color: 'rgba(255, 255, 255, 0.35)',
-                        font: { size: 10 },
-                        maxTicksLimit: 5,
-                        callback(value) {
-                            if (Math.abs(value) >= 1_000_000) return (value / 1_000_000).toFixed(1) + 'M';
-                            if (Math.abs(value) >= 1_000)     return (value / 1_000).toFixed(0) + 'k';
-                            return value;
-                        }
-                    }
-                },
-                x: {
-                    grid: { display: false },
-                    border: { display: false },
-                    ticks: {
-                        color: 'rgba(255, 255, 255, 0.35)',
-                        font: { size: 10 },
-                        maxRotation: 0,
-                        maxTicksLimit: 6,
+                border: { display: false },
+                ticks: {
+                    color: 'rgba(255, 255, 255, 0.35)',
+                    font: { size: 10 },
+                    maxTicksLimit: 5,
+                    callback(value) {
+                        if (Math.abs(value) >= 1_000_000) return (value / 1_000_000).toFixed(1) + 'M';
+                        if (Math.abs(value) >= 1_000)     return (value / 1_000).toFixed(0) + 'k';
+                        return value;
                     }
                 }
             },
-            plugins: {
-                legend: {
+            x: {
+                grid: {
                     display: true,
-                    position: 'top',
-                    align: 'end',
-                    labels: {
-                        color: 'rgba(255,255,255,0.6)',
-                        font: { size: 11 },
-                        boxWidth: 12,
-                        boxHeight: 3,
-                        borderRadius: 2,
-                        padding: 14,
-                        usePointStyle: true,
-                        pointStyle: 'line',
-                    }
+                    color: 'rgba(255, 255, 255, 0.08)',
+                    drawBorder: false,
                 },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 10, 18, 0.92)',
-                    titleColor: 'rgba(255,255,255,0.5)',
-                    bodyColor: '#ffffff',
-                    borderColor: 'rgba(255,255,255,0.08)',
-                    borderWidth: 1,
-                    padding: 12,
-                    displayColors: true,
-                    boxWidth: 8,
-                    boxHeight: 8,
-                    callbacks: {
-                        title(items) {
-                            return items[0]?.label || '';
-                        },
-                        label(context) {
-                            const simbolo = context.datasetIndex === 0 ? '▲ Ingresos' : '▼ Egresos';
-                            return `  ${simbolo}: $ ${context.parsed.y.toLocaleString('es-CO')}`;
-                        }
-                    }
+                border: { display: false },
+                ticks: {
+                    color: 'rgba(255, 255, 255, 0.35)',
+                    font: { size: 10 },
+                    maxRotation: 0,
+                    maxTicksLimit: 6,
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                align: 'end',
+                labels: {
+                    color: 'rgba(255,255,255,0.6)',
+                    font: { size: 11 },
+                    boxWidth: 12,
+                    boxHeight: 3,
+                    borderRadius: 2,
+                    padding: 14,
+                    usePointStyle: true,
+                    pointStyle: 'line',
                 }
             },
-            interaction: { intersect: false, mode: 'index' },
-        }
-    });
+            tooltip: {
+                backgroundColor: 'rgba(0, 10, 18, 0.92)',
+                titleColor: 'rgba(255,255,255,0.5)',
+                bodyColor: '#ffffff',
+                borderColor: 'rgba(255,255,255,0.08)',
+                borderWidth: 1,
+                padding: 12,
+                displayColors: true,
+                boxWidth: 8,
+                boxHeight: 8,
+                callbacks: {
+                    title(items) { return items[0]?.label || ''; },
+                    label(context) {
+                        const simbolo = context.datasetIndex === 0 ? '▲ Ingresos' : '▼ Egresos';
+                        return `  ${simbolo}: $ ${context.parsed.y.toLocaleString('es-CO')}`;
+                    }
+                }
+            }
+        },
+        interaction: { intersect: false, mode: 'index' },
+    }
+});
 }
-
 /**
  * Añade animaciones de entrada a las tarjetas de forma secuencial
  */
