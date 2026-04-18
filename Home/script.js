@@ -217,33 +217,112 @@ async function cargarVideos() {
 
 function iniciarCarrusel() {
   const track = document.getElementById("carruselTrack");
-  const puntos = document.querySelectorAll(".punto");
-  const items = document.querySelectorAll(".carrusel-item");
-  let actual = 0;
-  const porPagina = window.innerWidth <= 768 ? 1 : 4;
+  const puntosContainer = document.getElementById("carruselPuntos");
+  const items = Array.from(document.querySelectorAll(".carrusel-item"));
+  if (!track || items.length === 0) return;
 
-  function irA(index) {
-    if (window.innerWidth <= 768) return; // En móvil usamos scroll nativo táctil por CSS
-    const ancho = (items[0].offsetWidth + 20) * porPagina;
-    track.style.transform = `translateX(-${index * ancho}px)`;
-    puntos.forEach(p => p.classList.remove("activo"));
-    if (puntos[index]) puntos[index].classList.add("activo");
-    actual = index;
+  let actual = 0;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let isDragging = false;
+  let dragOffset = 0;
+
+  // ── Responsive config ─────────────────────────────────────
+  function getPorPagina() {
+    const w = window.innerWidth;
+    if (w <= 768) return 1;
+    if (w <= 1024) return 3;
+    return 4;
   }
 
-  puntos.forEach(punto => {
-    punto.addEventListener("click", () => {
-      irA(parseInt(punto.dataset.index));
+  function getNumPaginas() {
+    return Math.ceil(items.length / getPorPagina());
+  }
+
+  // ── Dot indicators ────────────────────────────────────────
+  function generarPuntos() {
+    const n = getNumPaginas();
+    puntosContainer.innerHTML = "";
+    for (let i = 0; i < n; i++) {
+      const dot = document.createElement("span");
+      dot.classList.add("punto");
+      if (i === 0) dot.classList.add("activo");
+      dot.dataset.index = i;
+      dot.addEventListener("click", () => irA(i));
+      puntosContainer.appendChild(dot);
+    }
+  }
+
+  // ── Mark active cards ─────────────────────────────────────
+  function actualizarActivos() {
+    const pp = getPorPagina();
+    items.forEach((item, i) => {
+      item.classList.toggle("activo", i >= actual * pp && i < (actual + 1) * pp);
     });
+  }
+
+  // ── Navigate to page index ────────────────────────────────
+  function irA(index) {
+    const pp = getPorPagina();
+    actual = Math.max(0, Math.min(index, getNumPaginas() - 1));
+    const itemWidth = items[0].offsetWidth;
+    const offset = actual * pp * (itemWidth + 20);
+    track.style.transition = "transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)";
+    track.style.transform = `translateX(-${offset}px)`;
+    puntosContainer.querySelectorAll(".punto").forEach((d, i) => {
+      d.classList.toggle("activo", i === actual);
+    });
+    actualizarActivos();
+  }
+
+  // ── Touch: press ─────────────────────────────────────────
+  track.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].clientX;
+    touchStartY = e.changedTouches[0].clientY;
+    isDragging = true;
+    dragOffset = 0;
+    track.style.transition = "none";
+  }, { passive: true });
+
+  // ── Touch: drag (live feedback) ───────────────────────────
+  track.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dy) > Math.abs(dx) + 10) { isDragging = false; return; }
+    dragOffset = dx;
+    const pp = getPorPagina();
+    const base = actual * pp * (items[0].offsetWidth + 20);
+    const atEdge = (actual === 0 && dx > 0) || (actual === getNumPaginas() - 1 && dx < 0);
+    track.style.transform = `translateX(-${base - dragOffset * (atEdge ? 0.2 : 1)}px)`;
+  }, { passive: true });
+
+  // ── Touch: release → snap ──────────────────────────────────
+  track.addEventListener("touchend", () => {
+    if (!isDragging) return;
+    isDragging = false;
+    if (dragOffset < -50) irA(actual + 1);
+    else if (dragOffset > 50) irA(actual - 1);
+    else irA(actual);
+    dragOffset = 0;
+  }, { passive: true });
+
+  // ── Resize ────────────────────────────────────────────────
+  window.addEventListener("resize", () => {
+    generarPuntos();
+    actual = 0;
+    irA(0);
   });
 
-  // AUTO-PASAR cada 5 segundos
-  setInterval(() => {
-    const siguiente = (actual + 1) % 3; // 2 páginas
-    irA(siguiente);
-  }, 30000);
+  // ── Auto-advance every 30s ─────────────────────────────────
+  setInterval(() => irA((actual + 1) % getNumPaginas()), 30000);
+
+  // ── Init ─────────────────────────────────────────────────
+  generarPuntos();
+  actualizarActivos();
 }
 cargarVideos();
+
 
 /** Serie sintética que converge al valor real (TRM / último punto = API) */
 function serieConvergente(valorFinal, cantidad) {

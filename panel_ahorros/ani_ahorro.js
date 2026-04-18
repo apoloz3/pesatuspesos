@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const cards = Array.from(track.children);
     let currentIndex = 0;
 
+    // Create indicator dots
     cards.forEach((_, index) => {
       const dot = document.createElement('div');
       dot.classList.add('dot');
@@ -142,21 +143,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const dots = Array.from(indicatorsContainer.children);
 
+    // Dynamically determine how many cards fit on screen
+    function getVisibleCount() {
+      const w = window.innerWidth;
+      if (w >= 1024) return 3;
+      if (w >= 768) return 2;
+      return 1;
+    }
+
     function updateCarousel() {
       if (cards.length === 0) return;
-      const cardWidth = cards[0].getBoundingClientRect().width;
+
+      const visibleCount = getVisibleCount();
       const gap = 30;
+      const cardWidth = cards[0].getBoundingClientRect().width;
       const containerWidth = track.parentElement.getBoundingClientRect().width;
       const totalWidthNeeded = (cards.length * cardWidth) + ((cards.length - 1) * gap);
 
+      // Clamp currentIndex so we never scroll past the last visible set
+      const maxIndex = Math.max(0, cards.length - visibleCount);
+      if (currentIndex > maxIndex) currentIndex = maxIndex;
+
+      // Prev button state
       prevBtn.style.opacity = currentIndex === 0 ? '0.3' : '1';
       prevBtn.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
 
-      nextBtn.style.opacity = (currentIndex >= cards.length - 3 || totalWidthNeeded <= containerWidth + 5) ? '0.3' : '1';
-      nextBtn.style.pointerEvents = (currentIndex >= cards.length - 3 || totalWidthNeeded <= containerWidth + 5) ? 'none' : 'auto';
+      // Next button state
+      const atEnd = currentIndex >= cards.length - visibleCount;
+      nextBtn.style.opacity = (atEnd || totalWidthNeeded <= containerWidth + 5) ? '0.3' : '1';
+      nextBtn.style.pointerEvents = (atEnd || totalWidthNeeded <= containerWidth + 5) ? 'none' : 'auto';
 
-      indicatorsContainer.style.display = cards.length <= 3 ? 'none' : 'flex';
+      // Show dots only when there are more cards than can be shown
+      indicatorsContainer.style.display = cards.length <= visibleCount ? 'none' : 'flex';
 
+      // Apply transform
       const offset = currentIndex * (cardWidth + gap);
       track.style.transform = `translateX(-${offset}px)`;
 
@@ -172,19 +192,52 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     nextBtn.addEventListener('click', () => {
-      if (currentIndex < cards.length - 1) currentIndex++;
+      const visibleCount = getVisibleCount();
+      const maxIndex = cards.length - visibleCount;
+      if (currentIndex < maxIndex) currentIndex++;
       else currentIndex = 0;
       updateCarousel();
     });
 
     prevBtn.addEventListener('click', () => {
+      const visibleCount = getVisibleCount();
+      const maxIndex = cards.length - visibleCount;
       if (currentIndex > 0) currentIndex--;
-      else currentIndex = cards.length - 1;
+      else currentIndex = maxIndex;
       updateCarousel();
     });
 
     updateCarouselParams = updateCarousel;
     window.addEventListener('resize', updateCarousel);
+
+    // Touch/swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const trackContainer = track.parentElement;
+
+    trackContainer.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    trackContainer.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        const visibleCount = getVisibleCount();
+        const maxIndex = cards.length - visibleCount;
+        if (diff > 0) {
+          // swiped left → go next
+          if (currentIndex < maxIndex) currentIndex++;
+          else currentIndex = 0;
+        } else {
+          // swiped right → go prev
+          if (currentIndex > 0) currentIndex--;
+          else currentIndex = maxIndex;
+        }
+        updateCarousel();
+      }
+    }, { passive: true });
+
     updateCarousel();
   }
 
