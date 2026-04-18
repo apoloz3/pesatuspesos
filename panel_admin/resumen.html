@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resumen | Panel de Administración</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style_admin.css" />
+  </head>
+  <body>
+    <div class="contenedor-app">
+      <!-- Barra Lateral -->
+      <aside class="barra-lateral">
+        <div class="logo-barra-lateral">
+          <i class="fa-solid fa-scale-balanced" style="color: #1c84ee; margin-right: 12px"></i>
+          PesaTusPesos
+        </div>
+        <nav class="navegacion-barra-lateral">
+          <a href="resumen.html" class="item-navegacion" data-target="resumen">
+            <i class="fa-solid fa-house"></i> Resumen
+          </a>
+          <a href="usuarios.html" class="item-navegacion" data-target="usuarios">
+            <i class="fa-solid fa-users"></i> Usuarios
+          </a>
+          <a href="roles.html" class="item-navegacion" data-target="roles">
+            <i class="fa-solid fa-key"></i> Roles y Permisos
+          </a>
+          <a href="configuracion.html" class="item-navegacion" data-target="configuracion">
+            <i class="fa-solid fa-gear"></i> Configuración
+          </a>
+          <a href="reportes.html" class="item-navegacion" data-target="reportes">
+            <i class="fa-solid fa-chart-simple"></i> Reportes
+          </a>
+        </nav>
+        <div class="pie-barra-lateral">
+          <a href="#" class="item-navegacion texto-peligro" id="boton-cerrar-sesion">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+          </a>
+        </div>
+      </aside>
+
+      <!-- Contenido Principal -->
+      <main class="contenido-principal">
+        <header class="barra-superior">
+          <div class="header-izquierda">
+            <button id="boton-menu-movil" class="boton-menu-movil">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <h1 id="titulo-pagina">
+              Panel de Administración - <span class="texto-primario">Resumen General</span>
+            </h1>
+          </div>
+          <div class="barra-superior-derecha">
+            <i class="fa-solid fa-gear icono-barra-superior"></i>
+            <div class="perfil-usuario">
+              <img src="https://ui-avatars.com/api/?name=Admin&background=1c84ee&color=fff" alt="Admin" class="avatar" />
+              <span>Administrador <i class="fa-solid fa-chevron-down"></i></span>
+            </div>
+          </div>
+        </header>
+
+        <div class="area-contenido">
+          <section id="seccion-resumen" class="seccion-pagina activo">
+            <div class="rejilla-estadisticas">
+              <div class="tarjeta-estadistica">
+                <div class="icono-estadistica fondo-azul"><i class="fa-solid fa-users"></i></div>
+                <div class="info-estadistica">
+                  <h4>Usuarios registrados</h4>
+                  <h2 id="est-usuarios-totales">--</h2>
+                </div>
+                <div class="pie-estadistica"><i class="fa-solid fa-circle-info"></i> Total registrados</div>
+              </div>
+              <div class="tarjeta-estadistica">
+                <div class="icono-estadistica fondo-verde"><i class="fa-solid fa-thumbs-up"></i></div>
+                <div class="info-estadistica">
+                  <h4>Usuarios activos</h4>
+                  <h2 id="est-usuarios-activos">--</h2>
+                </div>
+                <div class="pie-estadistica"><i class="fa-solid fa-circle-check"></i> Usuarios activos</div>
+              </div>
+              <div class="tarjeta-estadistica">
+                <div class="icono-estadistica fondo-azul"><i class="fa-solid fa-code-branch"></i></div>
+                <div class="info-estadistica">
+                  <h4>Roles totales</h4>
+                  <h2 id="est-roles-totales">--</h2>
+                </div>
+                <div class="pie-estadistica"><i class="fa-solid fa-circle-info"></i> Roles en sistema</div>
+              </div>
+              <div class="tarjeta-estadistica">
+                <div class="icono-estadistica fondo-rojo"><i class="fa-solid fa-file-circle-exclamation"></i></div>
+                <div class="info-estadistica">
+                  <h4>Permisos sin asignar</h4>
+                  <h2 id="est-pendientes">0</h2>
+                </div>
+                <div class="pie-estadistica"><i class="fa-solid fa-circle-exclamation"></i> Acciones pendientes</div>
+              </div>
+            </div>
+
+            <div class="rejilla-graficos">
+              <div class="panel">
+                <h3>Usuarios Registrados</h3>
+                <canvas id="graficoBarras"></canvas>
+              </div>
+              <div class="panel">
+                <h3>Tendencia de Usuarios</h3>
+                <canvas id="graficoLineas"></canvas>
+              </div>
+            </div>
+
+            <div class="rejilla-inferior">
+              <div class="panel">
+                <div class="encabezado-panel">
+                  <h3>Últimos 5 Usuarios Registrados</h3>
+                  <button class="boton boton-primario" id="boton-agregar-usuario-resumen">
+                    <i class="fa-solid fa-plus"></i> Añadir Usuario
+                  </button>
+                </div>
+                <div class="contenedor-tabla">
+                  <table class="tabla" id="tabla-usuarios-recientes">
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="panel">
+                <h3>Alertas Recientes</h3>
+                <div id="alertas-resumen"></div>
+              </div>
+              <div class="panel">
+                <h3>Centro de Control</h3>
+                <div class="modos-control">
+                  <button class="boton boton-primario boton-block" id="btn-ajustes-res">
+                    <i class="fa-solid fa-gear"></i> Ajustes Generales
+                  </button>
+                  <button class="boton boton-primario boton-block" id="btn-visualizacion-res">
+                    <i class="fa-solid fa-eye"></i> Modo Visualización
+                  </button>
+                  <button class="boton boton-rojo boton-block" id="btn-emergencia-res">
+                    <i class="fa-solid fa-lock"></i> Protocolo Emergencia
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modales -->
+    <div class="superposicion-modal" id="modal-generico">
+      <div class="contenido-modal">
+        <div class="encabezado-modal">
+          <h3 id="titulo-modal">Añadir Nuevo Elemento</h3>
+          <button class="cerrar-modal" id="cerrar-modal-btn">&times;</button>
+        </div>
+        <form id="formulario-generico">
+          <input type="hidden" id="id-elemento" />
+          <div class="grupo-formulario" id="grupo-nombre">
+            <label>Nombre completo</label>
+            <input type="text" id="nombre-elemento" class="control-formulario" required />
+          </div>
+          <div class="grupo-formulario" id="grupo-email">
+            <label>Correo Electrónico</label>
+            <input type="email" id="email-elemento" class="control-formulario" />
+          </div>
+          <div class="grupo-formulario" id="grupo-rol">
+            <label>Rol asignado</label>
+            <select id="rol-elemento" class="control-formulario">
+              <!-- Renderizado por JS -->
+            </select>
+          </div>
+          <div class="grupo-formulario grupo-checkbox" id="grupo-activo">
+            <input type="checkbox" id="activo-elemento" checked />
+            <label>¿Estado activo?</label>
+          </div>
+          <button type="submit" class="boton boton-primario boton-block">Guardar Cambios</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="contenedor-notificaciones" id="contenedor-notificaciones"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

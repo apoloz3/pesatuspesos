@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuración | Panel de Administración</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style_admin.css" />
+  </head>
+  <body>
+    <div class="contenedor-app">
+      <!-- Barra Lateral -->
+      <aside class="barra-lateral">
+        <div class="logo-barra-lateral">
+          <i class="fa-solid fa-scale-balanced" style="color: #1c84ee; margin-right: 12px"></i>
+          PesaTusPesos
+        </div>
+        <nav class="navegacion-barra-lateral">
+          <a href="resumen.html" class="item-navegacion" data-target="resumen">
+            <i class="fa-solid fa-house"></i> Resumen
+          </a>
+          <a href="usuarios.html" class="item-navegacion" data-target="usuarios">
+            <i class="fa-solid fa-users"></i> Usuarios
+          </a>
+          <a href="roles.html" class="item-navegacion" data-target="roles">
+            <i class="fa-solid fa-key"></i> Roles y Permisos
+          </a>
+          <a href="configuracion.html" class="item-navegacion" data-target="configuracion">
+            <i class="fa-solid fa-gear"></i> Configuración
+          </a>
+          <a href="reportes.html" class="item-navegacion" data-target="reportes">
+            <i class="fa-solid fa-chart-simple"></i> Reportes
+          </a>
+        </nav>
+        <div class="pie-barra-lateral">
+          <a href="#" class="item-navegacion texto-peligro" id="boton-cerrar-sesion">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+          </a>
+        </div>
+      </aside>
+
+      <!-- Contenido Principal -->
+      <main class="contenido-principal">
+        <header class="barra-superior">
+          <div class="header-izquierda">
+            <button id="boton-menu-movil" class="boton-menu-movil">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <h1 id="titulo-pagina">
+              Panel de Administración - <span class="texto-primario">Configuración</span>
+            </h1>
+          </div>
+          <div class="barra-superior-derecha">
+            <i class="fa-solid fa-gear icono-barra-superior"></i>
+            <div class="perfil-usuario">
+              <img src="https://ui-avatars.com/api/?name=Admin&background=1c84ee&color=fff" alt="Admin" class="avatar" />
+              <span>Administrador <i class="fa-solid fa-chevron-down"></i></span>
+            </div>
+          </div>
+        </header>
+
+        <div class="area-contenido">
+          <section id="seccion-configuracion" class="seccion-pagina activo">
+            <div class="panel">
+              <h2>Ajustes de Sistema</h2>
+              <hr />
+              <div class="seccion-ajuste">
+                <h3>General</h3>
+                <div class="fila-formulario">
+                  <div class="grupo-formulario flex-1">
+                    <label>Nombre de la Aplicación</label>
+                    <input type="text" class="control-formulario" id="config-nombre-app" value="PesaTusPesos" />
+                  </div>
+                  <div class="grupo-formulario flex-1">
+                    <label>Idioma Predeterminado</label>
+                    <select class="control-formulario" id="config-idioma">
+                      <option value="es" selected>Español</option>
+                      <option value="en">English</option>
+                    </select>
+                  </div>
+                  <div class="grupo-formulario flex-1">
+                    <label>Zona Horaria</label>
+                    <select class="control-formulario" id="config-zona-horaria">
+                      <option value="GMT-5">GMT-5 (América/Bogotá)</option>
+                      <option value="GMT-6">GMT-6 (América/CDMX)</option>
+                      <option value="UTC">UTC (Universal)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class="seccion-ajuste">
+                <h3>Seguridad</h3>
+                <div class="fila-formulario mb-20">
+                  <div class="grupo-formulario grupo-checkbox flex-1">
+                    <input type="checkbox" id="config-2fa" />
+                    <label>Habilitar 2FA Obligatorio</label>
+                  </div>
+                  <div class="grupo-formulario grupo-checkbox flex-1">
+                    <input type="checkbox" id="config-pass" checked />
+                    <label>Longitud Mínima Contraseña: 10</label>
+                  </div>
+                  <div class="flex-1" style="text-align: right">
+                    <button class="boton boton-primario boton-block" id="boton-ssl">
+                      <i class="fa-solid fa-shield-cat"></i> Gestionar SSL
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class="seccion-ajuste">
+                <h3>Notificaciones</h3>
+                <div class="fila-formulario mb-20">
+                  <div class="grupo-formulario grupo-checkbox flex-1">
+                    <input type="checkbox" id="config-correo" checked />
+                    <label>Enviar correos de alerta</label>
+                  </div>
+                  <div class="grupo-formulario grupo-checkbox flex-1">
+                    <input type="checkbox" id="config-inapp" checked />
+                    <label>Notificaciones in-app</label>
+                  </div>
+                </div>
+                <a href="#" class="enlace-oscuro" id="boton-smtp"><i class="fa-solid fa-envelope"></i> Configurar Servidor SMTP</a>
+              </div>
+              <hr />
+              <button class="boton boton-primario mt-20" id="boton-guardar-config" style="padding: 12px 30px">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <div class="contenedor-notificaciones" id="contenedor-notificaciones"></div>
+    <script src="admin.js"></script>
+  </body>
+</html>

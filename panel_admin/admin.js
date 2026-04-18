@@ -1,5 +1,5 @@
-// Base de datos estática simulada en español
-let usuarios = [
+// Base de datos estática simulada con persistencia en localStorage
+const DATOS_INICIALES_USUARIOS = [
     { id: 1, nombre: "Ana García", email: "ana.garcia@mail.com", rol: "Usuario", activo: true, fecha: "12/03/2024" },
     { id: 2, nombre: "Luis Pérez", email: "luis.perez@mail.com", rol: "Admin", activo: true, fecha: "01/02/2024" },
     { id: 3, nombre: "María Rodríguez", email: "maria.rodriguez@mail.com", rol: "Usuario", activo: false, fecha: "25/04/2024" },
@@ -7,7 +7,7 @@ let usuarios = [
     { id: 5, nombre: "Sofía Martínez", email: "sofia.martinez@mail.com", rol: "Moderador", activo: true, fecha: "15/03/2024" }
 ];
 
-let roles = [
+const DATOS_INICIALES_ROLES = [
     { id: 1, nombre: "Admin", desc: "Control total del sistema", permisos: 50, activo: true },
     { id: 2, nombre: "Editor", desc: "Creación de contenido", permisos: 25, activo: true },
     { id: 3, nombre: "Moderador", desc: "Gestión de comunidad", permisos: 15, activo: true },
@@ -16,9 +16,22 @@ let roles = [
     { id: 6, nombre: "Usuario", desc: "Permisos básicos", permisos: 1, activo: true }
 ];
 
-let alertasGlobales = [
+// Cargar datos de localStorage o usar iniciales
+let usuarios = JSON.parse(localStorage.getItem('ptp_usuarios')) || DATOS_INICIALES_USUARIOS;
+let roles = JSON.parse(localStorage.getItem('ptp_roles')) || DATOS_INICIALES_ROLES;
+let alertasGlobales = JSON.parse(localStorage.getItem('ptp_alertas')) || [
     { texto: "Sistema iniciado correctamente por Administrador", tipo: "info" }
 ];
+
+// Estado de paginación para usuarios
+let paginaActualUsuarios = 1;
+const usuariosPorPagina = 5;
+
+function guardarEnStorage() {
+    localStorage.setItem('ptp_usuarios', JSON.stringify(usuarios));
+    localStorage.setItem('ptp_roles', JSON.stringify(roles));
+    localStorage.setItem('ptp_alertas', JSON.stringify(alertasGlobales));
+}
 
 // Instancias globales de gráficos
 let miGraficoBarras = null, miGraficoLineas = null, miGraficoLineasReporte = null, miGraficoPastelReporte = null;
@@ -26,7 +39,7 @@ let miGraficoBarras = null, miGraficoLineas = null, miGraficoLineasReporte = nul
 // Esperar a que el DOM esté cargado
 window.addEventListener('DOMContentLoaded', () => {
     try {
-        console.log("Iniciando Inicialización de JS...");
+        console.log("Iniciando Inicialización del Panel...");
         inicializarNavegacion();
         inicializarGraficos();
         inicializarTablas();
@@ -41,41 +54,26 @@ window.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
         console.error("ERROR FATAL: ", error);
         mostrarNotificacion("ERROR FATAL: " + error.message, "error");
-        document.body.innerHTML = "<h1 style='color:red; padding: 20px;'>ERROR CRÍTICO: " + error.message + "</h1>" + document.body.innerHTML;
     }
 });
 
 // --- NAVEGACIÓN ---
 function inicializarNavegacion() {
     const elementosNav = document.querySelectorAll('.item-navegacion[data-target]');
-    const secciones = document.querySelectorAll('.seccion-pagina');
-    const tituloPagina = document.getElementById('titulo-pagina');
+    const pathActual = window.location.pathname;
+    const paginaActual = pathActual.split('/').pop() || 'resumen.html';
 
-    const titulos = {
-        'resumen': 'Resumen General',
-        'usuarios': 'Gestión de Usuarios',
-        'roles': 'Roles y Permisos',
-        'configuracion': 'Configuración de Sistema',
-        'reportes': 'Reportes y Estadísticas'
-    };
+    elementosNav.forEach(nav => {
+        const target = nav.getAttribute('data-target');
+        const href = `${target}.html`;
+        nav.setAttribute('href', href);
 
-    window.cambiarTab = function (objetivo) {
-        elementosNav.forEach(nav => nav.classList.remove('activo'));
-        const navActivo = document.querySelector(`.item-navegacion[data-target="${objetivo}"]`);
-        if (navActivo) navActivo.classList.add('activo');
-
-        secciones.forEach(sec => sec.style.display = 'none');
-        const seccionObjetivo = document.getElementById('seccion-' + objetivo);
-        if (seccionObjetivo) seccionObjetivo.style.display = 'block';
-        
-        tituloPagina.innerHTML = `Panel de Administración - <span class="texto-primario">${titulos[objetivo] || 'Panel'}</span>`;
-    }
-
-    elementosNav.forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
-            cambiarTab(item.getAttribute('data-target'));
-        });
+        // Marcar como activo si coincide con la página actual
+        if (paginaActual === href || (paginaActual === 'index.html' && target === 'resumen') || (paginaActual === '' && target === 'resumen')) {
+            nav.classList.add('activo');
+        } else {
+            nav.classList.remove('activo');
+        }
     });
 
     const botonCerrarSesion = document.getElementById('boton-cerrar-sesion');
@@ -83,7 +81,7 @@ function inicializarNavegacion() {
         botonCerrarSesion.addEventListener('click', (e) => {
             e.preventDefault();
             mostrarNotificacion('Cerrando sesión... Redirigiendo...', 'info');
-            setTimeout(() => window.location.reload(), 1500); // Recarga simulada
+            setTimeout(() => window.location.href = 'resumen.html', 1500); // Simulación
         });
     }
 }
@@ -99,7 +97,6 @@ function inicializarMenuMovil() {
             barraLateral.classList.toggle('abierta');
         });
 
-        // Cerrar al hacer clic en el contenido principal en móvil
         if (contenidoPrincipal) {
             contenidoPrincipal.addEventListener('click', () => {
                 if (barraLateral.classList.contains('abierta')) {
@@ -107,14 +104,6 @@ function inicializarMenuMovil() {
                 }
             });
         }
-
-        // Cerrar al cambiar de tab en móvil
-        const itemsNav = document.querySelectorAll('.item-navegacion');
-        itemsNav.forEach(item => {
-            item.addEventListener('click', () => {
-                barraLateral.classList.remove('abierta');
-            });
-        });
     }
 }
 
@@ -124,8 +113,7 @@ function inicializarBarraSuperior() {
 
     if (iconoAjustes) {
         iconoAjustes.addEventListener('click', () => {
-            window.cambiarTab('configuracion');
-            mostrarNotificacion('Abriendo ajustes del sistema', 'info');
+            window.location.href = 'configuracion.html';
         });
     }
 
@@ -138,14 +126,29 @@ function inicializarBarraSuperior() {
 
 // --- RENDERIZADO DE TABLAS ---
 function inicializarTablas() {
-    renderizarUsuarios();
-    renderizarRoles();
+    if (document.getElementById('tabla-usuarios-principal') || document.getElementById('tabla-usuarios-recientes')) {
+        renderizarUsuarios();
+    }
+    
+    if (document.getElementById('tabla-roles')) {
+        renderizarRoles();
+    }
 
     const buscadorUsuario = document.getElementById('buscar-usuario');
-    if (buscadorUsuario) buscadorUsuario.addEventListener('input', () => renderizarUsuarios());
+    if (buscadorUsuario) {
+        buscadorUsuario.addEventListener('input', () => {
+            paginaActualUsuarios = 1;
+            renderizarUsuarios();
+        });
+    }
 
     const filtroEstado = document.getElementById('filtrar-estado');
-    if (filtroEstado) filtroEstado.addEventListener('change', () => renderizarUsuarios());
+    if (filtroEstado) {
+        filtroEstado.addEventListener('change', () => {
+            paginaActualUsuarios = 1;
+            renderizarUsuarios();
+        });
+    }
 
     const botonAsignar = document.getElementById('boton-asignacion-rapida');
     if (botonAsignar) {
@@ -164,6 +167,7 @@ function inicializarTablas() {
             if (indice !== -1) {
                 usuarios[indice].rol = nuevoRol;
                 registrarAlerta(`Rol de ${usuarios[indice].nombre} actualizado a ${nuevoRol}`, 'success');
+                guardarEnStorage();
                 renderizarUsuarios();
             }
         });
@@ -206,8 +210,11 @@ function actualizarDropdowns() {
 }
 
 function renderizarUsuarios() {
-    const valorBusqueda = document.getElementById('buscar-usuario').value.toLowerCase();
-    const filtroEstado = document.getElementById('filtrar-estado').value;
+    const buscElement = document.getElementById('buscar-usuario');
+    const filtElement = document.getElementById('filtrar-estado');
+    
+    const valorBusqueda = buscElement ? buscElement.value.toLowerCase() : "";
+    const filtroEstado = filtElement ? filtElement.value : "Todos";
 
     const usuariosFiltrados = usuarios.filter(u => {
         const coincideBusqueda = u.nombre.toLowerCase().includes(valorBusqueda) ||
@@ -221,8 +228,16 @@ function renderizarUsuarios() {
 
     const cuerpoTablaPrincipal = document.querySelector('#tabla-usuarios-principal tbody');
     if (cuerpoTablaPrincipal) {
+        // Lógica de paginación
+        const totalPaginas = Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
+        if (paginaActualUsuarios > totalPaginas && totalPaginas > 0) paginaActualUsuarios = totalPaginas;
+
+        const inicio = (paginaActualUsuarios - 1) * usuariosPorPagina;
+        const fin = inicio + usuariosPorPagina;
+        const usuariosPagina = usuariosFiltrados.slice(inicio, fin);
+
         cuerpoTablaPrincipal.innerHTML = '';
-        usuariosFiltrados.forEach(u => {
+        usuariosPagina.forEach(u => {
             const etiquetaEstado = u.activo ? '<span class="etiqueta etiqueta-verde">Activo</span>' : '<span class="etiqueta etiqueta-roja">Inactivo</span>';
             cuerpoTablaPrincipal.innerHTML += `
                 <tr>
@@ -235,6 +250,7 @@ function renderizarUsuarios() {
                 </tr>
             `;
         });
+        renderizarPaginacionUsuarios(usuariosFiltrados.length);
     }
 
     const cuerpoTablaRecientes = document.querySelector('#tabla-usuarios-recientes tbody');
@@ -247,6 +263,44 @@ function renderizarUsuarios() {
 
     actualizarDropdowns();
     actualizarEstadisticasDashboard();
+}
+
+function renderizarPaginacionUsuarios(totalItems) {
+    const contenedor = document.getElementById('paginacion-usuarios');
+    if (!contenedor) return;
+
+    const totalPaginas = Math.ceil(totalItems / usuariosPorPagina);
+    if (totalPaginas <= 1) {
+        contenedor.innerHTML = '';
+        return;
+    }
+
+    let html = `
+        <button class="boton-paginacion" ${paginaActualUsuarios === 1 ? 'disabled' : ''} onclick="cambiarPaginaUsuarios(${paginaActualUsuarios - 1})">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+    `;
+
+    for (let i = 1; i <= totalPaginas; i++) {
+        html += `
+            <button class="boton-paginacion ${i === paginaActualUsuarios ? 'activo' : ''}" onclick="cambiarPaginaUsuarios(${i})">
+                ${i}
+            </button>
+        `;
+    }
+
+    html += `
+        <button class="boton-paginacion" ${paginaActualUsuarios === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaUsuarios(${paginaActualUsuarios + 1})">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    `;
+
+    contenedor.innerHTML = html;
+}
+
+window.cambiarPaginaUsuarios = function(nuevaPagina) {
+    paginaActualUsuarios = nuevaPagina;
+    renderizarUsuarios();
 }
 
 function renderizarRoles() {
@@ -295,7 +349,7 @@ function renderizarMatriz() {
     permisos.forEach((perm, index) => {
         let fila = `<tr><td style="text-align: left; font-weight: 600;">${perm}</td>`;
         roles.forEach(r => {
-            if (r.active || r.activo) {
+            if (r.activo) {
                 const estaMarcado = r.permisos >= (index * 10) ? 'checked' : '';
                 fila += `<td><input type="checkbox" ${estaMarcado} onchange="registrarAlerta('Permisos actualizados para el rol \\'${r.nombre}\\'', 'success')"></td>`;
             }
@@ -346,11 +400,15 @@ function abrirModal(contexto, datosItem = null) {
     const titulo = document.getElementById('titulo-modal');
     const formulario = document.getElementById('formulario-generico');
 
+    if (!modal || !titulo || !formulario) return;
+
     contextoModalActual = contexto;
     formulario.reset();
 
-    document.getElementById('grupo-email').style.display = 'flex';
-    document.getElementById('grupo-rol').style.display = 'flex';
+    const gEmail = document.getElementById('grupo-email');
+    const gRol = document.getElementById('grupo-rol');
+    if (gEmail) gEmail.style.display = 'flex';
+    if (gRol) gRol.style.display = 'flex';
 
     if (contexto === 'agregar-usuario') {
         titulo.innerText = 'Registar Nuevo Usuario';
@@ -366,8 +424,8 @@ function abrirModal(contexto, datosItem = null) {
     }
     else if (contexto === 'agregar-rol') {
         titulo.innerText = 'Configurar Nuevo Rol';
-        document.getElementById('grupo-email').style.display = 'none';
-        document.getElementById('grupo-rol').style.display = 'none';
+        if (gEmail) gEmail.style.display = 'none';
+        if (gRol) gRol.style.display = 'none';
     }
 
     modal.classList.add('activo');
@@ -393,6 +451,7 @@ function guardarUsuario() {
         usuarios.push({ id: nuevoId, nombre, email, rol, activo, fecha });
         registrarAlerta(`Nuevo usuario registrado: ${nombre}`, 'success');
     }
+    guardarEnStorage();
     renderizarUsuarios();
 }
 
@@ -402,6 +461,7 @@ function guardarRol() {
     const nuevoId = roles.length > 0 ? Math.max(...roles.map(r => r.id)) + 1 : 1;
     roles.push({ id: nuevoId, nombre: nombre, desc: 'Rol personalizado del sistema', permisos: 20, activo });
     registrarAlerta(`Nuevo rol añadido: ${nombre}`, 'success');
+    guardarEnStorage();
     renderizarRoles();
 }
 
@@ -415,6 +475,7 @@ window.eliminarUsuario = function (id) {
         const nombreUsr = usuarios.find(u => u.id === id)?.nombre || "Usuario";
         usuarios = usuarios.filter(u => u.id !== id);
         registrarAlerta(`${nombreUsr} eliminado del sistema`, 'error');
+        guardarEnStorage();
         renderizarUsuarios();
         renderizarRoles();
     }
@@ -431,6 +492,7 @@ window.eliminarRol = function (id) {
 
         roles = roles.filter(r => r.id !== id);
         registrarAlerta(`Rol '${rolObjetivo.nombre}' deshabilitado`, 'error');
+        guardarEnStorage();
         renderizarUsuarios();
         renderizarRoles();
     }
@@ -440,6 +502,8 @@ window.eliminarRol = function (id) {
 function renderizarAlertas() {
     const contenedorResumen = document.getElementById('alertas-resumen');
     const contenedorRoles = document.getElementById('alertas-roles');
+
+    if (!contenedorResumen && !contenedorRoles) return;
 
     let html = '';
     alertasGlobales.slice(-4).reverse().forEach(a => {
@@ -465,6 +529,7 @@ function renderizarAlertas() {
 
 function registrarAlerta(mensaje, tipo = 'success') {
     alertasGlobales.push({ texto: mensaje, tipo: tipo });
+    guardarEnStorage();
     renderizarAlertas();
     mostrarNotificacion(mensaje, tipo);
 }
@@ -496,9 +561,10 @@ function inicializarNotificacionesBotones() {
             if (btn.type === 'submit') return;
             const id = btn.id || "";
             if (id.includes('agregar-usuario') || id.includes('agregar-rol') || id.startsWith('btn-')) return;
+            if (btn.classList.contains('item-navegacion')) return;
 
             const texto = btn.textContent.trim().toLowerCase();
-            if (texto.includes('añadir') || btn.classList.contains('item-navegacion')) return;
+            if (texto.includes('añadir')) return;
 
             e.preventDefault();
 
@@ -516,23 +582,15 @@ function inicializarNotificacionesBotones() {
 }
 
 function inicializarCentroControl() {
-    // Centro de Control Resumen
     const ccr1 = document.getElementById('btn-ajustes-res');
     const ccr2 = document.getElementById('btn-visualizacion-res');
     const ccr3 = document.getElementById('btn-emergencia-res');
 
-    if (ccr1) ccr1.addEventListener('click', () => { window.cambiarTab('configuracion'); });
+    if (ccr1) ccr1.addEventListener('click', () => { window.location.href = 'configuracion.html'; });
     if (ccr2) ccr2.addEventListener('click', () => { registrarAlerta('Vista enriquecida activada', 'info'); });
     if (ccr3) ccr3.addEventListener('click', () => { registrarAlerta('EMERGENCIA: Accesos restringidos', 'error'); });
 
-    // Centro de Control Roles
-    const ccl1 = document.getElementById('btn-editar-permisos');
-    const ccl2 = document.getElementById('btn-auditoria-roles');
-    const ccl3 = document.getElementById('btn-bloquear-roles');
-
-    if (ccl1) ccl1.addEventListener('click', () => { mostrarNotificacion('Modo edición selectiva activado', 'info'); });
-    if (ccl2) ccl2.addEventListener('click', () => { registrarAlerta('Informe de auditoría preparado', 'success'); });
-    if (ccl3) ccl3.addEventListener('click', () => { registrarAlerta('Seguridad: Matriz bloqueada', 'error'); });
+    // Se eliminan los botones específicos de roles.html como se solicitó
 }
 
 function inicializarConfiguracion() {
@@ -578,16 +636,17 @@ function inicializarGraficos() {
 }
 
 function actualizarGraficos() {
+    if (typeof Chart === 'undefined') return;
+
     const colorPrimario = '#1c84ee';
     const colorVerde = '#10b981';
-    const colorDark = '#001524';
 
     // 1. Gráfico de Pastel (Reportes)
-    const etiquetasRoles = roles.map(r => r.nombre);
-    const datosRoles = roles.map(r => usuarios.filter(u => u.rol === r.nombre).length);
-
     const ctxPastel = document.getElementById('graficoPastelReporte');
     if (ctxPastel) {
+        const etiquetasRoles = roles.map(r => r.nombre);
+        const datosRoles = roles.map(r => usuarios.filter(u => u.rol === r.nombre).length);
+        
         if (miGraficoPastelReporte) {
             miGraficoPastelReporte.data.labels = etiquetasRoles;
             miGraficoPastelReporte.data.datasets[0].data = datosRoles;
@@ -608,19 +667,19 @@ function actualizarGraficos() {
     }
 
     // 2. Gráfico de Barras (Resumen)
-    const conteoMeses = Array(12).fill(0);
-    usuarios.forEach(u => {
-        if (u.fecha) {
-            const partes = u.fecha.split('/');
-            if (partes.length > 1) {
-                const mes = parseInt(partes[1], 10) - 1;
-                if (mes >= 0 && mes <= 11) conteoMeses[mes]++;
-            }
-        }
-    });
-
     const ctxBarras = document.getElementById('graficoBarras');
     if (ctxBarras) {
+        const conteoMeses = Array(12).fill(0);
+        usuarios.forEach(u => {
+            if (u.fecha) {
+                const partes = u.fecha.split('/');
+                if (partes.length > 1) {
+                    const mes = parseInt(partes[1], 10) - 1;
+                    if (mes >= 0 && mes <= 11) conteoMeses[mes]++;
+                }
+            }
+        });
+
         if (miGraficoBarras) {
             miGraficoBarras.data.datasets[0].data = conteoMeses;
             miGraficoBarras.update();
@@ -659,9 +718,7 @@ function actualizarGraficos() {
     // 4. Gráfico Reporte (Líneas)
     const ctxReporte = document.getElementById('graficoLineasReporte');
     if (ctxReporte) {
-        if (miGraficoLineasReporte) {
-            miGraficoLineasReporte.update();
-        } else {
+        if (!miGraficoLineasReporte) {
             miGraficoLineasReporte = new Chart(ctxReporte, {
                 type: 'line',
                 data: {
@@ -673,6 +730,8 @@ function actualizarGraficos() {
                 },
                 options: { responsive: true }
             });
+        } else {
+            miGraficoLineasReporte.update();
         }
     }
 }

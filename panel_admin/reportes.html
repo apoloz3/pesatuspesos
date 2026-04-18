@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reportes | Panel de Administración</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style_admin.css" />
+  </head>
+  <body>
+    <div class="contenedor-app">
+      <!-- Barra Lateral -->
+      <aside class="barra-lateral">
+        <div class="logo-barra-lateral">
+          <i class="fa-solid fa-scale-balanced" style="color: #1c84ee; margin-right: 12px"></i>
+          PesaTusPesos
+        </div>
+        <nav class="navegacion-barra-lateral">
+          <a href="resumen.html" class="item-navegacion" data-target="resumen">
+            <i class="fa-solid fa-house"></i> Resumen
+          </a>
+          <a href="usuarios.html" class="item-navegacion" data-target="usuarios">
+            <i class="fa-solid fa-users"></i> Usuarios
+          </a>
+          <a href="roles.html" class="item-navegacion" data-target="roles">
+            <i class="fa-solid fa-key"></i> Roles y Permisos
+          </a>
+          <a href="configuracion.html" class="item-navegacion" data-target="configuracion">
+            <i class="fa-solid fa-gear"></i> Configuración
+          </a>
+          <a href="reportes.html" class="item-navegacion" data-target="reportes">
+            <i class="fa-solid fa-chart-simple"></i> Reportes
+          </a>
+        </nav>
+        <div class="pie-barra-lateral">
+          <a href="#" class="item-navegacion texto-peligro" id="boton-cerrar-sesion">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+          </a>
+        </div>
+      </aside>
+
+      <!-- Contenido Principal -->
+      <main class="contenido-principal">
+        <header class="barra-superior">
+          <div class="header-izquierda">
+            <button id="boton-menu-movil" class="boton-menu-movil">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <h1 id="titulo-pagina">
+              Panel de Administración - <span class="texto-primario">Reportes y Estadísticas</span>
+            </h1>
+          </div>
+          <div class="barra-superior-derecha">
+            <i class="fa-solid fa-gear icono-barra-superior"></i>
+            <div class="perfil-usuario">
+              <img src="https://ui-avatars.com/api/?name=Admin&background=1c84ee&color=fff" alt="Admin" class="avatar" />
+              <span>Administrador <i class="fa-solid fa-chevron-down"></i></span>
+            </div>
+          </div>
+        </header>
+
+        <div class="area-contenido">
+          <section id="seccion-reportes" class="seccion-pagina activo">
+            <div class="panel">
+              <h2>Generación de Reportes</h2>
+              <div class="fila-formulario mt-20">
+                <div class="grupo-formulario flex-1">
+                  <label>Tipo de Reporte</label>
+                  <select class="control-formulario">
+                    <option>Uso de la Aplicación</option>
+                  </select>
+                </div>
+                <div class="grupo-formulario flex-1">
+                  <label>Rango de Fechas</label>
+                  <input type="text" class="control-formulario" value="1 Mar 2024 - 31 Mar 2024" />
+                </div>
+                <div class="grupo-formulario flex-1">
+                  <label>Módulos Incluidos</label>
+                  <div style="display: flex; gap: 8px; background: #f1f5f9; padding: 10px; border-radius: 6px; border: 1px solid var(--color-borde);">
+                    <span class="etiqueta bg-claro">Generales</span>
+                    <span class="etiqueta bg-claro">Seguridad</span>
+                    <span class="etiqueta bg-claro">Alertas</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rejilla-graficos mt-20">
+                <div style="flex: 2"><canvas id="graficoLineasReporte"></canvas></div>
+                <div style="flex: 1"><canvas id="graficoPastelReporte"></canvas></div>
+              </div>
+
+              <div class="mt-20">
+                <h3>Historial de Reportes</h3>
+                <div class="contenedor-tabla">
+                  <table class="tabla tabla-personalizada">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Tipo</th>
+                        <th>Periodo</th>
+                        <th>Creado por</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td><td>Actividad del Usuario</td><td>Marzo 2024</td><td>Luis Pérez</td>
+                        <td><span class="etiqueta etiqueta-verde">Completado</span></td>
+                        <td><a href="#" class="texto-primario">PDF</a> | <a href="#" class="texto-primario">CSV</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div style="text-align: right; margin-top: 20px">
+                  <button class="boton boton-primario">Generar Nuevo Reporte</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <div class="contenedor-notificaciones" id="contenedor-notificaciones"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>
