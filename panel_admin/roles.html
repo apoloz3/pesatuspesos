@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roles y Permisos | Panel de Administración</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style_admin.css" />
+  </head>
+  <body>
+    <div class="contenedor-app">
+      <!-- Barra Lateral -->
+      <aside class="barra-lateral">
+        <div class="logo-barra-lateral">
+          <i class="fa-solid fa-scale-balanced" style="color: #1c84ee; margin-right: 12px"></i>
+          PesaTusPesos
+        </div>
+        <nav class="navegacion-barra-lateral">
+          <a href="resumen.html" class="item-navegacion" data-target="resumen">
+            <i class="fa-solid fa-house"></i> Resumen
+          </a>
+          <a href="usuarios.html" class="item-navegacion" data-target="usuarios">
+            <i class="fa-solid fa-users"></i> Usuarios
+          </a>
+          <a href="roles.html" class="item-navegacion" data-target="roles">
+            <i class="fa-solid fa-key"></i> Roles y Permisos
+          </a>
+          <a href="configuracion.html" class="item-navegacion" data-target="configuracion">
+            <i class="fa-solid fa-gear"></i> Configuración
+          </a>
+          <a href="reportes.html" class="item-navegacion" data-target="reportes">
+            <i class="fa-solid fa-chart-simple"></i> Reportes
+          </a>
+        </nav>
+        <div class="pie-barra-lateral">
+          <a href="#" class="item-navegacion texto-peligro" id="boton-cerrar-sesion">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+          </a>
+        </div>
+      </aside>
+
+      <!-- Contenido Principal -->
+      <main class="contenido-principal">
+        <header class="barra-superior">
+          <div class="header-izquierda">
+            <button id="boton-menu-movil" class="boton-menu-movil">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <h1 id="titulo-pagina">
+              Panel de Administración - <span class="texto-primario">Roles y Permisos</span>
+            </h1>
+          </div>
+          <div class="barra-superior-derecha">
+            <i class="fa-solid fa-gear icono-barra-superior"></i>
+            <div class="perfil-usuario">
+              <img src="https://ui-avatars.com/api/?name=Admin&background=1c84ee&color=fff" alt="Admin" class="avatar" />
+              <span>Administrador <i class="fa-solid fa-chevron-down"></i></span>
+            </div>
+          </div>
+        </header>
+
+        <div class="area-contenido">
+          <section id="seccion-roles" class="seccion-pagina activo">
+            <div class="panel">
+              <div class="encabezado-panel">
+                <h3>Gestión de Roles</h3>
+                <button class="boton boton-primario" id="boton-agregar-rol">
+                  <i class="fa-solid fa-plus"></i> Añadir Rol
+                </button>
+              </div>
+              <div class="contenedor-tabla">
+                <table class="tabla tabla-personalizada" id="tabla-roles">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre de Rol</th>
+                      <th>Descripción</th>
+                      <th>Usuarios Asignados</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="rejilla-inferior-roles mt-20">
+              <div class="panel flex-2">
+                <h3>Matriz de Permisos por Rol</h3>
+                <div class="contenedor-tabla">
+                  <table class="tabla tabla-con-bordes" id="tablas-matriz" style="text-align: center">
+                    <thead></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="flex-columna flex-1">
+                <div class="panel mb-20">
+                  <h3>Asignación Rápida</h3>
+                  <div class="flex-columna" style="gap: 15px">
+                    <select class="control-formulario" id="asignacion-rapida-usuario">
+                      <option value="">Selecciona un usuario...</option>
+                    </select>
+                    <select class="control-formulario" id="asignacion-rapida-rol">
+                      <option value="">Selecciona rol...</option>
+                    </select>
+                    <button class="boton boton-primario" id="boton-asignacion-rapida">Asignar Rol</button>
+                  </div>
+                </div>
+                <div class="panel mb-20">
+                  <h3>Alertas Recientes</h3>
+                  <div id="alertas-roles"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- Modales -->
+    <div class="superposicion-modal" id="modal-generico">
+      <div class="contenido-modal">
+        <div class="encabezado-modal">
+          <h3 id="titulo-modal">Añadir Nuevo Elemento</h3>
+          <button class="cerrar-modal" id="cerrar-modal-btn">&times;</button>
+        </div>
+        <form id="formulario-generico">
+          <input type="hidden" id="id-elemento" />
+          <div class="grupo-formulario" id="grupo-nombre">
+            <label>Nombre completo</label>
+            <input type="text" id="nombre-elemento" class="control-formulario" required />
+          </div>
+          <div class="grupo-formulario" id="grupo-email">
+            <label>Correo Electrónico</label>
+            <input type="email" id="email-elemento" class="control-formulario" />
+          </div>
+          <div class="grupo-formulario" id="grupo-rol">
+            <label>Rol asignado</label>
+            <select id="rol-elemento" class="control-formulario">
+            </select>
+          </div>
+          <div class="grupo-formulario grupo-checkbox" id="grupo-activo">
+            <input type="checkbox" id="activo-elemento" checked />
+            <label>¿Estado activo?</label>
+          </div>
+          <button type="submit" class="boton boton-primario boton-block">Guardar Cambios</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="contenedor-notificaciones" id="contenedor-notificaciones"></div>
+    <script src="admin.js"></script>
+  </body>
+</html>
