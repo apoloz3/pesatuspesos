@@ -58,7 +58,10 @@
               <div class="carousel-track-container">
                 <div class="carousel-track" id="carouselTrack">
                   <!-- Tarjeta: Moto -->
-                  <div class="meta-card" style="background-image: url('img/moto_meta.png');">
+                  <div class="meta-card" 
+                       style="background-image: url('img/moto_meta.png');"
+                       data-actual="3250"
+                       data-total="5000">
                     <div class="card-overlay">
                       <div class="card-header">
                         <span class="meta-label">Mi meta:</span>
@@ -77,7 +80,10 @@
                   </div>
 
                   <!-- Tarjeta: Japón -->
-                  <div class="meta-card" style="background-image: url('img/japon_meta.png');">
+                  <div class="meta-card" 
+                       style="background-image: url('img/japon_meta.png');"
+                       data-actual="10000"
+                       data-total="12000">
                     <div class="card-overlay">
                       <div class="card-header">
                         <h2 class="meta-titulo">Viaje a Japón</h2>
@@ -95,7 +101,7 @@
                   </div>
 
                   <!-- Tarjeta: Crear Nueva -->
-                  <div class="meta-card card-crear" style="background-image: url('img/textura_oro.png');">
+                  <div class="meta-card card-crear">
                     <div class="card-overlay-crear">
                       <div class="icon-plus">
                         <i class="fa-solid fa-plus"></i>
@@ -154,22 +160,17 @@
                     <span class="sec-num">1</span> DATOS BÁSICOS
                   </div>
                   <label class="crear-label">TÍTULO DE LA META</label>
-                  <input type="text" class="crear-input" placeholder="[Ej. Coche Nuevo]">
+                  <input type="text" id="tituloMeta" class="crear-input" placeholder="[Ej. Coche Nuevo]">
                   
-                  <label class="crear-label" style="margin-top: 20px;">ÍCONO Y ESTILO</label>
-                  <div class="grid-iconos">
-                    <div class="icono-btn foto-btn">
-                      <i class="fa-solid fa-camera"></i>
-                      <span>SUBIR<br>FOTO</span>
+                  <label class="crear-label" style="margin-top: 20px; display: block; text-align: center;">FOTO O IMAGEN</label>
+                  <div class="grid-iconos" style="display: flex; justify-content: center; width: 100%;">
+                    <div class="icono-btn foto-btn" id="btnSubirFoto" style="width: 200px; height: 140px; background-size: cover; background-position: center; border-radius: 15px;">
+                      <div id="contenidoBotonFoto" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
+                        <i class="fa-solid fa-camera" style="font-size: 28px; margin-bottom: 5px;"></i>
+                        <span id="textoSubirFoto" style="font-size: 11px; text-align: center; line-height: 1.2;">SUBIR<br>FOTO</span>
+                      </div>
                     </div>
-                    <button class="icono-btn"><i class="fa-solid fa-piggy-bank"></i></button>
-                    <button class="icono-btn"><i class="fa-solid fa-car"></i></button>
-                    <button class="icono-btn active"><i class="fa-solid fa-laptop"></i></button>
-                    <button class="icono-btn"><i class="fa-solid fa-mountain-sun"></i></button>
-                    <button class="icono-btn"><i class="fa-solid fa-coins"></i></button>
-                    <button class="icono-btn"><i class="fa-regular fa-handshake"></i></button>
-                    <button class="icono-btn"><i class="fa-solid fa-hand-holding-dollar"></i></button>
-                    <button class="icono-btn"><i class="fa-solid fa-house"></i></button>
+                    <input type="file" id="inputFotoMeta" accept="image/*" style="display: none;">
                   </div>
                   
                   <div class="crear-toggle-row" style="margin-top: 25px;">
@@ -190,34 +191,30 @@
                   </div>
                   <label class="crear-label">MONTO TOTAL A AHORRAR</label>
                   <div class="input-icon-wrapper">
-                    <span class="simbolo">€</span>
-                    <input type="text" class="crear-input with-icon" value="">
+                    <span class="simbolo">$</span>
+                    <input type="text" id="montoTotal" class="crear-input with-icon" value="" placeholder="0">
                     <i class="fa-solid fa-calculator trailing-icon"></i>
                   </div>
 
-                  <label class="crear-label" style="margin-top: 20px;">DURACIÓN O FECHA LÍMITE</label>
-                  <div class="slider-wrapper">
-                    <div class="double-slider-track">
-                      <div class="double-slider-fill" style="left: 0%; width: 50%;"></div>
-                      <div class="thumb" style="left: 0%;"></div>
-                      <div class="thumb" style="left: 50%;"></div>
-                    </div>
-                    <i class="fa-regular fa-calendar trailing-icon"></i>
+                  <label class="crear-label" style="margin-top: 20px;">DURACIÓN O FECHA LÍMITE (MESES)</label>
+                  <div class="slider-wrapper" style="display: flex; align-items: center; gap: 15px;">
+                    <input type="range" id="duracionMeses" min="1" max="120" value="12" class="styled-slider" style="flex: 1;">
+                    <span id="duracionText" style="font-weight: bold; color: var(--gold-light); width: 45px; font-size: 14px;">12 M</span>
                   </div>
                   
                   <div class="fechas-row" style="margin-top: 15px;">
                     <div class="fecha-col">
                       <span class="fecha-sub">DÍA DE AHORRO</span>
                       <div class="select-group">
-                        <select class="crear-select"><option>Mes</option></select>
-                        <select class="crear-select"><option>Años</option></select>
+                        <select class="crear-select" id="inicioMes"><option>Mes</option></select>
+                        <select class="crear-select" id="inicioAno"><option>Años</option></select>
                       </div>
                     </div>
                     <div class="fecha-col">
                       <span class="fecha-sub">FECHA META</span>
                       <div class="select-group">
-                        <select class="crear-select"><option>Meta</option></select>
-                        <select class="crear-select"><option>Años</option></select>
+                        <select class="crear-select" id="metaMes"><option>Mes</option></select>
+                        <select class="crear-select" id="metaAno"><option>Años</option></select>
                       </div>
                     </div>
                   </div>
@@ -232,15 +229,15 @@
                     <div class="fecha-col" style="flex:1;">
                       <label class="crear-label">FRECUENCIA DE APORTES</label>
                       <div class="slider-wrapper">
-                        <input type="range" min="1" max="3" value="1" class="styled-slider small-slider">
+                        <input type="range" id="frecuenciaAporte" min="1" max="3" value="3" class="styled-slider small-slider">
                       </div>
                       <div class="frecuencia-labels">
-                        <span>SEMANAL</span><span>MENSUAL</span><span>QUINCENAL</span>
+                        <span>SEMANAL</span><span>QUINCENAL</span><span>MENSUAL</span>
                       </div>
                     </div>
                     <div class="fecha-col" style="width: 140px;">
                       <label class="crear-label">MONTO DEL APORTE</label>
-                      <input type="text" class="crear-input right-align" value="">
+                      <input type="text" id="montoAporte" class="crear-input right-align" value="$0" readonly style="background: rgba(0,0,0,0.2); font-weight: bold; color: var(--matte-gold); cursor: not-allowed;">
                     </div>
                   </div>
                 </div>

@@ -12,6 +12,11 @@
 </head>
 <body>
     <div class="modal-overlay">
+        <!-- Botón Regresar -->
+        <a href="../ahorros.html" class="btn-regresar">
+            <i class="fas fa-arrow-left"></i> Regresar
+        </a>
+
         <!-- Contenedor Principal (Modal) -->
         <main class="modal-container">
             <!-- Header -->
@@ -20,7 +25,6 @@
                     <h2>APORTAR A LA META</h2>
                     <p>Haz un aporte para avanzar hacia tu meta</p>
                 </div>
-                <button class="close-btn" aria-label="Cerrar ventana"><i class="fas fa-times"></i></button>
             </header>
 
             <!-- Goal Info Card -->
@@ -35,11 +39,11 @@
                 <div class="goal-stats">
                     <div class="stat-row">
                         <span class="stat-label">Monto actual:</span>
-                        <span class="stat-value">€3,250</span>
+                        <span class="stat-value">$3,250</span>
                     </div>
                     <div class="stat-row">
                         <span class="stat-label">Meta:</span>
-                        <span class="stat-value">€5,000</span>
+                        <span class="stat-value">$5,000</span>
                     </div>
                     <div class="stat-row">
                         <span class="stat-label">Progreso:</span>
@@ -82,10 +86,10 @@
                     <div class="calendar-footer">
                         <div class="cal-footer-info">
                             <div class="cal-info-icon"><i class="fas fa-info"></i></div>
-                            <span class="cal-footer-text">Aportes este mes: <strong class="white-text">€320</strong></span>
+                            <span class="cal-footer-text">Aportes este mes: <strong class="white-text">$320</strong></span>
                         </div>
                         <span class="cal-separator">|</span>
-                        <span class="cal-footer-subtext">Faltan: €180 para el hito mensual</span>
+                        <span class="cal-footer-subtext">Faltan: $180 para el hito mensual</span>
                     </div>
                 </section>
 
@@ -108,13 +112,13 @@
                     <div class="info-box amount-box">
                         <p class="box-label">¿Cuánto quieres aportar?</p>
                         <div class="input-wrapper">
-                            <span class="currency-symbol">€</span>
+                            <span class="currency-symbol">$</span>
                             <input type="text" id="aporte-input" value="150.00" aria-label="Cantidad a aportar">
                         </div>
                         <div class="quick-amounts">
-                            <button class="quick-amount-btn" data-amount="20">+€20</button>
-                            <button class="quick-amount-btn" data-amount="50">+€50</button>
-                            <button class="quick-amount-btn" data-amount="100">+€100</button>
+                            <button class="quick-amount-btn" data-amount="20">+$20</button>
+                            <button class="quick-amount-btn" data-amount="50">+$50</button>
+                            <button class="quick-amount-btn" data-amount="100">+$100</button>
                             <button class="quick-amount-btn outline">Otro</button>
                         </div>
                     </div>
@@ -127,7 +131,7 @@
                             </div>
                             <p class="milestone-text">
                                 Con este aporte alcanzarás<br>
-                                <strong class="white-text">€1,250 / €1,500 este mes</strong>
+                                <strong class="white-text">$1,250 / $1,500 este mes</strong>
                             </p>
                         </div>
                         <div class="milestone-progress-bar">
@@ -142,7 +146,7 @@
             <footer class="modal-actions-footer">
                 <div class="action-buttons">
                     <button class="btn-primary" id="btn-aportar">
-                        <i class="fas fa-coins" style="margin-right: 8px;"></i> APORTAR €150.00
+                        <i class="fas fa-coins" style="margin-right: 8px;"></i> APORTAR $150.00
                     </button>
                     <button class="btn-secondary">CANCELAR</button>
                 </div>
