@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PesatusPesos - Home</title>
+    <title>PesatusPesos - Panel de Deuda</title>
     <link rel="icon" type="image/png" sizes="32x32" href="img/coins-solid.png">
     <link rel="stylesheet" href="deuda.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -85,7 +85,7 @@
               <div class="filter-group">
                 <label><i class="fa-solid fa-coins"></i> Moneda</label>
                 <select id="filtroMoneda">
-                  <option>MXN</option>
+                  <option>COP</option>
                   <option>USD</option>
                 </select>
               </div>
@@ -96,20 +96,9 @@
                 <i class="fa-solid fa-rotate-left"></i> Limpiar
               </button>
             </div>
-            
-            <div class="dash-actions">
-              <button class="btn-action pdf" id="btnDescargarPDF">
-                <i class="fa-solid fa-file-pdf" style="color: #e11d48; font-size: 1.2rem;"></i>
-                Descargar PDF
-              </button>
-              <button class="btn-action excel" id="btnExportarExcel">
-                <i class="fa-solid fa-file-excel" style="color: #16a34a; font-size: 1.2rem;"></i>
-                Exportar Excel
-              </button>
-            </div>
           </div>
 
-          <!-- Tarjetas KPI -->
+          <!-- ══════════ PARTE SUPERIOR: KPI CARDS ══════════ -->
           <div class="dash-kpi-row">
             <div class="kpi-card">
               <div class="kpi-icon blue"><i class="fa-solid fa-wallet"></i></div>
@@ -143,60 +132,25 @@
                 <span class="kpi-subtext status-date">-- -- ----</span>
               </div>
             </div>
-            <div class="kpi-card kpi-radial">
+            <div class="kpi-card">
+              <div class="kpi-icon blue"><i class="fa-solid fa-money-bill-wave"></i></div>
               <div class="kpi-info">
-                <h3>% Utilizado</h3>
-              </div>
-              <div class="radial-container">
-                <canvas id="chartUtilizado"></canvas>
-                <div class="radial-value" id="textUtilizado">0%</div>
+                <h3>Total Abonado</h3>
+                <p class="kpi-value" id="valTotalAbonado">$0</p>
+                <span class="kpi-subtext">Historial de pagos</span>
               </div>
             </div>
           </div>
 
-          <!-- Gráficos Principales -->
-          <div class="dash-charts-grid">
-            <div class="chart-container large">
-              <div class="chart-header">
-                <h2>Evolución de la Deuda</h2>
-                <select class="chart-select">
-                  <option>12 meses</option>
-                  <option>6 meses</option>
-                </select>
-              </div>
-              <div class="chart-body">
-                <canvas id="chartEvolucion"></canvas>
-              </div>
-            </div>
-            
-            <div class="chart-container medium">
-              <div class="chart-header">
-                <h2>Deuda por Tipo</h2>
-              </div>
-              <div class="chart-body doughnut-wrap">
-                <canvas id="chartTipoDeuda"></canvas>
-                <div id="tipoDeudaLegend" class="chart-legend"></div>
-              </div>
-            </div>
+          <!-- ══════════ PARTE CENTRAL: Detalle | Historial ══════════ -->
+          <div class="dash-center-grid">
 
-            <div class="list-container small">
-              <div class="list-header">
-                <h2>Próximos Vencimientos</h2>
-                <button class="btn-text">Ver todos</button>
-              </div>
-              <div class="list-content" id="listaVencimientos">
-                <!-- Se llenará vía JS -->
-              </div>
-            </div>
-          </div>
-
-          <!-- Detalle y Presupuesto -->
-          <div class="dash-bottom-grid">
+            <!-- IZQUIERDA: Detalle de Deudas -->
             <div class="table-container">
               <div class="table-header">
                 <h2>Detalle de Deudas</h2>
                 <button class="btn-add-deuda" id="btnAbrirModalDeuda">
-                  <i class="fa-solid fa-plus"></i> Agregar Deuda
+                  <i class="fa-solid fa-plus"></i> Agregar
                 </button>
               </div>
               <div class="table-responsive">
@@ -223,19 +177,100 @@
               </div>
             </div>
 
-            <div class="chart-container medium">
-              <div class="chart-header">
-                <h2>Pagos vs Presupuesto</h2>
-                <div class="chart-toggle">
-                  <button class="active">Mensual</button>
-                  <button>Acumulado</button>
-                </div>
+            <!-- DERECHA: Historial de Pagos -->
+            <div class="table-container">
+              <div class="table-header">
+                <h2>Historial de Pagos</h2>
+                <button class="btn-add-pago" id="btnAbrirModalPago">
+                  <i class="fa-solid fa-plus"></i> Agregar
+                </button>
               </div>
-              <div class="chart-body">
-                <canvas id="chartPresupuesto"></canvas>
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Fecha Pago</th>
+                      <th>Monto Abonado</th>
+                      <th>Método de Pago</th>
+                      <th>Notas</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaHistorialPagosBody">
+                    <!-- Se llenará vía JS -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="pagination-container" id="paginacionPagos">
+                <!-- Se llenará vía JS -->
               </div>
             </div>
+
           </div>
+
+          <!-- ══════════ PARTE INFERIOR: Gráficas ══════════ -->
+          <div class="dash-charts-grid">
+
+            <!-- Gráfica 1: Evolución de la Deuda -->
+            <div class="chart-container">
+              <div class="chart-header">
+                <h2>Evolución de la Deuda</h2>
+                <select class="chart-select" id="selectEvolucion">
+                  <option value="12">12 meses</option>
+                  <option value="6">6 meses</option>
+                </select>
+              </div>
+              <div class="chart-body">
+                <canvas id="chartEvolucion"></canvas>
+              </div>
+            </div>
+
+            <!-- Gráfica 2: Pagos por Mes (reemplaza "Deuda por Tipo") -->
+            <div class="chart-container">
+              <div class="chart-header">
+                <h2>Pagos por Mes</h2>
+              </div>
+              <div class="chart-body">
+                <canvas id="chartPagosMes"></canvas>
+              </div>
+            </div>
+
+            <!-- Gráfica 3: Distribución por Método de Pago -->
+            <div class="chart-container">
+              <div class="chart-header">
+                <h2>Método de Pago</h2>
+              </div>
+              <div class="chart-body doughnut-wrap">
+                <canvas id="chartMetodoPago"></canvas>
+                <div id="metodoPagoLegend" class="chart-legend"></div>
+              </div>
+            </div>
+
+            <!-- Gráfica 4: Próximos Vencimientos -->
+            <div class="list-container">
+              <div class="list-header">
+                <h2>Próximos Vencimientos</h2>
+                <button class="btn-text">Ver todos</button>
+              </div>
+              <div class="list-content" id="listaVencimientos">
+                <!-- Se llenará vía JS -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ══════════ BOTONES PDF / EXCEL ══════════ -->
+          <div class="dash-export-row">
+            <button class="btn-action pdf" id="btnDescargarPDF">
+              <i class="fa-solid fa-file-pdf" style="color: #e11d48; font-size: 1.2rem;"></i>
+              Descargar PDF
+            </button>
+            <button class="btn-action excel" id="btnExportarExcel">
+              <i class="fa-solid fa-file-excel" style="color: #16a34a; font-size: 1.2rem;"></i>
+              Exportar Excel
+            </button>
+          </div>
+
         </section>
 
         <!-- Panel usuario FUERA de .principal -->
@@ -321,6 +356,7 @@
         </div>
       </footer>
     </div>
+
     <!-- Modal para Agregar/Editar Deuda -->
     <div id="modalDeuda" class="modal-dash">
       <div class="modal-dash-content">
@@ -368,6 +404,44 @@
           </div>
           <div class="form-actions">
             <button type="button" class="btn-cancel" id="btnCancelarDeuda">Cancelar</button>
+            <button type="submit" class="btn-save">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal para Agregar/Editar Historial de Pago -->
+    <div id="modalPago" class="modal-dash">
+      <div class="modal-dash-content">
+        <span class="close-modal-dash" id="btnCerrarModalPago">&times;</span>
+        <h2 id="modalPagoTitulo">Nuevo Pago</h2>
+        <form id="formPago" class="form-grid">
+          <input type="hidden" id="pagoIndex">
+          <div class="form-group">
+            <label for="fechaPago">Fecha de Pago</label>
+            <input type="date" id="fechaPago" required>
+          </div>
+          <div class="form-group">
+            <label for="montoPago">Monto Abonado ($)</label>
+            <input type="number" id="montoPago" required step="0.01" placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label for="metodoPago">Método de Pago</label>
+            <select id="metodoPago" required>
+              <option value="Transferencia">Transferencia</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Tarjeta débito">Tarjeta débito</option>
+              <option value="Tarjeta crédito">Tarjeta crédito</option>
+              <option value="PSE">PSE</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="notasPago">Notas</label>
+            <input type="text" id="notasPago" placeholder="Observaciones opcionales">
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" id="btnCancelarPago">Cancelar</button>
             <button type="submit" class="btn-save">Guardar</button>
           </div>
         </form>
