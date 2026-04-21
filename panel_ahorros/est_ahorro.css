@@ -1700,6 +1700,24 @@ input:checked+.slider-toggle:before {
   .footer-grid {
     grid-template-columns: repeat(2, 1fr) !important;
   }
+
+  /* --- Vista toggle bar: tablet --- */
+  .view-toggle-bar {
+    gap: 8px;
+    padding: 6px 14px;
+  }
+
+  /* --- Vista Cards: 2 columnas en tablet --- */
+  .card-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  /* --- Vista Lista: ligeramente más compacta --- */
+  .lista-meta-item {
+    padding: 16px 20px;
+    gap: 16px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1762,6 +1780,66 @@ input:checked+.slider-toggle:before {
     left: auto;
     top: 88px;
     width: min(300px, calc(100vw - 24px));
+  }
+
+  /* --- Toggle bar: mobile --- */
+  .view-toggle-bar {
+    width: 100%;
+    justify-content: space-around;
+    border-radius: 14px;
+    padding: 6px 8px;
+    margin-bottom: 24px;
+    gap: 4px;
+  }
+
+  .view-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 6px;
+    font-size: 0.78rem;
+    gap: 5px;
+  }
+
+  .view-btn i {
+    font-size: 0.9rem;
+  }
+
+  /* --- Card grid: 1 columna en mobile --- */
+  .card-grid-container {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .card-grid-container .meta-card {
+    height: 380px;
+  }
+
+  /* --- Lista: apilar botón debajo en pantallas pequeñas --- */
+  .lista-meta-item {
+    gap: 14px;
+    padding: 14px 16px;
+    flex-wrap: wrap;
+  }
+
+  .lista-meta-btn {
+    flex: 0 0 100%;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .lista-meta-thumb {
+    width: 60px;
+    height: 60px;
+  }
+
+  .lista-meta-nombre {
+    font-size: 1rem;
+    white-space: normal;
+  }
+
+  .lista-meta-texto {
+    flex-direction: column;
+    gap: 2px;
   }
 }
 
@@ -1830,6 +1908,64 @@ input:checked+.slider-toggle:before {
   .crear-header h2 {
     font-size: 18px;
   }
+
+  /* --- Toggle bar: pantallas muy pequeñas — solo íconos --- */
+  .view-btn span {
+    display: none; /* ocultar etiqueta de texto, solo íconos */
+  }
+
+  .view-btn {
+    padding: 10px 14px;
+    border-radius: 50px;
+    gap: 0;
+  }
+
+  .view-btn i {
+    font-size: 1.05rem;
+  }
+
+  .view-toggle-bar {
+    width: auto;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 50px;
+  }
+
+  /* --- Card grid: 1 columna estrecha --- */
+  .card-grid-container {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .card-grid-container .meta-card {
+    height: 340px;
+  }
+
+  /* --- Lista: muy compacta --- */
+  .lista-meta-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+  }
+
+  .lista-meta-nombre {
+    font-size: 0.95rem;
+  }
+
+  .lista-meta-btn {
+    padding: 9px 14px;
+    font-size: 0.82rem;
+  }
+
+  .lista-meta-item {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .lista-meta-item.lista-crear .lista-crear-inner {
+    font-size: 0.9rem;
+  }
 }
 
 /* ---- Ultra-small phones (width < 375px) ---- */
@@ -1855,5 +1991,34 @@ input:checked+.slider-toggle:before {
   .boton-aportar {
     padding: 10px 18px;
     font-size: 0.9rem;
+  }
+
+  /* --- Toggle bar ultra compacto --- */
+  .view-btn {
+    padding: 9px 12px;
+  }
+
+  .view-toggle-bar {
+    padding: 5px 10px;
+    gap: 6px;
+  }
+
+  /* --- Lista ultra compacta --- */
+  .lista-meta-thumb {
+    width: 46px;
+    height: 46px;
+  }
+
+  .lista-meta-nombre {
+    font-size: 0.9rem;
+  }
+
+  .lista-meta-bar {
+    height: 6px;
+  }
+
+  /* --- Card grid ultra compacto --- */
+  .card-grid-container .meta-card {
+    height: 310px;
   }
 }
