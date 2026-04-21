@@ -523,5 +523,139 @@ document.addEventListener("DOMContentLoaded", function () {
     updateMetaDateFromSlider();
   }
 
+  /* ===============================
+       SELECTOR DE VISTA (Carrusel / Cards / Lista)
+     =============================== */
+
+  const seccionMetas = document.querySelector('.seccion-metas');
+  const listaMetas   = document.getElementById('listaMetas');
+  const cardGrid     = document.getElementById('cardGrid');
+  const viewBtns     = document.querySelectorAll('.view-btn');
+
+  // Vista guardada en localStorage (default: carrusel)
+  const vistaGuardada = localStorage.getItem('vistaMetas') || 'carrusel';
+
+  /** Construye la vista lista a partir de las tarjetas del track */
+  function buildListaView() {
+    listaMetas.innerHTML = '';
+    const cards = Array.from(document.querySelectorAll('#carouselTrack .meta-card'));
+
+    cards.forEach(card => {
+      const isCrear = card.classList.contains('card-crear');
+
+      if (isCrear) {
+        const row = document.createElement('div');
+        row.className = 'lista-meta-item lista-crear';
+        row.innerHTML = '<div class="lista-crear-inner"><i class="fa-solid fa-plus"></i><span>Crear nueva meta</span></div>';
+        row.addEventListener('click', () => card.click());
+        listaMetas.appendChild(row);
+        return;
+      }
+
+      const titulo = card.querySelector('.meta-titulo') ? card.querySelector('.meta-titulo').textContent : 'Mi Meta';
+      const actual = parseFloat(card.getAttribute('data-actual') || '0');
+      const total  = parseFloat(card.getAttribute('data-total') || '0');
+      const pct    = total > 0 ? Math.min(100, Math.round((actual / total) * 100)) : 0;
+      const bgImage = card.style.backgroundImage || '';
+
+      const row = document.createElement('div');
+      row.className = 'lista-meta-item';
+
+      // Creamos el thumb por separado para evitar conflicto de comillas en atributos inline
+      const thumb = document.createElement('div');
+      thumb.className = 'lista-meta-thumb';
+      thumb.style.backgroundImage = bgImage || "url('img/textura_oro.png')";
+
+      const info = document.createElement('div');
+      info.className = 'lista-meta-info';
+      info.innerHTML = `
+        <div class="lista-meta-nombre">${titulo}</div>
+        <div class="lista-meta-progreso-wrap">
+          <div class="lista-meta-texto">
+            <span>${pct}% completado</span>
+            <span>$${actual.toLocaleString('es-ES')} / $${total.toLocaleString('es-ES')}</span>
+          </div>
+          <div class="lista-meta-bar">
+            <div class="lista-meta-fill" style="width: ${pct}%"></div>
+          </div>
+        </div>
+      `;
+
+      const btn = document.createElement('button');
+      btn.className = 'lista-meta-btn';
+      btn.textContent = 'Aportar';
+
+      row.appendChild(thumb);
+      row.appendChild(info);
+      row.appendChild(btn);
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        localStorage.setItem('metaSeleccionadaTitulo', titulo);
+        localStorage.setItem('metaSeleccionadaImagen', bgImage);
+        localStorage.setItem('metaSeleccionadaActual', String(actual));
+        localStorage.setItem('metaSeleccionadaTotal', String(total));
+        window.location.href = 'panel_aporte/aporte.html';
+      });
+
+      listaMetas.appendChild(row);
+    });
+  }
+
+  /** Construye la vista card-grid clonando las tarjetas del track */
+  function buildCardGridView() {
+    cardGrid.innerHTML = '';
+    const cards = Array.from(document.querySelectorAll('#carouselTrack .meta-card'));
+
+    cards.forEach(card => {
+      const clone = card.cloneNode(true);
+
+      const btnAportar = clone.querySelector('.boton-aportar');
+      if (btnAportar) {
+        btnAportar.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const t  = clone.querySelector('.meta-titulo') ? clone.querySelector('.meta-titulo').textContent : 'Mi Meta';
+          const ac = clone.getAttribute('data-actual') || '0';
+          const to = clone.getAttribute('data-total') || '0';
+          const bg = clone.style.backgroundImage;
+          localStorage.setItem('metaSeleccionadaTitulo', t);
+          localStorage.setItem('metaSeleccionadaImagen', bg);
+          localStorage.setItem('metaSeleccionadaActual', ac);
+          localStorage.setItem('metaSeleccionadaTotal', to);
+          window.location.href = 'panel_aporte/aporte.html';
+        });
+      }
+
+      if (clone.classList.contains('card-crear')) {
+        clone.addEventListener('click', () => {
+          const m = document.getElementById('modalCrearMeta');
+          if (m) m.classList.add('activo');
+        });
+      }
+
+      cardGrid.appendChild(clone);
+    });
+  }
+
+  /** Activa una vista */
+  function setView(vista) {
+    localStorage.setItem('vistaMetas', vista);
+    seccionMetas.classList.remove('vista-lista', 'vista-card');
+    viewBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.view === vista));
+
+    if (vista === 'lista') {
+      seccionMetas.classList.add('vista-lista');
+      buildListaView();
+    } else if (vista === 'card') {
+      seccionMetas.classList.add('vista-card');
+      buildCardGridView();
+    }
+  }
+
+  viewBtns.forEach(btn => btn.addEventListener('click', () => setView(btn.dataset.view)));
+
+  // Aplicar vista guardada al cargar
+  setView(vistaGuardada);
+
 });
 

@@ -981,6 +981,261 @@ footer {
   box-shadow: 0 0 10px var(--gold-glow);
 }
 
+/* =========================================
+   BOTONES DE SELECCIÓN DE VISTA
+   ========================================= */
+
+.view-toggle-bar {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+  background: rgba(0, 21, 36, 0.5);
+  border: 1px solid rgba(207, 181, 60, 0.15);
+  border-radius: 50px;
+  padding: 8px 18px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.view-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 30px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-btn i {
+  font-size: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.view-btn:hover {
+  color: var(--gold-light);
+  border-color: rgba(207, 181, 60, 0.35);
+  background: rgba(207, 181, 60, 0.08);
+}
+
+.view-btn:hover i {
+  transform: scale(1.15);
+}
+
+.view-btn.active {
+  background: linear-gradient(135deg, var(--matte-gold), var(--gold-bright));
+  border-color: var(--gold-bright);
+  color: var(--bg-deep);
+  box-shadow: 0 0 18px rgba(255, 204, 0, 0.4);
+}
+
+.view-btn.active i {
+  transform: scale(1.1);
+}
+
+/* =========================================
+   VISTA LISTA - meta cards como filas
+   ========================================= */
+
+.seccion-metas.vista-lista .carousel-container {
+  display: none;
+}
+
+.seccion-metas.vista-lista .carousel-indicators {
+  display: none !important;
+}
+
+.lista-metas-container {
+  display: none;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  animation: fadeInUp 0.4s ease;
+}
+
+.seccion-metas.vista-lista .lista-metas-container {
+  display: flex;
+}
+
+.lista-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, var(--bg-navy) 0%, #021f33 100%);
+  border: 1px solid rgba(207, 181, 60, 0.2);
+  border-radius: 16px;
+  padding: 18px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.lista-meta-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--matte-gold), var(--gold-bright));
+  border-radius: 4px 0 0 4px;
+}
+
+.lista-meta-item:hover {
+  border-color: rgba(207, 181, 60, 0.5);
+  box-shadow: 0 8px 25px rgba(255, 204, 0, 0.15);
+  transform: translateX(4px);
+}
+
+.lista-meta-thumb {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border: 2px solid rgba(207, 181, 60, 0.3);
+}
+
+.lista-meta-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.lista-meta-nombre {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lista-meta-progreso-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.lista-meta-texto {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.65);
+  display: flex;
+  justify-content: space-between;
+}
+
+.lista-meta-texto span {
+  color: var(--gold-light);
+  font-weight: bold;
+}
+
+.lista-meta-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.lista-meta-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--matte-gold), var(--gold-bright));
+  border-radius: 8px;
+  box-shadow: 0 0 8px var(--gold-glow);
+}
+
+.lista-meta-btn {
+  background: var(--matte-gold);
+  color: var(--bg-deep);
+  border: none;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.lista-meta-btn:hover {
+  background: var(--gold-bright);
+  transform: scale(1.05);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+/* Fila especial para "Crear" en vista lista */
+.lista-meta-item.lista-crear {
+  border-style: dashed;
+  background: rgba(0, 21, 36, 0.5);
+  justify-content: center;
+}
+
+.lista-meta-item.lista-crear::before {
+  display: none;
+}
+
+.lista-meta-item.lista-crear .lista-crear-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--gold-light);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.lista-meta-item.lista-crear .lista-crear-inner i {
+  font-size: 1.4rem;
+  color: var(--matte-gold);
+}
+
+/* =========================================
+   VISTA CARD GRID - cuadrícula estática
+   ========================================= */
+
+.seccion-metas.vista-card .carousel-container {
+  display: none;
+}
+
+.seccion-metas.vista-card .carousel-indicators {
+  display: none !important;
+}
+
+.card-grid-container {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+  width: 100%;
+  animation: fadeInUp 0.4s ease;
+}
+
+.seccion-metas.vista-card .card-grid-container {
+  display: grid;
+}
+
+/* Las tarjetas dentro del grid no necesitan width fija */
+.card-grid-container .meta-card {
+  flex: none;
+  width: 100%;
+  min-width: 0;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 768px) {
   .meta-card {
     min-width: 280px;

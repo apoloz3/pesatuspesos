@@ -50,6 +50,22 @@
           <div class="seccion-metas">
             <h1 class="titulo-seccion">Crea tus sueños</h1>
             
+            <!-- Selector de vista -->
+            <div class="view-toggle-bar">
+              <button class="view-btn" id="btnVistaCarro" data-view="carrusel" title="Vista Carrusel">
+                <i class="fa-solid fa-film"></i>
+                <span>Carrusel</span>
+              </button>
+              <button class="view-btn" id="btnVistaCard" data-view="card" title="Vista Cards">
+                <i class="fa-solid fa-grip"></i>
+                <span>Cards</span>
+              </button>
+              <button class="view-btn" id="btnVistaLista" data-view="lista" title="Vista Lista">
+                <i class="fa-solid fa-list"></i>
+                <span>Lista</span>
+              </button>
+            </div>
+
             <div class="carousel-container">
               <button class="nav-btn prev" id="prevBtn">
                 <i class="fa-solid fa-chevron-left"></i>
@@ -120,6 +136,13 @@
             <div class="carousel-indicators" id="carouselIndicators">
               <!-- Los puntos se generarán dinámicamente con JS -->
             </div>
+
+            <!-- Vista Lista -->
+            <div class="lista-metas-container" id="listaMetas"></div>
+
+            <!-- Vista Card Grid -->
+            <div class="card-grid-container" id="cardGrid"></div>
+
           </div>
         </section>
 
