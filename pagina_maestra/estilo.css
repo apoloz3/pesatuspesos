@@ -463,10 +463,30 @@ body {
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  overflow: hidden; /* Recortar cualquier contenido cuadrado */
+  padding: 0;
 }
 
 .boton-opcion img {
   width: 25px;
+  height: 25px;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+/* Avatar en botón de perfil y contenedores debe ocupar todo el espacio y ser redondo */
+.boton-editar img,
+#botonPerfil img,
+#avatarPrincipal,
+.avatar-principal,
+.contenedor-avatar img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  display: block !important;
 }
 
 .boton-opcion:hover {
