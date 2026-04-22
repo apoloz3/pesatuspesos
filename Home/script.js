@@ -184,8 +184,8 @@ const contenedores = [
   document.getElementById("video12"),
 ];
 
-async function cargarVideos() {
-  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=educacion financiera colombia&maxResults=12&type=video&key=${API_KEY}`;
+async function cargarVideos(query = 'educacion financiera colombia') {
+  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&maxResults=12&type=video&key=${API_KEY}`;
 
   try {
     const respuesta = await fetch(url);
@@ -214,6 +214,8 @@ async function cargarVideos() {
     console.error("Error cargando videos:", error);
   }
 }
+
+let intervaloCarrusel = null;
 
 function iniciarCarrusel() {
   const track = document.getElementById("carruselTrack");
@@ -315,7 +317,8 @@ function iniciarCarrusel() {
   });
 
   // ── Auto-advance every 30s ─────────────────────────────────
-  setInterval(() => irA((actual + 1) % getNumPaginas()), 30000);
+  if (intervaloCarrusel) clearInterval(intervaloCarrusel);
+  intervaloCarrusel = setInterval(() => irA((actual + 1) % getNumPaginas()), 30000);
 
   // ── Init ─────────────────────────────────────────────────
   generarPuntos();
@@ -323,6 +326,82 @@ function iniciarCarrusel() {
 }
 cargarVideos();
 
+const inputBuscarVideo = document.getElementById("inputBuscarVideo");
+const btnBuscarVideo = document.getElementById("btnBuscarVideo");
+
+// Diccionario de categorías prohibidas evidentes para rechazo inmediato
+const categoriasProhibidas = [
+  "futbol", "musica", "deporte", "juego", "gameplay", "pelicula", "free fire", 
+  "minecraft", "roblox", "porno", "sexo", "apuesta", "chiste", "broma", "novela", 
+  "serie", "cancion", "cantante", "farandula", "chisme"
+];
+
+// Diccionario de términos financieros permitidos para validación positiva
+const terminosFinancieros = [
+  "finanza", "financier", "dinero", "plata", "ahorro", "ahorrar", "inversion", "invertir", 
+  "banco", "bancar", "economia", "economico", "deuda", "credito", "prestamo", "presupuesto", 
+  "ingreso", "gasto", "cripto", "bitcoin", "dolar", "peso", "accion", "bolsa", "trading",
+  "capital", "negocio", "emprend", "empresa", "sueldo", "salario", "interes", "riqueza", 
+  "rico", "pobre", "millonario", "billetera", "tarjeta", "pagar", "comprar", "venta",
+  "vender", "rentabilidad", "ganancia", "impuesto", "inflacion", "deflacion", "trm", 
+  "cobrar", "factura", "educacion", "educar", "libertad", "inmueble", "independiza",
+  "bienes raices", "fondo", "cesantias", "pension", "jubilacion", "seguro", "impuestos", "dian",
+  "crecer", "casa", "carro", "moto", "vehiculo", "comprar", "ahorrador", "meta", "ingresos"
+];
+
+function validarBusquedaFinanzas(query) {
+  if (!query) return false;
+  // Convertimos a minúsculas y quitamos tildes para una comparación justa
+  const qStr = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  
+  // 1. Verificamos si contiene categorías prohibidas abiertamente
+  const esProhibida = categoriasProhibidas.some(cat => qStr.includes(cat));
+  if (esProhibida) return false;
+
+  // 2. Verificamos si al menos menciona un elemento del diccionario de finanzas
+  const esValida = terminosFinancieros.some(termino => qStr.includes(termino));
+  return esValida;
+}
+
+const alertModalBusqueda = document.getElementById("alertModalBusqueda");
+const btnCerrarAlertaBusqueda = document.getElementById("btnCerrarAlertaBusqueda");
+
+function manejarBusquedaVideo() {
+  const query = inputBuscarVideo.value.trim();
+  if (!query) return;
+
+  if (validarBusquedaFinanzas(query)) {
+    // Añadimos contexto financiero fuerte al final de la búsqueda
+    cargarVideos(query + " educacion financiera");
+  } else {
+    // Mostramos el modal personalizado en lugar del alert nativo
+    if (alertModalBusqueda) alertModalBusqueda.classList.add("activo");
+    inputBuscarVideo.value = "";
+  }
+}
+
+if (btnCerrarAlertaBusqueda && alertModalBusqueda) {
+  btnCerrarAlertaBusqueda.addEventListener("click", () => {
+    alertModalBusqueda.classList.remove("activo");
+  });
+
+  // Cerrar modal si hacen clic fuera del contenido
+  window.addEventListener("click", (e) => {
+    if (e.target === alertModalBusqueda) {
+      alertModalBusqueda.classList.remove("activo");
+    }
+  });
+}
+
+if (btnBuscarVideo && inputBuscarVideo) {
+  btnBuscarVideo.addEventListener("click", manejarBusquedaVideo);
+
+  inputBuscarVideo.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      manejarBusquedaVideo();
+    }
+  });
+}
 
 /** Serie sintética que converge al valor real (TRM / último punto = API) */
 function serieConvergente(valorFinal, cantidad) {

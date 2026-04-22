@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="description" content="Inicia sesión o regístrate en PesaTusPesos para monitorear y controlar tus finanzas personales.">
 <title>PesaTusPesos - Login</title>
 <link rel="icon" type="image/png" sizes="32x32" href="imagenes/coins-solid.png">
 <link rel="stylesheet" type="text/css" href="login.css">
@@ -156,7 +157,17 @@
                     <label for="contrasenaRegistro">Contraseña</label>
 
                     <i class="fa-solid fa-eye ver-contrasena" data-target="contrasenaRegistro"></i>
+                    
+                    <div class="tooltip-password">La contraseña debe contener 1 mayúscula, 1 minúscula, número y un carácter especial.</div>
 
+                </div>
+
+                <div id="indicadorFortaleza" class="indicador-fortaleza animacion" style="--D:4.5; --S:2;">
+                    <span>Fortaleza: </span>
+                    <span id="textoFortaleza">Baja</span>
+                    <div class="barra-fortaleza">
+                        <div id="progresoFortaleza"></div>
+                    </div>
                 </div>
 
                 <div class="caja-input animacion" style="--D:5; --S:2;">
@@ -166,6 +177,8 @@
                     <label for="confirmarContrasena">Confirmar contraseña</label>
 
                     <i class="fa-solid fa-eye ver-contrasena" data-target="confirmarContrasena"></i>
+
+                    <div id="msgConfirmar" class="error-confirmacion"></div>
 
                 </div>
 

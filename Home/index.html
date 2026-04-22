@@ -138,8 +138,12 @@
         <!-- Panel usuario FUERA de .principal -->
         <aside class="usuario" id="panelUsuario">
           <button class="cerrar-panel" id="cerrarPanel">✕</button>
-          <h2 id="nombre_usuario">Usuario</h2>
-          <div class="avatar-wrapper">
+          <div class="enlace-config-panel" style="position: absolute; top: 12px; left: 14px;">
+            <a href="#" style="color: rgb(255, 255, 255); text-decoration: none; font-size: 16px; transition: color 0.3s; display: inline-flex; align-items: center; gap: 5px;" onmouseover="this.style.color='var(--matte-gold)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">
+              <i class="fa-solid fa-gear"></i> Configuraciones
+            </a>
+          </div>
+          <div class="avatar-wrapper" style="margin-top: 35px;">
             <img
               src="img/hucha.png"
               class="avatar"
@@ -149,6 +153,10 @@
             <div class="avatar-lapiz">
               <img src="img/lapiz.png" alt="editar" width="14" height="14" />
             </div>
+          </div>
+          <h2 id="nombre_usuario">Usuario</h2>
+          <div class="titulo-frase" style="margin-top: 25px; margin-bottom: -10px;">
+            <span style="color: #ffffff; font-size: 20px;">Frase del día</span>
           </div>
           <p class="frase" id="frase_motivadora"></p>
           <button class="boton-cerrar">Cerrar sesión</button>
@@ -212,7 +220,27 @@
           </div>
         </div>
 
-        <h2 class="videos-titulo">Videos para mejorar tus finanzas!</h2>
+        <!-- Custom Alert Modal para Buscador -->
+        <div id="alertModalBusqueda" class="modal">
+          <div class="modal-content modal-alerta">
+            <div class="modal-alerta-body">
+              <div class="alerta-header">
+                <h2>¡Lo sentimos! 🚫</h2>
+              </div>
+              <p>El buscador de PesaTusPesos está configurado EXCLUSIVAMENTE para temas de economía, educación financiera, inversiones, ahorro, negocios, etc.</p>
+              <p>Por favor intenta buscar un tema relacionado con tus finanzas personales.</p>
+              <button id="btnCerrarAlertaBusqueda" class="boton-alerta">Aceptar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="videos-header">
+          <h2 class="videos-titulo">Videos para mejorar tus finanzas!</h2>
+          <div class="buscador-videos">
+            <input type="text" id="inputBuscarVideo" placeholder="Buscar videos o temas...">
+            <button id="btnBuscarVideo" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </div>
+        </div>
         <section class="carrusel-wrapper">
           <div class="carrusel-track" id="carruselTrack">
             <div id="video1" class="carrusel-item"></div>
@@ -264,17 +292,19 @@
           <!-- Contacto -->
           <div class="footer-col">
             <h4>Contacto</h4>
-            <p>jmjcompanysa10@gmail.com</p>
+            <p>jmjcompanysa3@gmail.com</p>
             <p>Lunes a viernes 8:00 a.m. – 6:00 p.m.</p>
-            <p>Tel: +57 310 520 4819</p>
+            <p>Tel: +57 310 302 4710</p>
           </div>
 
           <!-- Ubicación -->
           <div class="footer-col">
-            <h4><a href="https://maps.app.goo.gl/h3eUHJXexdZg5feEA" target="_blank" rel="noopener noreferrer" style="display: inline; color: inherit; font-size: inherit;"><i class="fa-solid fa-location-dot" style="margin-right: 5px; font-size: 1.25rem; vertical-align: middle; transition: color 0.2s;" onmouseover="this.style.color='#ffcc00'" onmouseout="this.style.color=''"></i></a>Ubicación</h4>
-            <p>Medellín, Antioquia</p>
-            <p>Colombia</p>
-            <p>Aprendizaje en línea y seguimiento presencial según programa.</p>
+            <a href="https://maps.app.goo.gl/h3eUHJXexdZg5feEA" target="_blank" rel="noopener noreferrer" style="display: block; text-decoration: none; color: inherit; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'" title="Ver ubicación en Google Maps">
+              <h4><i class="fa-solid fa-location-dot" style="margin-right: 6px; font-size: 1rem; vertical-align: middle; color: #CFB53B;"></i>Ubicación</h4>
+              <p>Medellín, Antioquia</p>
+              <p>Colombia</p>
+              <p>Aprendizaje en línea y seguimiento presencial según programa.</p>
+            </a>
           </div>
 
           <!-- Legal -->

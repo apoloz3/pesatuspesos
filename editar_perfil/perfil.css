@@ -625,116 +625,352 @@ body {
     display: flex;
     justify-content: center;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
+/* ── Pantallas grandes (> 1200px) ── */
+@media (min-width: 1200px) {
+    .contenedor-principal {
+        max-width: 1050px;
+    }
+
+    .tarjeta-perfil {
+        grid-template-columns: 270px 1fr;
+        gap: 50px;
+        padding: 35px 70px;
+    }
+}
+
+/* ── Tablet grande / laptop pequeño (≤ 900px) ── */
 @media (max-width: 900px) {
+    .contenedor-principal {
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
     .tarjeta-perfil {
         padding: 25px 30px;
         gap: 20px;
+        grid-template-columns: 220px 1fr;
     }
 
     #regresar-a-informacion {
         left: 0;
     }
+
+    .contenedor-foto {
+        width: 180px;
+        height: 180px;
+    }
 }
 
+/* ── Tablet (≤ 768px) ── */
 @media (max-width: 768px) {
     body {
         align-items: flex-start;
-        padding-top: 80px;
-        /* Previene el solapamiento con el logo flotante */
+        padding: 90px 15px 30px;
     }
 
     .encabezado-logo {
-        top: 20px;
+        top: 18px;
         left: 50%;
         transform: translateX(-50%);
-        /* Centrado automático para tablet */
+    }
+
+    .contenedor-principal {
+        width: 100%;
+        padding: 0;
     }
 
     .tarjeta-perfil {
         grid-template-columns: 1fr;
-        padding: 30px 25px;
+        padding: 28px 22px;
+        min-height: unset;
+    }
+
+    .seccion-avatar {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .contenedor-foto {
+        width: 140px;
+        height: 140px;
+        flex-shrink: 0;
+    }
+
+    .acciones-foto-exterior {
+        flex: 1;
+        min-width: 160px;
     }
 
     .cabecera {
-        flex-direction: column;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
     }
 
     .cabecera .izquierda {
-        flex-direction: column;
-        gap: 15px;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .boton-volver {
         position: relative;
         left: auto;
+        flex-shrink: 0;
     }
 
     #regresar-a-informacion {
         position: relative;
         left: auto;
-        margin: 0 auto;
+        flex-shrink: 0;
+    }
+
+    .titulo-pagina {
+        font-size: 1.3rem;
     }
 
     .acciones-dentro-tarjeta {
         justify-content: center;
     }
+
+    .input-linea input {
+        font-size: 1rem;
+    }
+
+    .input-linea input::placeholder {
+        font-size: 0.95rem;
+    }
 }
 
-@media (max-width: 480px) {
+/* ── Móvil grande (≤ 600px) ── */
+@media (max-width: 600px) {
     body {
-        padding-top: 15px;
+        padding: 80px 12px 25px;
     }
 
     .encabezado-logo {
-        position: static;
-        margin-bottom: 15px;
-        display: flex;
-        justify-content: center;
-        transform: none;
+        top: 15px;
     }
 
-    .titulo-pagina {
-        font-size: 1.25rem;
-        text-align: center;
+    .caja-logo .texto-logo {
+        font-size: 1rem;
+    }
+
+    .tarjeta-perfil {
+        padding: 22px 18px;
+        border-radius: 10px;
+    }
+
+    .seccion-avatar {
+        flex-direction: column;
+        align-items: center;
     }
 
     .contenedor-foto {
-        width: 150px;
-        height: 150px;
+        width: 130px;
+        height: 130px;
+    }
+
+    .acciones-foto-exterior {
+        width: 100%;
+    }
+
+    .boton-editar-foto-v2,
+    .boton-eliminar-foto-v2,
+    .boton-seguridad {
+        font-size: 0.78rem;
+        padding: 9px;
+    }
+
+    .titulo-pagina {
+        font-size: 1.15rem;
+        text-align: center;
+    }
+
+    .boton-volver {
+        font-size: 0.82rem;
+        padding: 7px 16px;
     }
 
     .acciones-dentro-tarjeta {
         flex-direction: column;
         width: 100%;
-        gap: 15px;
+        gap: 12px;
     }
 
     .boton-guardar,
     .boton-cancelar {
         width: 100%;
+        justify-content: center;
+    }
+
+    #panel-seguridad {
+        max-width: 100%;
+    }
+}
+
+/* ── Móvil pequeño (≤ 480px) ── */
+@media (max-width: 480px) {
+    body {
+        padding: 0 10px 20px;
+        align-items: flex-start;
+    }
+
+    .encabezado-logo {
+        position: static;
+        transform: none;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 12px;
+        padding-top: 15px;
+    }
+
+    .contenedor-principal {
+        padding: 0;
+        margin-top: 5px;
+    }
+
+    .cabecera {
+        margin-bottom: 14px;
+    }
+
+    .cabecera .izquierda {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .boton-volver,
+    #regresar-a-informacion {
+        position: relative;
+        left: auto;
+        width: auto;
+        margin: 0 auto;
+        font-size: 0.8rem;
+        padding: 7px 15px;
+    }
+
+    .titulo-pagina {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    .tarjeta-perfil {
+        padding: 18px 14px;
+        gap: 16px;
+    }
+
+    .contenedor-foto {
+        width: 110px;
+        height: 110px;
+    }
+
+    .seccion-avatar {
+        gap: 14px;
+    }
+
+    .input-linea input {
+        font-size: 0.95rem;
+        padding: 10px 36px 10px 0;
+    }
+
+    .input-linea input::placeholder {
+        font-size: 0.88rem;
+    }
+
+    .campo-grupo label {
+        font-size: 0.78rem;
+    }
+
+    .campo-grupo {
+        gap: 8px;
+    }
+
+    .contenedor-campos {
+        gap: 12px;
+    }
+
+    .acciones-dentro-tarjeta {
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+        padding-top: 15px;
+    }
+
+    .boton-guardar,
+    .boton-cancelar {
+        width: 100%;
+        font-size: 0.85rem;
+        padding: 10px 20px;
+    }
+
+    .encabezado-panel h2 {
+        font-size: 1.2rem;
+    }
+
+    .encabezado-panel p {
+        font-size: 0.82rem;
     }
 
     .toast {
-        left: 20px;
-        right: 20px;
-        bottom: 20px;
+        left: 10px;
+        right: 10px;
+        bottom: 15px;
         text-align: center;
-        width: auto;
+        font-size: 0.82rem;
+        padding: 12px 16px;
     }
 
     .modal-cancelar__contenido {
-        padding: 25px 20px;
+        padding: 25px 16px;
+        border-radius: 14px;
+    }
+
+    .modal-cancelar__contenido h3 {
+        font-size: 1.2rem;
+    }
+
+    .modal-cancelar__contenido p {
+        font-size: 0.85rem;
+        margin-bottom: 22px;
     }
 
     .modal-cancelar__acciones {
         flex-direction: column;
+        gap: 10px;
     }
 
     .modal-btn-salir,
     .modal-btn-quedarse {
         width: 100%;
+        padding: 11px 20px;
+    }
+}
+
+/* ── Pantallas muy pequeñas (≤ 360px) ── */
+@media (max-width: 360px) {
+    .titulo-pagina {
+        font-size: 1rem;
+    }
+
+    .contenedor-foto {
+        width: 95px;
+        height: 95px;
+    }
+
+    .boton-editar-foto-v2,
+    .boton-eliminar-foto-v2,
+    .boton-seguridad {
+        font-size: 0.72rem;
+        padding: 7px 8px;
+    }
+
+    .tarjeta-perfil {
+        padding: 14px 10px;
     }
 }
