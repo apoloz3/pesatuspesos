@@ -386,6 +386,7 @@ body {
     justify-content: center;
     align-items: center;
     animation: fade .3s;
+    z-index: 10000;
 }
 
 @keyframes fade {
@@ -654,112 +655,298 @@ input:-webkit-autofill:active {
     text-align: center;
 }
 
-/* ANIMACIONES */
-.animacion {
-    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
-        opacity 0.8s ease;
-    transition-delay: calc(0.1s * var(--S));
+/* TOOLTIP CONTRASEÑA */
+.tooltip-password {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1d1d1d;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    width: 250px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1000;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
+.tooltip-password::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px 8px 0;
+    border-style: solid;
+    border-color: #1d1d1d transparent transparent;
+}
 
-/* MEDIA QUERIES PARA RESPONSIVIDAD */
+.caja-input:hover .tooltip-password {
+    opacity: 1;
+    visibility: visible;
+    top: -85px;
+}
 
+/* INDICADOR DE FORTALEZA */
+.indicador-fortaleza {
+    width: 100%;
+    max-width: 330px;
+    margin: 10px auto 15px;
+    transition: .5s;
+}
+
+.indicador-fortaleza span {
+    color: #666;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#textoFortaleza {
+    margin-left: 5px;
+    transition: color 0.3s;
+}
+
+.barra-fortaleza {
+    width: 100%;
+    height: 6px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    margin-top: 8px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#progresoFortaleza {
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+/* ESTADOS DE FORTALEZA */
+.baja { color: #ff4b2b !important; }
+.media { color: #ff9f43 !important; }
+.alta { color: #2ecc71 !important; }
+
+.bg-baja { background-color: #ff4b2b !important; }
+.bg-media { background-color: #ff9f43 !important; }
+.bg-alta { background-color: #2ecc71 !important; }
+
+/* AJUSTE PARA EL INPUT CUANDO CAMBIA EL COLOR */
+.input-baja { border-bottom-color: #ff4b2b !important; }
+.input-media { border-bottom-color: #ff9f43 !important; }
+.input-alta { border-bottom-color: #2ecc71 !important; }
+
+.icon-baja { color: #ff4b2b !important; }
+.icon-media { color: #ff9f43 !important; }
+.icon-alta { color: #2ecc71 !important; }
+
+/* ERROR CONFIRMACIÓN CONTRASEÑA */
+.error-confirmacion {
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    font-size: 11px;
+    color: #ff4b2b;
+    font-weight: 600;
+    opacity: 0;
+    transition: 0.3s ease;
+}
+
+.error-confirmacion.visible {
+    opacity: 1;
+}
+
+.input-match-error {
+    border-bottom-color: #ff4b2b !important;
+}
+
+/* ===================================================
+   MEDIA QUERIES — DISEÑO COMPLETAMENTE RESPONSIVO
+   Breakpoints: 1400px · 1200px · 992px · 768px · 480px · 360px
+   =================================================== */
+
+/* ── Pantallas grandes (hasta 1400px) ── */
+@media (max-width: 1400px) {
+    .contenedor-principal {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+/* ── Tablets grandes / laptops pequeñas (hasta 1200px) ── */
 @media (max-width: 1200px) {
     .contenedor-principal {
-        width: 95vw;
-        height: 650px;
+        width: 100%;
+        height: 680px;
     }
 
     .contenido-info.iniciar-sesion {
-        padding: 0 50px 60px 250px;
+        padding: 0 40px 60px 200px;
     }
 
     .contenido-info.registro {
-        padding: 0 150px 60px 30px;
+        padding: 0 120px 60px 30px;
+    }
+
+    .caja-formulario.iniciar-sesion {
+        padding: 0 30px;
+    }
+
+    .caja-formulario.registro {
+        padding: 0 40px;
+    }
+
+    .cuadro-blanco {
+        max-width: 380px;
     }
 }
 
+/* ── Tablets (hasta 992px) ── */
 @media (max-width: 992px) {
     .contenedor-principal {
-        height: 600px;
+        height: 620px;
     }
 
     .caja-formulario h2,
     .contenido-info h2 {
-        font-size: 28px;
+        font-size: 26px;
+    }
+
+    .contenido-info h2 {
+        font-size: 22px;
     }
 
     .cuadro-blanco {
-        padding: 20px;
+        padding: 18px 16px;
+        max-width: 340px;
     }
 
     .caja-formulario.iniciar-sesion,
     .caja-formulario.registro {
-        padding: 0 30px;
+        padding: 0 20px;
     }
 
-    /* Prevenir que el modal reviente en tablets */
+    .caja-formulario.iniciar-sesion .cuadro-blanco {
+        margin: 0 auto 0 20px;
+    }
+
+    .caja-formulario.registro .cuadro-blanco {
+        margin: 0 10px 0 auto;
+    }
+
+    .contenido-info.iniciar-sesion {
+        padding: 0 20px 40px 160px;
+    }
+
+    .contenido-info.registro {
+        padding: 0 100px 40px 20px;
+    }
+
+    .contenedor-animacion-monedas {
+        width: 150px;
+        height: 150px;
+    }
+
+    .bolsa-dinero {
+        font-size: 4.5rem;
+    }
+
+    /* Modales en tablets */
     .contenedor-modal {
-        padding: 30px;
+        padding: 30px 25px;
+        max-width: 360px;
     }
 }
 
+/* ── Móviles grandes / tablets pequeñas (hasta 768px) ── */
 @media (max-width: 768px) {
+    /* Cuerpo desplazable en móvil */
     body {
         align-items: flex-start;
-        padding: 20px 0;
+        padding: 0;
         overflow-y: auto;
+        overflow-x: hidden;
     }
 
+    /* Contenedor principal pasa a flujo vertical */
     .contenedor-principal {
+        position: relative;
+        width: 100%;
         height: auto;
-        min-height: 100vh;
-        overflow: visible;
+        min-height: 100svh;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: visible;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 32px;
+    }
+
+    /* Logo centrado en la parte superior */
+    .encabezado-logo {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+        padding: 18px 16px 10px;
+        display: flex;
+        justify-content: center;
+        z-index: 100;
+        margin-bottom: 0;
+    }
+
+    /* Ocultar formas decorativas de escritorio */
+    .forma-curva,
+    .forma-curva2 {
+        display: none !important;
+    }
+
+    /* ─── Reset completo de animaciones y posicionamiento ─── */
+    .contenedor-principal .caja-formulario,
+    .contenido-info {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        padding: 12px 16px !important;
         display: flex;
         flex-direction: column;
     }
 
-    .encabezado-logo {
-        position: relative;
-        top: 0;
-        left: 0;
-        padding: 15px;
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .forma-curva,
-    .forma-curva2 {
-        display: none;
-        /* Ocultar formas complejas en móvil para mejorar rendimiento y claridad */
-    }
-
-    /* Cancelar todos los Transforms y Transitions que vienen de escritorio */
-    .contenedor-principal .caja-formulario,
-    .contenido-info,
+    /* Quitar transforms/blur de TODAS las .animacion en móvil */
     .caja-formulario .animacion,
-    .contenido-info .animacion {
-        position: relative;
-        width: 100%;
-        height: auto;
-        padding: 15px !important;
-        left: 0 !important;
-        right: 0 !important;
-        top: 0 !important;
+    .contenido-info .animacion,
+    .contenedor-principal .animacion {
         transform: none !important;
         filter: none !important;
-        transition: none !important;
         opacity: 1 !important;
+        transition: none !important;
+        transition-delay: 0s !important;
     }
 
-    /* Manejar visibilidad de formularios en móvil mediante bloques y display */
+    /* ─── Visibilidad: sólo mostrar el panel activo ─── */
+    /* Estado por defecto: login visible, registro oculto */
     .caja-formulario.registro,
     .contenido-info.registro {
         display: none !important;
     }
 
+    .caja-formulario.iniciar-sesion,
+    .contenido-info.iniciar-sesion {
+        display: flex !important;
+    }
+
+    /* Estado activo (clase .active en contenedor): registro visible, login oculto */
     .contenedor-principal.active .caja-formulario.iniciar-sesion,
     .contenedor-principal.active .contenido-info.iniciar-sesion {
         display: none !important;
@@ -767,86 +954,256 @@ input:-webkit-autofill:active {
 
     .contenedor-principal.active .caja-formulario.registro,
     .contenedor-principal.active .contenido-info.registro {
-        display: block !important;
-        animation: mobileFadeIn 0.5s ease-in-out forwards;
+        display: flex !important;
+        animation: mobileFadeIn 0.45s ease forwards;
     }
 
+    /* Animación de entrada en móvil para el panel activo */
     .contenedor-principal:not(.active) .caja-formulario.iniciar-sesion,
     .contenedor-principal:not(.active) .contenido-info.iniciar-sesion {
-        display: block !important;
-        animation: mobileFadeIn 0.5s ease-in-out forwards;
+        animation: mobileFadeIn 0.45s ease forwards;
     }
 
-    .cuadro-blanco {
-        margin: 0 auto !important;
-        max-width: 100%;
-    }
-
+    /* ─── Info panel (texto + monedas) va ARRIBA del formulario ─── */
     .contenido-info {
         order: -1;
-        /* Poner el texto de bienvenida arriba del formulario */
-        margin-bottom: 10px;
+        padding: 16px !important;
+        pointer-events: auto !important;
     }
 
-    .caja-input {
-        margin: 25px auto 0 !important;
+    .contenido-info.iniciar-sesion,
+    .contenido-info.registro {
+        padding: 16px !important;
+        text-align: center;
     }
 
+    .contenido-info h2 {
+        font-size: 1.25rem;
+        line-height: 1.4;
+    }
+
+    .contenido-info p {
+        font-size: 0.9rem;
+        margin-top: 6px;
+    }
+
+    /* ─── Cuadro blanco (tarjeta del formulario) ─── */
+    .cuadro-blanco {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 20px 16px !important;
+        border-radius: 16px;
+    }
+
+    .caja-formulario h2 {
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+    }
+
+    /* ─── Inputs ─── */
+    .caja-formulario .caja-input {
+        max-width: 100% !important;
+        margin: 22px auto 0 !important;
+    }
+
+    .caja-input input {
+        font-size: 15px;
+    }
+
+    /* ─── Botones ─── */
+    .boton {
+        width: 100% !important;
+        max-width: 280px !important;
+        height: 46px;
+        font-size: 15px;
+        border-radius: 40px;
+        display: block;
+        margin: 16px auto 0 !important;
+    }
+
+    .caja-formulario.registro .boton,
+    .caja-formulario.iniciar-sesion .boton {
+        width: 100% !important;
+        max-width: 280px !important;
+    }
+
+    /* ─── Links de navegación ─── */
+    .link-registro {
+        font-size: 13px;
+        margin: 14px 0 6px;
+    }
+
+    /* ─── Animación de monedas más pequeña ─── */
     .contenedor-animacion-monedas {
-        width: 120px;
-        height: 120px;
+        width: 110px;
+        height: 110px;
     }
 
     .bolsa-dinero {
-        font-size: 3.5rem;
+        font-size: 3rem;
     }
 
     .moneda {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
-    /* Modales autoajustables en tablet o móviles grandes */
+    /* ─── Modales ─── */
+    .modal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
     .contenedor-modal {
-        padding: 25px 20px;
-        margin: 15px;
+        padding: 28px 20px 24px;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .contenedor-modal h2 {
+        font-size: 1.15rem;
     }
 
     .logo i,
     .logo-cambio i {
-        font-size: 50px;
+        font-size: 48px;
+    }
+
+    .contenedor-modal .boton {
+        width: 100% !important;
+        max-width: 240px !important;
+    }
+
+    /* Botón de Google centrado */
+    #googleBtnDiv,
+    #googleBtnDivLogin {
+        display: flex !important;
+        justify-content: center !important;
+        margin-top: 8px;
     }
 }
 
+/* ── Móviles medianos (hasta 480px) ── */
 @media (max-width: 480px) {
     .caja-formulario h2 {
-        font-size: 22px;
+        font-size: 1.3rem;
     }
 
     .texto-logo {
         font-size: 1rem;
+        letter-spacing: 1.5px;
+    }
+
+    .encabezado-logo i {
+        font-size: 1.6rem !important;
     }
 
     .boton {
-        font-size: 15px;
-        height: 45px;
+        font-size: 14px;
+        height: 44px;
+        max-width: 260px !important;
     }
 
     .caja-formulario.iniciar-sesion,
     .caja-formulario.registro {
-        padding: 0 10px !important;
+        padding: 0 8px !important;
+    }
+
+    .cuadro-blanco {
+        padding: 18px 12px !important;
+        border-radius: 14px;
     }
 
     .contenedor-modal h2 {
-        font-size: 1.25rem;
+        font-size: 1.05rem;
+    }
+
+    .grupo-input input {
+        font-size: 14px;
+    }
+
+    .contenido-info h2 {
+        font-size: 1.1rem;
+    }
+
+    .contenido-info p {
+        font-size: 0.85rem;
+    }
+
+    .contenedor-animacion-monedas {
+        width: 90px;
+        height: 90px;
+    }
+
+    .bolsa-dinero {
+        font-size: 2.5rem;
+    }
+
+    .moneda {
+        font-size: 0.8rem;
     }
 }
 
-@keyframes mobileFadeIn {
-    0% {
-        opacity: 0;
+/* ── Móviles pequeños (hasta 360px) ── */
+@media (max-width: 360px) {
+    .caja-formulario h2 {
+        font-size: 1.15rem;
     }
 
-    100% {
+    .texto-logo {
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+    .boton {
+        font-size: 13px;
+        height: 42px;
+        max-width: 220px !important;
+    }
+
+    .cuadro-blanco {
+        padding: 14px 10px !important;
+    }
+
+    .caja-input input,
+    .caja-input label {
+        font-size: 13px;
+    }
+
+    .contenedor-modal {
+        padding: 22px 14px 20px;
+    }
+
+    .contenedor-modal h2 {
+        font-size: 0.95rem;
+    }
+
+    .logo i,
+    .logo-cambio i {
+        font-size: 36px;
+    }
+
+    .contenido-info h2 {
+        font-size: 1rem;
+    }
+
+    .bolsa-dinero {
+        font-size: 2rem;
+    }
+}
+
+/* ── Animación de fade-in para cambio de panel en móvil ── */
+@keyframes mobileFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
         opacity: 1;
+        transform: translateY(0);
     }
 }

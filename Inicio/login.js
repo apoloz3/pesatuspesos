@@ -159,10 +159,24 @@ let cerrarTerminos = document.getElementById("cerrarTerminos");
 let irTerminos = document.getElementById("irTerminos");
 let aceptarTerminos = document.getElementById("aceptarTerminos");
 
+// Referencias a los campos de contraseña para validación de coincidencia
+const inputPass = document.getElementById('contrasenaRegistro');
+const inputConfirm = document.getElementById('confirmarContrasena');
+const msgConfirmar = document.getElementById('msgConfirmar');
+
 if (formRegistro) {
     formRegistro.addEventListener('submit', (e) => {
         e.preventDefault();
-        // Mostrar el modal de términos al intentar registrarse
+
+        // Validar que las contraseñas coincidan antes de abrir el modal
+        if (inputPass.value !== inputConfirm.value) {
+            msgConfirmar.innerHTML = "contraseña incorrecta";
+            msgConfirmar.classList.add('visible');
+            inputConfirm.classList.add('input-match-error');
+            return; // Detener la ejecución
+        }
+
+        // Si coinciden, mostrar el modal de términos
         modalTerminos.style.display = "flex";
     });
 }
@@ -183,6 +197,28 @@ aceptarTerminos.onclick = () => {
     // Opcional: Limpiar el formulario de registro
     if (formRegistro) formRegistro.reset();
 }
+
+// ─── CERRAR MODALES AL HACER CLIC EN EL FONDO (BACKDROP) ───
+// El evento se dispara sobre el .modal (fondo oscuro); si el clic es exactamente
+// sobre ese elemento (y no sobre el .contenedor-modal interior) se cierra el modal.
+
+modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+        modal.style.display = "none";
+    }
+});
+
+modalCambio.addEventListener("click", (e) => {
+    if (e.target === modalCambio) {
+        modalCambio.style.display = "none";
+    }
+});
+
+modalTerminos.addEventListener("click", (e) => {
+    if (e.target === modalTerminos) {
+        modalTerminos.style.display = "none";
+    }
+});
 
 // ----------------------------------------------------
 // OAUTH: AUTENTICACIÓN CON GOOGLE IDENTITY SERVICES
@@ -240,3 +276,83 @@ window.onload = function () {
         // google.accounts.id.prompt();
     }
 };
+
+// ----------------------------------------------------
+// VALIDACIÓN DE FORTALEZA DE CONTRASEÑA
+// ----------------------------------------------------
+
+const passwordInput = document.getElementById('contrasenaRegistro');
+const textoFortaleza = document.getElementById('textoFortaleza');
+const progresoFortaleza = document.getElementById('progresoFortaleza');
+
+if (passwordInput && textoFortaleza && progresoFortaleza) {
+    passwordInput.addEventListener('input', () => {
+        const val = passwordInput.value;
+        const iconoPassword = passwordInput.parentElement.querySelector('.ver-contrasena');
+        let score = 0;
+
+        if (val.length >= 8) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[a-z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        // Reset classes
+        textoFortaleza.classList.remove('baja', 'media', 'alta');
+        progresoFortaleza.classList.remove('bg-baja', 'bg-media', 'bg-alta');
+        passwordInput.classList.remove('input-baja', 'input-media', 'input-alta');
+        if (iconoPassword) iconoPassword.classList.remove('icon-baja', 'icon-media', 'icon-alta');
+
+        if (val === "") {
+            textoFortaleza.innerHTML = "Baja";
+            progresoFortaleza.style.width = "0%";
+            return;
+        }
+
+        if (score <= 2) {
+            textoFortaleza.innerHTML = "Baja";
+            textoFortaleza.classList.add('baja');
+            progresoFortaleza.style.width = "33%";
+            progresoFortaleza.classList.add('bg-baja');
+            passwordInput.classList.add('input-baja');
+            if (iconoPassword) iconoPassword.classList.add('icon-baja');
+        } else if (score <= 4) {
+            textoFortaleza.innerHTML = "Media";
+            textoFortaleza.classList.add('media');
+            progresoFortaleza.style.width = "66%";
+            progresoFortaleza.classList.add('bg-media');
+            passwordInput.classList.add('input-media');
+            if (iconoPassword) iconoPassword.classList.add('icon-media');
+        } else {
+            textoFortaleza.innerHTML = "Segura";
+            textoFortaleza.classList.add('alta');
+            progresoFortaleza.style.width = "100%";
+            progresoFortaleza.classList.add('bg-alta');
+            passwordInput.classList.add('input-alta');
+            if (iconoPassword) iconoPassword.classList.add('icon-alta');
+        }
+    });
+
+}
+
+// ----------------------------------------------------
+// VALIDACIÓN DE COINCIDENCIA DE CONTRASEÑA
+// ----------------------------------------------------
+
+if (inputConfirm) {
+    inputConfirm.addEventListener('input', () => {
+        if (inputConfirm.value === "") {
+            msgConfirmar.innerHTML = "";
+            msgConfirmar.classList.remove('visible');
+            inputConfirm.classList.remove('input-match-error');
+        } else if (inputConfirm.value === inputPass.value) {
+            msgConfirmar.innerHTML = "";
+            msgConfirmar.classList.remove('visible');
+            inputConfirm.classList.remove('input-match-error');
+        } else {
+            msgConfirmar.innerHTML = "contraseña incorrecta";
+            msgConfirmar.classList.add('visible');
+            inputConfirm.classList.add('input-match-error');
+        }
+    });
+}
