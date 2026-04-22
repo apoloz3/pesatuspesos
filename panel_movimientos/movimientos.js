@@ -20,11 +20,15 @@ document.addEventListener("DOMContentLoaded", function () {
     =============================== */
 
   const elementoNombre = document.getElementById("nombre_usuario");
+  const elementoNombreHeader = document.getElementById("nombreUsuarioHeader");
 
-  const nombreGuardado = localStorage.getItem("nombre_usuario");
+  const nombreGuardado = localStorage.getItem("nombre_usuario") || "Usuario";
 
-  if (elementoNombre && nombreGuardado) {
+  if (elementoNombre) {
     elementoNombre.textContent = nombreGuardado;
+  }
+  if (elementoNombreHeader) {
+    elementoNombreHeader.textContent = nombreGuardado;
   }
 
   /* ===============================
@@ -78,7 +82,8 @@ document.addEventListener("DOMContentLoaded", function () {
   if (inputNombre) {
     inputNombre.addEventListener("input", function () {
       const nuevoNombre = inputNombre.value || "Usuario";
-      elementoNombre.textContent = nuevoNombre;
+      if (elementoNombre) elementoNombre.textContent = nuevoNombre;
+      if (elementoNombreHeader) elementoNombreHeader.textContent = nuevoNombre;
       localStorage.setItem("nombre_usuario", nuevoNombre);
     });
   }

@@ -8,6 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const botonRegresarPerfil = document.getElementById('regresar-a-informacion');
     const tituloEstado = document.getElementById('titulo-estado');
     const botonVolverHeader = document.getElementById('boton-volver');
+    const inputNombre = document.getElementById('nombre');
+    const inputEmail = document.getElementById('email');
+    const inputTelefono = document.getElementById('telefono');
+
+    // Cargar datos desde localStorage
+    const nombreGuardado = localStorage.getItem('nombre_usuario');
+    const emailGuardado = localStorage.getItem('email_usuario');
+    const telefonoGuardado = localStorage.getItem('telefono_usuario');
+
+    if (inputNombre && nombreGuardado) inputNombre.value = nombreGuardado;
+    if (inputEmail && emailGuardado) inputEmail.value = emailGuardado;
+    if (inputTelefono && telefonoGuardado) inputTelefono.value = telefonoGuardado;
 
     if (botonIrASeguridad && panelInformacion && panelSeguridad) {
         botonIrASeguridad.addEventListener('click', () => {
@@ -90,6 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const originalText = btn.textContent;
             btn.textContent = 'Guardando...';
             btn.disabled = true;
+
+            // Sincronizar datos de texto
+            if (inputNombre) localStorage.setItem('nombre_usuario', inputNombre.value);
+            if (inputEmail) localStorage.setItem('email_usuario', inputEmail.value);
+            if (inputTelefono) localStorage.setItem('telefono_usuario', inputTelefono.value);
 
             // Sincronizar foto de perfil
             if (imgPerfil) {
@@ -201,5 +218,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalEliminarFoto.classList.remove('visible');
             });
         }
+    }
+
+    // Global Header Logic
+    const elementoNombreHeader = document.getElementById("nombreUsuarioHeader");
+    if (elementoNombreHeader) {
+        elementoNombreHeader.textContent = localStorage.getItem("nombre_usuario") || "Usuario";
+    }
+
+    const botonConfiguracion = document.getElementById("botonConfiguracion");
+    const contenedorFlotante = document.querySelector(".contenedor-flotante");
+    if (botonConfiguracion && contenedorFlotante) {
+        botonConfiguracion.addEventListener("click", (e) => {
+            e.stopPropagation();
+            contenedorFlotante.classList.toggle("active");
+        });
+        document.addEventListener("click", (e) => {
+            if (!contenedorFlotante.contains(e.target)) {
+                contenedorFlotante.classList.remove("active");
+            }
+        });
+    }
+
+    // Sincronizar nombre en header al escribir en el input
+    if (inputNombre && elementoNombreHeader) {
+        inputNombre.addEventListener('input', () => {
+            elementoNombreHeader.textContent = inputNombre.value || "Usuario";
+        });
     }
 });

@@ -18,22 +18,45 @@
     <link rel="stylesheet" href="perfil.css" />
   </head>
   <body>
-    <!-- ENCABEZADO LOGO -->
-    <div class="encabezado-logo">
-      <div class="caja-logo">
-        <i
-          class="fa-solid fa-coins"
-          style="font-size: 2rem; color: #cfb53b"
-        ></i>
-        <span class="texto-logo">PESATUSPESOS</span>
-      </div>
-    </div>
+    <header class="barra">
+        <div class="caja-logo">
+            <i class="fa-solid fa-coins" style="font-size: 2rem; color: #CFB53B;"></i>
+            <span class="texto-logo">PESATUSPESOS</span>
+        </div>
+        <div class="menu-wrapper">
+            <nav class="menu">
+                <button onclick="window.location.href='../Home/index.html'">Inicio</button>
+                <button onclick="window.location.href='../panel_movimientos/movimientos.html'">Movimientos</button>
+                <button onclick="window.location.href='../panel_deuda/deuda.html'">Deuda</button>
+                <button onclick="window.location.href='../panel_ahorros/ahorros.html'">Ahorro</button>
+            </nav>
+        </div>
+
+        <div class="contenedor-flotante">
+            <div class="opciones-flotantes">
+                <button class="boton-opcion boton-manual" onclick="window.location.href='../manual_usuario/manual_usuario.html'">
+                    <img src="img/informacion (1).png" alt="Manual" />
+                </button>
+                <button class="boton-opcion boton-atencion" onclick="window.location.href='../pag_ayuda/ayuda.html'">
+                    <img src="img/apoyo (1).png" alt="Atencion" />
+                </button>
+                <button class="boton-opcion boton-editar" id="botonPerfil">
+                    <img src="img/avatar-de-usuario (1).png" alt="Editar" />
+                </button>
+            </div>
+
+            <span class="nombre-usuario-header" id="nombreUsuarioHeader">Usuario</span>
+            <button class="boton-principal" id="botonConfiguracion">
+                <img src="img/ajustes.png" alt="Configuración" />
+            </button>
+        </div>
+    </header>
 
     <div class="contenedor-principal">
       <header class="cabecera">
         <div class="izquierda">
           <button class="boton-volver" id="boton-volver">
-            <i class="fa-solid fa-arrow-left"></i> Volver
+            <i class="fa-solid fa-arrow-left"></i> Regresar
           </button>
           <button
             class="boton-volver"
@@ -80,7 +103,7 @@
               <div class="campo-grupo">
                 <label for="nombre">Nombre Completo</label>
                 <div class="input-linea">
-                  <input type="text" id="nombre" value="María García" />
+                  <input type="text" id="nombre" value="" />
                   <!-- Sin placeholder -->
                   <i class="fa-solid fa-user"></i>
                 </div>
@@ -92,7 +115,7 @@
                   <input
                     type="email"
                     id="email"
-                    value="maria.garcia@email.co"
+                    value=""
                   />
                   <!-- Sin placeholder -->
                   <i class="fa-solid fa-envelope"></i>
@@ -102,7 +125,7 @@
               <div class="campo-grupo">
                 <label for="telefono">Teléfono</label>
                 <div class="input-linea">
-                  <input type="tel" id="telefono" value="+57 312 456 7890" />
+                  <input type="tel" id="telefono" value="" />
                   <!-- Sin placeholder -->
                   <i class="fa-solid fa-phone"></i>
                 </div>

@@ -96,39 +96,25 @@ body {
     position: absolute;
     left: 0;
     background: transparent;
-    border: 2px solid var(--matte-gold);
-    border-radius: 40px;
-    padding: 8px 20px;
-    color: var(--text-ink);
+    border: 1px solid var(--matte-gold, #cfb53c);
+    border-radius: 30px;
+    padding: 8px 18px;
+    color: var(--matte-gold, #cfb53c);
     display: flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    font-weight: 700;
-    font-size: 0.9rem;
-    transition: 0.5s;
-    overflow: hidden;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
     z-index: 1;
 }
 
-.boton-volver::before {
-    content: '';
-    position: absolute;
-    height: 300%;
-    width: 100%;
-    background: linear-gradient(var(--matte-gold), var(--gold-light), var(--matte-gold), var(--gold-light));
-    top: -100%;
-    left: 0;
-    z-index: -1;
-    transition: 0.5s;
-}
-
-.boton-volver:hover::before {
-    top: 0;
-}
-
 .boton-volver:hover {
-    transform: translateX(-5px);
+    background: rgba(207, 181, 60, 0.1);
+    color: var(--gold-light, #f3d989);
+    border-color: var(--gold-light, #f3d989);
+    box-shadow: 0 0 10px rgba(207, 181, 60, 0.2);
 }
 
 /* Alineación específica para el botón de Regresar coincidiendo con la orilla de la tarjeta de 650px */
