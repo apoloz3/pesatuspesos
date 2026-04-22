@@ -23,6 +23,29 @@ const nombreMesEl = document.getElementById('nombreMes');
 const cuerpoTabla = document.getElementById('cuerpoTabla');
 const btnAgregar = document.getElementById('btnAgregar');
 const btnGuardar = document.getElementById('btnGuardar');
+const pickerCalendario = document.getElementById('pickerCalendario');
+const abrirPicker = document.getElementById('abrirPicker');
+const gridMeses = document.getElementById('gridMeses');
+const listaAnios = document.getElementById('listaAnios');
+const btnAplicarFiltro = document.getElementById('btnAplicarFiltro');
+const btnLimpiarFiltro = document.getElementById('btnLimpiarFiltro');
+const anioArriba = document.getElementById('anioArriba');
+const anioAbajo = document.getElementById('anioAbajo');
+const inputAnioManual = document.getElementById('inputAnioManual');
+const errorAnio = document.getElementById('errorAnio');
+const listaAniosDropdown = document.getElementById('listaAniosDropdown');
+const modalAviso = document.getElementById('modalAviso');
+const mensajeAviso = document.getElementById('mensajeAviso');
+const btnCerrarAviso = document.getElementById('btnCerrarAviso');
+const modalConfirmacion = document.getElementById('modalConfirmacion');
+const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
+const btnCancelarEliminar = document.getElementById('btnCancelarEliminar');
+
+// Estado temporal del picker
+let idAEliminar = null;
+let anioEnEdicion = fechaActual.getFullYear();
+let mesEnEdicion = fechaActual.getMonth();
+const mesesAbreviados = ["ene.", "feb.", "mar.", "abr.", "may.", "jun.", "jul.", "ago.", "sept.", "oct.", "nov.", "dic."];
 
 const resumenIngresosEl = document.getElementById('resumenIngresos');
 const resumenGastosEl = document.getElementById('resumenGastos');
@@ -42,7 +65,6 @@ let graficoBarras, graficoCircular;
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
     actualizarInterfaz();
-    
     document.getElementById('mesPrevio').addEventListener('click', () => cambiarMes(-1));
     document.getElementById('mesSiguiente').addEventListener('click', () => cambiarMes(1));
     btnAgregar.addEventListener('click', agregarFilaVacia);
@@ -50,7 +72,160 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (btnPrevPag) btnPrevPag.addEventListener('click', () => cambiarPagina(-1));
     if (btnNextPag) btnNextPag.addEventListener('click', () => cambiarPagina(1));
+
+    // Lógica selector premium
+    if (abrirPicker) {
+        abrirPicker.addEventListener('click', (e) => {
+            e.stopPropagation();
+            pickerCalendario.classList.toggle('activo');
+            if (pickerCalendario.classList.contains('activo')) {
+                anioEnEdicion = fechaActual.getFullYear();
+                mesEnEdicion = fechaActual.getMonth();
+                renderizarPicker();
+            }
+        });
+    }
+
+    // Cerrar al hacer clic fuera
+    document.addEventListener('click', (e) => {
+        if (!pickerCalendario.contains(e.target) && !abrirPicker.contains(e.target)) {
+            pickerCalendario.classList.remove('activo');
+        }
+    });
+
+    // Lógica selector premium (Flechas de años removidas por simplificación)
+
+    btnAplicarFiltro.addEventListener('click', () => {
+        fechaActual.setFullYear(anioEnEdicion);
+        fechaActual.setMonth(mesEnEdicion);
+        paginaActual = 1;
+        actualizarInterfaz();
+        pickerCalendario.classList.remove('activo');
+    });
+
+    // Botones de Exportar
+    document.getElementById('btnExportarExcel').addEventListener('click', exportarExcel);
+    document.getElementById('btnExportarPDF').addEventListener('click', exportarPDF);
+
+    btnLimpiarFiltro.addEventListener('click', () => {
+        fechaActual = new Date(); // Reset a hoy
+        anioEnEdicion = fechaActual.getFullYear();
+        mesEnEdicion = fechaActual.getMonth();
+        paginaActual = 1;
+        actualizarInterfaz();
+        pickerCalendario.classList.remove('activo');
+    });
+
+    if (inputAnioManual) {
+        inputAnioManual.addEventListener('focus', () => {
+            poblarDropdownAnios();
+            listaAniosDropdown.classList.add('activo');
+        });
+
+        inputAnioManual.addEventListener('input', (e) => {
+            const valStr = e.target.value;
+            
+            // Validar si solo hay números
+            if (valStr !== "" && !/^\d+$/.test(valStr)) {
+                inputAnioManual.classList.add('input-error');
+                if (errorAnio) errorAnio.textContent = 'Solo se permiten números';
+                btnAplicarFiltro.disabled = true;
+                poblarDropdownAnios(""); // Mostrar todo si hay error de letras
+                return;
+            }
+
+            const val = parseInt(valStr);
+            const esValido = !isNaN(val) && val >= 1900 && val <= 2100;
+            
+            if (esValido) {
+                anioEnEdicion = val;
+                inputAnioManual.classList.remove('input-error');
+                if (errorAnio) errorAnio.textContent = '';
+                btnAplicarFiltro.disabled = false;
+                renderizarPicker();
+            } else {
+                inputAnioManual.classList.add('input-error');
+                if (errorAnio) {
+                    if (valStr.length >= 4) {
+                        errorAnio.textContent = 'Año inválido (1900-2100)';
+                    } else if (valStr.length > 0) {
+                        errorAnio.textContent = 'Ingresa un año (1900-2100)';
+                    } else {
+                        errorAnio.textContent = '';
+                    }
+                }
+                btnAplicarFiltro.disabled = true;
+            }
+            
+            // Filtrar dropdown
+            poblarDropdownAnios(valStr);
+        });
+
+        // Cerrar al hacer clic fuera del contenedor
+        document.addEventListener('click', (e) => {
+            if (!inputAnioManual.contains(e.target) && !listaAniosDropdown.contains(e.target)) {
+                listaAniosDropdown.classList.remove('activo');
+            }
+        });
+    }
+
+    if (btnCerrarAviso) {
+        btnCerrarAviso.addEventListener('click', () => {
+            modalAviso.classList.remove('activo');
+        });
+    }
+
+    if (btnCancelarEliminar) {
+        btnCancelarEliminar.addEventListener('click', () => {
+            modalConfirmacion.classList.remove('activo');
+            idAEliminar = null;
+        });
+    }
+
+    if (btnConfirmarEliminar) {
+        btnConfirmarEliminar.addEventListener('click', () => {
+            if (idAEliminar) {
+                registros = registros.filter(r => r.id !== idAEliminar);
+                localStorage.setItem('registros_financieros', JSON.stringify(registros));
+                actualizarInterfaz();
+                modalConfirmacion.classList.remove('activo');
+                idAEliminar = null;
+                mostrarAviso("Registro eliminado correctamente");
+            }
+        });
+    }
 });
+
+
+function mostrarAviso(mensaje) {
+    if (mensajeAviso && modalAviso) {
+        mensajeAviso.textContent = mensaje;
+        modalAviso.classList.add('activo');
+    } else {
+        alert(mensaje); // Fallback
+    }
+}
+
+function renderizarPicker() {
+    // Sincronizar input manual
+    if (inputAnioManual) {
+        inputAnioManual.value = anioEnEdicion;
+    }
+    
+    // Renderizar meses
+    gridMeses.innerHTML = '';
+    mesesAbreviados.forEach((nombre, index) => {
+        const btn = document.createElement('div');
+        btn.className = `mes-btn ${index === mesEnEdicion ? 'seleccionado' : ''}`;
+        btn.textContent = nombre;
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            mesEnEdicion = index;
+            renderizarPicker();
+        };
+        gridMeses.appendChild(btn);
+    });
+}
 
 function cambiarPagina(direccion) {
     const registrosMes = obtenerRegistrosMesActual();
@@ -143,6 +318,15 @@ function obtenerRegistrosMesActual() {
 }
 
 function agregarFilaVacia() {
+    // Validar si ya hay un registro en proceso en el mes actual
+    let registrosMes = obtenerRegistrosMesActual();
+    const tieneIncompleto = registrosMes.some(reg => !reg.descripcion.trim() || reg.monto === "" || parseFloat(reg.monto) === 0);
+    
+    if (tieneIncompleto) {
+        mostrarAviso("Debes terminar de completar o guardar el registro actual antes de crear uno nuevo.");
+        return;
+    }
+
     const hoy = new Date();
     // Ajustar a la fecha actual del selector si es posible
     const mesAct = fechaActual.getMonth() + 1;
@@ -163,7 +347,7 @@ function agregarFilaVacia() {
     registros.push(nuevoReg);
     
     // Ir a la última página al agregar si es necesario
-    const registrosMes = obtenerRegistrosMesActual();
+    registrosMes = obtenerRegistrosMesActual();
     paginaActual = Math.ceil(registrosMes.length / registrosPorPagina) || 1;
     
     renderizarTabla();
@@ -191,14 +375,20 @@ function guardarCambios() {
     
     localStorage.setItem('registros_financieros', JSON.stringify(registros));
     actualizarInterfaz();
-    alert("Datos guardados correctamente");
+    mostrarAviso("Datos guardados correctamente");
 }
 
 function eliminarRegistro(id) {
-    if (confirm("¿Estás seguro de eliminar este registro?")) {
-        registros = registros.filter(r => r.id !== id);
-        localStorage.setItem('registros_financieros', JSON.stringify(registros));
-        actualizarInterfaz();
+    idAEliminar = id;
+    if (modalConfirmacion) {
+        modalConfirmacion.classList.add('activo');
+    } else {
+        // Fallback si por alguna razón no carga el modal
+        if (confirm("¿Estás seguro de eliminar este registro?")) {
+            registros = registros.filter(r => r.id !== id);
+            localStorage.setItem('registros_financieros', JSON.stringify(registros));
+            actualizarInterfaz();
+        }
     }
 }
 
@@ -409,4 +599,90 @@ function actualizarGraficos() {
             radius: '90%'
         }
     });
+}
+
+function poblarDropdownAnios(filtro = "") {
+    if (!listaAniosDropdown) return;
+    
+    const anioActual = new Date().getFullYear();
+    listaAniosDropdown.innerHTML = '';
+    
+    // Rango de años (1900 hasta actual + 1)
+    const anios = [];
+    for (let i = anioActual + 1; i >= 1900; i--) {
+        if (i.toString().includes(filtro)) {
+            anios.push(i);
+        }
+    }
+
+    if (anios.length === 0) {
+        const div = document.createElement('div');
+        div.className = 'opcion-anio-premium';
+        div.style.opacity = '0.5';
+        div.style.cursor = 'default';
+        div.textContent = 'Sin resultados';
+        listaAniosDropdown.appendChild(div);
+        return;
+    }
+
+    anios.forEach(anio => {
+        const div = document.createElement('div');
+        div.className = 'opcion-anio-premium';
+        div.textContent = anio;
+        div.onclick = () => {
+            anioEnEdicion = anio;
+            inputAnioManual.value = anio;
+            inputAnioManual.classList.remove('input-error');
+            if (errorAnio) errorAnio.textContent = '';
+            btnAplicarFiltro.disabled = false;
+            renderizarPicker();
+            listaAniosDropdown.classList.remove('activo');
+        };
+        listaAniosDropdown.appendChild(div);
+    });
+}
+
+// Funciones de Exportación
+function exportarExcel() {
+    const registrosMes = obtenerRegistrosMesActual();
+    if (registrosMes.length === 0) {
+        mostrarAviso("No hay datos para exportar en este mes.");
+        return;
+    }
+
+    const mesStr = nombresMeses[fechaActual.getMonth()];
+    const anioStr = fechaActual.getFullYear();
+    const titulo = `Ingresos_${mesStr}_${anioStr}`;
+
+    // Encabezados
+    let csv = "Fecha,Descripción,Método,Concepto,Monto\n";
+
+    // Datos
+    registrosMes.forEach(reg => {
+        const monto = reg.monto || 0;
+        csv += `${reg.fecha},"${reg.descripcion.replace(/"/g, '""')}",${reg.metodo},${reg.concepto},${monto}\n`;
+    });
+
+    // Descarga
+    const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${titulo}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function exportarPDF() {
+    const registrosMes = obtenerRegistrosMesActual();
+    if (registrosMes.length === 0) {
+        mostrarAviso("No hay datos para imprimir en este mes.");
+        return;
+    }
+    
+    // Simplemente usamos la función nativa de impresión
+    // Los estilos @media print en el CSS se encargarán del resto
+    window.print();
 }
