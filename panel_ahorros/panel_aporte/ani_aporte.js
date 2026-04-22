@@ -1,5 +1,44 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+    /* ===============================
+       MODAL DE AVISO Y CIERRE GLOBAL
+    =============================== */
+    const modalAviso = document.getElementById("modalAviso");
+    const mensajeAviso = document.getElementById("mensajeAviso");
+    const btnAceptarAviso = document.getElementById("btnAceptarAviso");
+    let onAlertaClose = null;
+
+    function mostrarAlerta(mensaje, callback) {
+        if (modalAviso && mensajeAviso) {
+            mensajeAviso.textContent = mensaje;
+            modalAviso.classList.add("activo");
+            onAlertaClose = callback;
+        } else {
+            alert(mensaje);
+            if (callback) callback();
+        }
+    }
+
+    if (btnAceptarAviso && modalAviso) {
+        btnAceptarAviso.addEventListener("click", () => {
+            modalAviso.classList.remove("activo");
+            if (onAlertaClose) {
+                onAlertaClose();
+                onAlertaClose = null;
+            }
+        });
+    }
+
+    // Cierre de modal al hacer clic fuera del contenido
+    document.addEventListener("click", (e) => {
+        if (modalAviso && e.target === modalAviso) {
+            modalAviso.classList.remove("activo");
+            if (onAlertaClose) {
+                onAlertaClose();
+                onAlertaClose = null;
+            }
+        }
+    });
+
     // 1. Datos iniciales y Meta Seleccionada
     const goalTitleEl = document.querySelector('.goal-title');
     const goalImageEl = document.querySelector('.goal-image');
@@ -222,11 +261,11 @@ document.addEventListener('DOMContentLoaded', () => {
                // 5.3 Refrescar Calendario para mostrar chulito
                renderCalendar(currentMonth, currentYear);
                
-               alert(`¡Aporte de $${formatMonto(amount)} realizado exitosamente! saldo: $${metaActual.toLocaleString("es-ES")}.`);
-               
-               setTimeout(() => { window.location.href = '../ahorros.html'; }, 800);
+               mostrarAlerta(`¡Aporte de $${formatMonto(amount)} realizado exitosamente! saldo: $${metaActual.toLocaleString("es-ES")}.`, () => {
+                   window.location.href = '../ahorros.html';
+               });
             } else {
-               alert(`Ingresa un monto válido mayor a 0.`);
+               mostrarAlerta(`Ingresa un monto válido mayor a 0.`);
             }
         });
     }

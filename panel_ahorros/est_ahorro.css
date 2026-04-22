@@ -988,7 +988,7 @@ footer {
   justify-content: center;
   align-items: center;
   margin-bottom: 32px;
-  background: rgba(0, 21, 36, 0.5);
+  background: #001524;
   border: 1px solid rgba(207, 181, 60, 0.15);
   border-radius: 50px;
   padding: 8px 18px;
@@ -1175,8 +1175,9 @@ footer {
 /* Fila especial para "Crear" en vista lista */
 .lista-meta-item.lista-crear {
   border-style: dashed;
-  background: rgba(0, 21, 36, 0.5);
+  background: #001524;
   justify-content: center;
+  cursor: pointer;
 }
 
 .lista-meta-item.lista-crear::before {
@@ -1187,7 +1188,7 @@ footer {
   display: flex;
   align-items: center;
   gap: 14px;
-  color: var(--gold-light);
+  color: var(--matte-gold);
   font-weight: 700;
   font-size: 1rem;
 }
@@ -1195,6 +1196,13 @@ footer {
 .lista-meta-item.lista-crear .lista-crear-inner i {
   font-size: 1.4rem;
   color: var(--matte-gold);
+  transition: all 0.3s ease;
+}
+
+.lista-meta-item.lista-crear:hover .lista-crear-inner i {
+  transform: scale(1.1) rotate(90deg);
+  color: var(--gold-bright);
+  text-shadow: 0 0 15px var(--gold-glow);
 }
 
 /* =========================================
@@ -1313,6 +1321,83 @@ footer {
   opacity: 0.3;
   cursor: not-allowed;
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* =========================================
+   MODAL DE AVISO (ALERTA)
+   ========================================= */
+
+.modal-aviso {
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 10, 18, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-aviso.activo {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-aviso-contenido {
+  transform: translateY(-20px) scale(0.95);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+  opacity: 0;
+  background: linear-gradient(145deg, var(--bg-navy) 0%, var(--bg-deep) 100%);
+  border: 1px solid rgba(207, 181, 60, 0.25);
+  border-radius: 16px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: inset 0 0 40px rgba(206, 176, 90, 0.02), 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  color: var(--text-on-dark);
+}
+
+.modal-aviso.activo .modal-aviso-contenido {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.modal-aviso-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.modal-aviso-header i {
+  font-size: 3rem;
+  color: var(--matte-gold);
+  filter: drop-shadow(0 0 10px rgba(207, 181, 60, 0.4));
+}
+
+.modal-aviso-header span {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--gold-light);
+  letter-spacing: 0.5px;
+}
+
+.modal-aviso-mensaje {
+  font-size: 1rem;
+  color: var(--text-on-dark);
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.modal-aviso-footer {
+  display: flex;
+  justify-content: center;
 }
 
 @keyframes fadeInUp {
