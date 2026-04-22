@@ -209,6 +209,22 @@ const chatInputField = document.getElementById("chatInputField");
 const sendChatBtn = document.getElementById("sendChatBtn");
 
 const webhookUrl = "https://apoloz3.app.n8n.cloud/webhook/eaf97b8f-668b-49ae-b1b9-c051f6f0114d/chat";
+let currentSessionId = "sesion-" + Date.now();
+
+/**
+ * Reinicia el estado del chat: limpia mensajes, el input y genera una nueva sesión.
+ */
+const resetChat = () => {
+  if (chatMessages) {
+    chatMessages.innerHTML = `
+      <div class="chat-bubble chat-bot">
+        Hola, soy el asistente de PesatusPesos. ¿En qué te puedo ayudar hoy?
+      </div>
+    `;
+  }
+  if (chatInputField) chatInputField.value = "";
+  currentSessionId = "sesion-" + Date.now();
+};
 
 if (openChatBtn && chatModal) {
   openChatBtn.addEventListener("click", () => {
@@ -219,6 +235,7 @@ if (openChatBtn && chatModal) {
   if (closeChatModal) {
     closeChatModal.addEventListener("click", () => {
       chatModal.classList.remove("activo");
+      resetChat();
     });
   }
 
@@ -226,6 +243,7 @@ if (openChatBtn && chatModal) {
   window.addEventListener("click", (e) => {
     if (e.target === chatModal) {
       chatModal.classList.remove("activo");
+      resetChat();
     }
   });
 
@@ -257,7 +275,7 @@ if (openChatBtn && chatModal) {
       // El nodo "Chat Trigger" de n8n requiere normalmente esta estructura:
       const bodyPayload = {
         action: "sendMessage",
-        sessionId: "sesion-" + Date.now(),
+        sessionId: currentSessionId,
         route: "chat",
         text: userText, // Usado por Chat Trigger
         chatInput: userText, // Usado por Webhooks genéricos
