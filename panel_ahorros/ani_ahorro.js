@@ -16,6 +16,41 @@ document.addEventListener("DOMContentLoaded", function () {
   elementoFrase.textContent = frases[indice];
 
   /* ===============================
+       MODAL DE AVISO Y CIERRE GLOBAL
+    =============================== */
+  const modalAviso = document.getElementById("modalAviso");
+  const mensajeAviso = document.getElementById("mensajeAviso");
+  const btnAceptarAviso = document.getElementById("btnAceptarAviso");
+  const modalCrearMeta = document.getElementById("modalCrearMeta");
+
+  function mostrarAlerta(mensaje) {
+    if (mensajeAviso && modalAviso) {
+      mensajeAviso.textContent = mensaje;
+      modalAviso.classList.add("activo");
+    } else {
+      alert(mensaje);
+    }
+  }
+
+  if (btnAceptarAviso && modalAviso) {
+    btnAceptarAviso.addEventListener("click", () => {
+      modalAviso.classList.remove("activo");
+    });
+  }
+
+  // Cierre de modales al hacer clic fuera del contenido
+  document.addEventListener("click", (e) => {
+    // Si el clic fue directamente en el overlay oscuro del modal de crear
+    if (modalCrearMeta && e.target === modalCrearMeta) {
+      modalCrearMeta.classList.remove("activo");
+    }
+    // Si el clic fue directamente en el overlay oscuro del modal de aviso
+    if (modalAviso && e.target === modalAviso) {
+      modalAviso.classList.remove("activo");
+    }
+  });
+
+  /* ===============================
        MOSTRAR NOMBRE DEL USUARIO
     =============================== */
 
@@ -258,7 +293,6 @@ document.addEventListener("DOMContentLoaded", function () {
        MODAL CREAR META
      =============================== */
   const cardCrear = document.querySelector(".card-crear");
-  const modalCrearMeta = document.getElementById("modalCrearMeta");
   const cerrarModalCrear = document.getElementById("cerrarModalCrear");
   const btnCancelarCrear = document.getElementById("btnCancelarCrear");
 
@@ -271,10 +305,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (cerrarModalCrear) cerrarModalCrear.addEventListener("click", closeModal);
     if (btnCancelarCrear) btnCancelarCrear.addEventListener("click", closeModal);
-
-    modalCrearMeta.addEventListener("click", (e) => {
-      if (e.target === modalCrearMeta) closeModal();
-    });
 
     const btnGuardarMeta = document.getElementById("btnGuardarMeta");
     const tituloMetaInput = document.getElementById("tituloMeta");
@@ -325,7 +355,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (typeof initCarousel === 'function') initCarousel();
 
           closeModal();
-          alert("Meta creada exitosamente");
+          mostrarAlerta("Meta creada exitosamente");
 
           if (tituloMetaInput) tituloMetaInput.value = "";
           if (montoTotalInput) montoTotalInput.value = "";
@@ -611,7 +641,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (isCrear) {
         const row = document.createElement('div');
         row.className = 'lista-meta-item lista-crear';
-        row.innerHTML = '<div class="lista-crear-inner"><i class="fa-solid fa-plus"></i><span>Crear nueva meta</span></div>';
+        row.innerHTML = '<div class="lista-crear-inner"><i class="fa-solid fa-plus"></i><span>Crear tu propia meta</span></div>';
         row.addEventListener('click', () => card.click());
         listaMetas.appendChild(row);
         return;
