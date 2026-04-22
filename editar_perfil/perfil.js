@@ -17,7 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const emailGuardado = localStorage.getItem('email_usuario');
     const telefonoGuardado = localStorage.getItem('telefono_usuario');
 
-    if (inputNombre && nombreGuardado) inputNombre.value = nombreGuardado;
+    if (inputNombre && nombreGuardado) {
+        const nombreCapitalizado = nombreGuardado.charAt(0).toUpperCase() + nombreGuardado.slice(1);
+        inputNombre.value = nombreCapitalizado;
+    }
     if (inputEmail && emailGuardado) inputEmail.value = emailGuardado;
     if (inputTelefono && telefonoGuardado) inputTelefono.value = telefonoGuardado;
 
@@ -140,24 +143,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputFoto = document.getElementById('input-foto');
     const imgPerfil = document.getElementById('foto-perfil');
 
-    // Función para generar un avatar aleatorio desde la carpeta local
-    const obtenerFotoPorDefecto = () => {
-        // Lista de imágenes predeterminadas. 
-        const avataresLocales = [
-            'img/hucha.png',
-            'img/avartar_1.png',
-            'img/avartar_2.png',
-            'img/avartar_3.png',
-            'img/avartar_4.png',
-            'img/avartar_5.png',
-            'img/avartar_6.png',
-            'img/avartar_7.png',
-            'img/avartar_8.png',
-        ];
+    // Generar Avatar con la Inicial del Nombre
+    const generarAvatarLetra = (nombre) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 200;
+        canvas.height = 200;
+        const ctx = canvas.getContext('2d');
 
-        // Elegir una imagen de la lista completamente al azar
-        const indiceAleatorio = Math.floor(Math.random() * avataresLocales.length);
-        return avataresLocales[indiceAleatorio];
+        const colores = ['#cfb53b', '#b38b00', '#001524', '#2c3e50', '#8e44ad', '#2980b9', '#16a34a'];
+        let hash = 0;
+        const nombreLimpio = (nombre || "Usuario").trim();
+        for (let i = 0; i < nombreLimpio.length; i++) {
+            hash = nombreLimpio.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const colorFondo = colores[Math.abs(hash) % colores.length];
+
+        ctx.fillStyle = colorFondo;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#ffffff';
+        if (colorFondo === '#cfb53b') ctx.fillStyle = '#000000';
+        
+        ctx.font = 'bold 100px Montserrat, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const inicial = nombreLimpio.charAt(0).toUpperCase();
+        ctx.fillText(inicial, canvas.width / 2, canvas.height / 2);
+
+        return canvas.toDataURL('image/png');
+    };
+
+    const obtenerFotoPorDefecto = () => {
+        return generarAvatarLetra(inputNombre ? inputNombre.value : "Usuario");
     };
 
     // Cargar avatar sincronizado si existe, o generar el sticker automático
@@ -240,10 +257,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Sincronizar nombre en header al escribir en el input
+    // Sincronizar nombre en header y avatar al escribir en el input
     if (inputNombre && elementoNombreHeader) {
         inputNombre.addEventListener('input', () => {
-            elementoNombreHeader.textContent = inputNombre.value || "Usuario";
+            let valor = inputNombre.value;
+            
+            // Capitalizar la primera letra automáticamente
+            if (valor.length > 0) {
+                valor = valor.charAt(0).toUpperCase() + valor.slice(1);
+                inputNombre.value = valor;
+            }
+
+            const nuevoNombre = valor || "Usuario";
+            elementoNombreHeader.textContent = nuevoNombre;
+            
+            // Si el avatar actual es generado (no una foto subida), actualizarlo
+            const avatarActual = localStorage.getItem('pesa-tus-pesos-avatar');
+            if (!avatarActual || avatarActual.startsWith('data:image/png;base64')) {
+                if (imgPerfil) {
+                    imgPerfil.src = generarAvatarLetra(nuevoNombre);
+                }
+            }
         });
     }
 });
