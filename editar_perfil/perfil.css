@@ -61,18 +61,11 @@ body {
 /* ===== ENCABEZADO LOGO ===== */
 .encabezado-logo {
     position: absolute;
-    top: 30px;
-    left: 50px;
+    top: 15px;
+    left: 40px;
     z-index: 100;
 }
 
-@media (max-width: 768px) {
-    .encabezado-logo {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-    }
-}
 
 /* ===== CONTENEDOR PRINCIPAL ===== */
 .contenedor-principal {
