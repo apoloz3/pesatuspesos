@@ -122,12 +122,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnEliminarFoto = document.getElementById('btn-eliminar-foto');
     const inputFoto = document.getElementById('input-foto');
     const imgPerfil = document.getElementById('foto-perfil');
-    const fotoPorDefecto = 'img/hucha.png';
 
-    // Cargar avatar sincronizado si existe
+    // Función para generar un avatar aleatorio desde la carpeta local
+    const obtenerFotoPorDefecto = () => {
+        // Lista de imágenes predeterminadas. 
+        const avataresLocales = [
+            'img/hucha.png',
+            'img/avartar_1.png',
+            'img/avartar_2.png',
+            'img/avartar_3.png',
+            'img/avartar_4.png',
+            'img/avartar_5.png',
+            'img/avartar_6.png',
+            'img/avartar_7.png',
+            'img/avartar_8.png',
+        ];
+
+        // Elegir una imagen de la lista completamente al azar
+        const indiceAleatorio = Math.floor(Math.random() * avataresLocales.length);
+        return avataresLocales[indiceAleatorio];
+    };
+
+    // Cargar avatar sincronizado si existe, o generar el sticker automático
     const avatarGuardado = localStorage.getItem('pesa-tus-pesos-avatar');
-    if (avatarGuardado && imgPerfil) {
-        imgPerfil.src = avatarGuardado;
+    if (imgPerfil) {
+        // Manejador de errores: Si la imagen guardada o actual falla al cargar (ej. URL vieja)
+        imgPerfil.onerror = () => {
+            localStorage.removeItem('pesa-tus-pesos-avatar');
+            imgPerfil.src = obtenerFotoPorDefecto();
+            imgPerfil.onerror = null; // Prevenir ciclo infinito
+        };
+
+        if (avatarGuardado) {
+            imgPerfil.src = avatarGuardado;
+        } else {
+            imgPerfil.src = obtenerFotoPorDefecto();
+        }
     }
 
     if (btnCambiarFoto && inputFoto) {
@@ -159,7 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (modalConfirmarEliminar) {
             modalConfirmarEliminar.addEventListener('click', () => {
-                imgPerfil.src = fotoPorDefecto;
+                imgPerfil.src = obtenerFotoPorDefecto();
+                localStorage.removeItem('pesa-tus-pesos-avatar');
                 modalEliminarFoto.classList.remove('visible');
                 mostrarToast('Foto de perfil eliminada ✓');
             });
