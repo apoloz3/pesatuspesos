@@ -212,6 +212,46 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Global Header Logic
+    const elementoNombreHeader = document.getElementById("nombreUsuarioHeader");
+    const nombreGuardado = localStorage.getItem("nombre_usuario") || "Usuario";
+    if (elementoNombreHeader) elementoNombreHeader.textContent = nombreGuardado;
+
+    const botonConfiguracion = document.getElementById("botonConfiguracion");
+    const contenedorFlotante = document.querySelector(".contenedor-flotante");
+    if (botonConfiguracion && contenedorFlotante) {
+        botonConfiguracion.addEventListener("click", (e) => {
+            e.stopPropagation();
+            contenedorFlotante.classList.toggle("active");
+        });
+        document.addEventListener("click", (e) => {
+            if (!contenedorFlotante.contains(e.target)) contenedorFlotante.classList.remove("active");
+        });
+    }
+
+    const botonPerfil = document.getElementById("botonPerfil");
+    const panelUsuario = document.getElementById("panelUsuario");
+    const cerrarPanelBtn = document.getElementById("cerrarPanel");
+    if (botonPerfil && panelUsuario) {
+        botonPerfil.addEventListener("click", () => panelUsuario.classList.toggle("activo"));
+    }
+    if (cerrarPanelBtn && panelUsuario) {
+        cerrarPanelBtn.addEventListener("click", () => panelUsuario.classList.remove("activo"));
+    }
+
+    const elementoNombre = document.getElementById("nombre_usuario");
+    if (elementoNombre) elementoNombre.textContent = nombreGuardado;
+
+    const frases = [
+        "¡En la vida y en las finanzas, el riesgo es inevitable!",
+        "¡El ahorro de hoy es la libertad de mañana!",
+        "¡No gastes lo que no tienes para impresionar a quien no importa!",
+        "¡Invertir en conocimiento es la mejor inversión!",
+        "¡Controlar tus finanzas es controlar tu futuro!",
+    ];
+    const elementoFrase = document.getElementById("frase_motivadora");
+    if (elementoFrase) elementoFrase.textContent = frases[Math.floor(Math.random() * frases.length)];
 });
 
 

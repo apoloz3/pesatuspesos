@@ -15,8 +15,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ─── NOMBRE USUARIO ───────────────────────────────────────── */
   const elementoNombre = document.getElementById("nombre_usuario");
-  const nombreGuardado = localStorage.getItem("nombre_usuario");
-  if (elementoNombre && nombreGuardado) elementoNombre.textContent = nombreGuardado;
+  const elementoNombreHeader = document.getElementById("nombreUsuarioHeader");
+  const nombreGuardado = localStorage.getItem("nombre_usuario") || "Usuario";
+  if (elementoNombre) elementoNombre.textContent = nombreGuardado;
+  if (elementoNombreHeader) elementoNombreHeader.textContent = nombreGuardado;
 
   /* ─── BOTÓN CONFIGURACIÓN ──────────────────────────────────── */
   const botonConfiguracion = document.getElementById("botonConfiguracion");
