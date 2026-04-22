@@ -31,8 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
         hash = nombreLimpio.charCodeAt(i) + ((hash << 5) - hash);
     }
     const colorFondo = colores[Math.abs(hash) % colores.length];
+    // Dibujar fondo circular
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
     ctx.fillStyle = colorFondo;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fill();
+
     ctx.fillStyle = '#ffffff';
     if (colorFondo === '#cfb53b') ctx.fillStyle = '#000000';
     ctx.font = 'bold 100px Montserrat, sans-serif';

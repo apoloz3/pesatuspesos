@@ -158,8 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const colorFondo = colores[Math.abs(hash) % colores.length];
 
+        // Dibujar fondo circular
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
         ctx.fillStyle = colorFondo;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fill();
 
         ctx.fillStyle = '#ffffff';
         if (colorFondo === '#cfb53b') ctx.fillStyle = '#000000';
@@ -237,28 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Global Header Logic
-    const elementoNombreHeader = document.getElementById("nombreUsuarioHeader");
-    if (elementoNombreHeader) {
-        elementoNombreHeader.textContent = localStorage.getItem("nombre_usuario") || "Usuario";
-    }
-
-    const botonConfiguracion = document.getElementById("botonConfiguracion");
-    const contenedorFlotante = document.querySelector(".contenedor-flotante");
-    if (botonConfiguracion && contenedorFlotante) {
-        botonConfiguracion.addEventListener("click", (e) => {
-            e.stopPropagation();
-            contenedorFlotante.classList.toggle("active");
-        });
-        document.addEventListener("click", (e) => {
-            if (!contenedorFlotante.contains(e.target)) {
-                contenedorFlotante.classList.remove("active");
-            }
-        });
-    }
-
-    // Sincronizar nombre en header y avatar al escribir en el input
-    if (inputNombre && elementoNombreHeader) {
+    // Sincronizar avatar al escribir en el input
+    if (inputNombre) {
         inputNombre.addEventListener('input', () => {
             let valor = inputNombre.value;
             
@@ -269,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const nuevoNombre = valor || "Usuario";
-            elementoNombreHeader.textContent = nuevoNombre;
             
             // Si el avatar actual es generado (no una foto subida), actualizarlo
             const avatarActual = localStorage.getItem('pesa-tus-pesos-avatar');
