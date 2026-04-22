@@ -86,12 +86,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Cerrar al hacer clic fuera
+    // Cerrar al hacer clic fuera del picker
     document.addEventListener('click', (e) => {
-        if (!pickerCalendario.contains(e.target) && !abrirPicker.contains(e.target)) {
+        if (pickerCalendario && !pickerCalendario.contains(e.target) && abrirPicker && !abrirPicker.contains(e.target)) {
             pickerCalendario.classList.remove('activo');
         }
     });
+
+    // Cerrar modales al hacer clic en el backdrop (el área fuera del contenido)
+    if (modalAviso) {
+        modalAviso.addEventListener('click', (e) => {
+            if (e.target === modalAviso) {
+                modalAviso.classList.remove('activo');
+            }
+        });
+    }
+
+    if (modalConfirmacion) {
+        modalConfirmacion.addEventListener('click', (e) => {
+            if (e.target === modalConfirmacion) {
+                modalConfirmacion.classList.remove('activo');
+                idAEliminar = null;
+            }
+        });
+    }
 
     // Lógica selector premium (Flechas de años removidas por simplificación)
 
@@ -678,11 +696,69 @@ function exportarExcel() {
 function exportarPDF() {
     const registrosMes = obtenerRegistrosMesActual();
     if (registrosMes.length === 0) {
-        mostrarAviso("No hay datos para imprimir en este mes.");
+        mostrarAviso("No hay datos para exportar en este mes.");
         return;
     }
-    
-    // Simplemente usamos la función nativa de impresión
-    // Los estilos @media print en el CSS se encargarán del resto
-    window.print();
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const mesStr = nombresMeses[fechaActual.getMonth()];
+    const anioStr = fechaActual.getFullYear();
+    const titulo = `Ingresos - ${mesStr} ${anioStr}`;
+    const nombreArchivo = `Ingresos_${mesStr}_${anioStr}.pdf`;
+
+    // Encabezado
+    doc.setFillColor(0, 12, 23);
+    doc.rect(0, 0, 210, 30, 'F');
+    doc.setTextColor(243, 217, 137); // gold-light
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PesatusPesos', 14, 13);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text(titulo, 14, 23);
+
+    // Fecha de generación
+    doc.setTextColor(150, 150, 150);
+    doc.setFontSize(8);
+    doc.text(`Generado: ${new Date().toLocaleDateString('es-CO')}`, 160, 23);
+
+    // Tabla
+    const columnas = ['Fecha', 'Descripción', 'Método', 'Concepto', 'Monto'];
+    const filas = registrosMes.map(reg => [
+        reg.fecha,
+        reg.descripcion || '',
+        reg.metodo || '',
+        reg.concepto || '',
+        formatCurrency(parseFloat(reg.monto) || 0)
+    ]);
+
+    doc.autoTable({
+        head: [columnas],
+        body: filas,
+        startY: 35,
+        theme: 'grid',
+        headStyles: {
+            fillColor: [207, 181, 60],
+            textColor: [0, 12, 23],
+            fontStyle: 'bold',
+            fontSize: 9
+        },
+        bodyStyles: {
+            textColor: [30, 30, 30],
+            fontSize: 9
+        },
+        alternateRowStyles: {
+            fillColor: [245, 245, 245]
+        },
+        foot: [['', '', '', 'TOTAL', formatCurrency(registrosMes.reduce((s, r) => s + (parseFloat(r.monto) || 0), 0))]],
+        footStyles: {
+            fillColor: [22, 163, 74],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold'
+        }
+    });
+
+    doc.save(nombreArchivo);
 }
