@@ -54,16 +54,42 @@ document.addEventListener("DOMContentLoaded", function () {
        MOSTRAR NOMBRE DEL USUARIO
     =============================== */
 
+  const generarAvatarLetra = (nombre) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 200;
+    const ctx = canvas.getContext('2d');
+    const colores = ['#cfb53b', '#b38b00', '#001524', '#2c3e50', '#8e44ad', '#2980b9', '#16a34a'];
+    let hash = 0;
+    const nombreLimpio = (nombre || "Usuario").trim();
+    for (let i = 0; i < nombreLimpio.length; i++) {
+        hash = nombreLimpio.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const colorFondo = colores[Math.abs(hash) % colores.length];
+    ctx.fillStyle = colorFondo;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#ffffff';
+    if (colorFondo === '#cfb53b') ctx.fillStyle = '#000000';
+    ctx.font = 'bold 100px Montserrat, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const inicial = nombreLimpio.charAt(0).toUpperCase();
+    ctx.fillText(inicial, canvas.width / 2, canvas.height / 2);
+    return canvas.toDataURL('image/png');
+  };
+
   const elementoNombre = document.getElementById("nombre_usuario");
   const elementoNombreHeader = document.getElementById("nombreUsuarioHeader");
-
   const nombreGuardado = localStorage.getItem("nombre_usuario") || "Usuario";
+  const nombreCapitalizado = nombreGuardado.charAt(0).toUpperCase() + nombreGuardado.slice(1);
 
-  if (elementoNombre) {
-    elementoNombre.textContent = nombreGuardado;
-  }
-  if (elementoNombreHeader) {
-    elementoNombreHeader.textContent = nombreGuardado;
+  if (elementoNombre) elementoNombre.textContent = nombreCapitalizado;
+  if (elementoNombreHeader) elementoNombreHeader.textContent = nombreCapitalizado;
+
+  const avatarPrincipal = document.getElementById("avatarPrincipal");
+  const avatarGuardado = localStorage.getItem("pesa-tus-pesos-avatar");
+  if (avatarPrincipal) {
+    avatarPrincipal.src = avatarGuardado ? avatarGuardado : generarAvatarLetra(nombreCapitalizado);
   }
 
   /* ===============================
@@ -96,7 +122,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  const avatarPrincipal = document.getElementById("avatarPrincipal");
   const opcionesAvatar = document.querySelectorAll(".opcion-avatar");
   const contenedorAvatar = document.getElementById("contenedorAvatar");
   const panelEdicion = document.getElementById("panelEdicion");
