@@ -214,9 +214,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Global Header Logic
+    const generarAvatarLetra = (nombre) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 200;
+        canvas.height = 200;
+        const ctx = canvas.getContext('2d');
+        const colores = ['#cfb53b', '#b38b00', '#001524', '#2c3e50', '#8e44ad', '#2980b9', '#16a34a'];
+        let hash = 0;
+        const nombreLimpio = (nombre || "Usuario").trim();
+        for (let i = 0; i < nombreLimpio.length; i++) {
+            hash = nombreLimpio.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const colorFondo = colores[Math.abs(hash) % colores.length];
+        ctx.fillStyle = colorFondo;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ffffff';
+        if (colorFondo === '#cfb53b') ctx.fillStyle = '#000000';
+        ctx.font = 'bold 100px Montserrat, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const inicial = nombreLimpio.charAt(0).toUpperCase();
+        ctx.fillText(inicial, canvas.width / 2, canvas.height / 2);
+        return canvas.toDataURL('image/png');
+    };
+
     const elementoNombreHeader = document.getElementById("nombreUsuarioHeader");
     const nombreGuardado = localStorage.getItem("nombre_usuario") || "Usuario";
-    if (elementoNombreHeader) elementoNombreHeader.textContent = nombreGuardado;
+    const nombreCapitalizado = nombreGuardado.charAt(0).toUpperCase() + nombreGuardado.slice(1);
+
+    if (elementoNombreHeader) elementoNombreHeader.textContent = nombreCapitalizado;
+
+    const avatarPrincipal = document.getElementById("avatarPrincipal");
+    const avatarGuardado = localStorage.getItem("pesa-tus-pesos-avatar");
+    if (avatarPrincipal) {
+        avatarPrincipal.src = avatarGuardado ? avatarGuardado : generarAvatarLetra(nombreCapitalizado);
+    }
 
     const botonConfiguracion = document.getElementById("botonConfiguracion");
     const contenedorFlotante = document.querySelector(".contenedor-flotante");
@@ -241,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const elementoNombre = document.getElementById("nombre_usuario");
-    if (elementoNombre) elementoNombre.textContent = nombreGuardado;
+    if (elementoNombre) elementoNombre.textContent = nombreCapitalizado;
 
     const frases = [
         "¡En la vida y en las finanzas, el riesgo es inevitable!",
