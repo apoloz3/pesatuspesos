@@ -663,10 +663,45 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnPdf = document.getElementById('btnDescargarPDF');
   const btnExc = document.getElementById('btnExportarExcel');
 
-  if (btnApp) btnApp.addEventListener('click', () => alert('Filtros aplicados correctamente.'));
-  if (btnCle) btnCle.addEventListener('click', () => alert('Filtros restablecidos.'));
-  if (btnPdf) btnPdf.addEventListener('click', () => alert('Generando reporte PDF...'));
-  if (btnExc) btnExc.addEventListener('click', () => alert('Exportando a Excel...'));
+  if (btnApp) btnApp.addEventListener('click', () => mostrarAviso('Filtros aplicados correctamente.'));
+  if (btnCle) btnCle.addEventListener('click', () => mostrarAviso('Filtros restablecidos.'));
+  if (btnPdf) btnPdf.addEventListener('click', () => {
+    if (deudas.length === 0 && pagos.length === 0) {
+      mostrarAviso("No hay datos suficientes para generar un reporte.");
+      return;
+    }
+    window.print();
+  });
+
+  if (btnExc) btnExc.addEventListener('click', () => {
+    if (deudas.length === 0 && pagos.length === 0) {
+      mostrarAviso("No hay datos para exportar.");
+      return;
+    }
+
+    // Encabezados combinados
+    let csv = "--- RESUMEN DE DEUDAS ---\n";
+    csv += "Acreedor,Tipo,Saldo Inicial,Saldo Actual,Tasa,Vencimiento,Estado\n";
+    deudas.forEach(d => {
+      csv += `"${d.acreedor}",${d.tipo},"${d.inicial}","${d.actual}",${d.tasa},${d.venc},${d.estado}\n`;
+    });
+
+    csv += "\n--- HISTORIAL DE PAGOS ---\n";
+    csv += "Fecha Pago,Monto Abonado,Método de Pago,Notas\n";
+    pagos.forEach(p => {
+      csv += `${p.fecha},"${p.monto}",${p.metodo},"${(p.notas || '').replace(/"/g, '""')}"\n`;
+    });
+
+    const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Reporte_Deuda_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
 
   /* ═══════════════════════════════════════════════════════════════
                         UTILIDADES

@@ -1115,3 +1115,96 @@ footer {
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
   .footer-brand { grid-column: 1 / -1; }
 }
+
+/* ══════════ DISEÑO PREMIUM EXPORTAR ══════════ */
+.btn-exportar {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(207, 181, 60, 0.4);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+  backdrop-filter: blur(5px);
+}
+
+.btn-exportar i {
+  font-size: 1.1rem;
+}
+
+#btnExportarExcel i { color: #4ade80; }
+#btnDescargarPDF i { color: #ff7875; }
+
+#btnExportarExcel:hover {
+  background: rgba(22, 163, 74, 0.25);
+  border-color: #16a34a;
+  box-shadow: 0 0 20px rgba(22, 163, 74, 0.3);
+}
+
+#btnDescargarPDF:hover {
+  background: rgba(255, 77, 77, 0.25);
+  border-color: #ff4d4f;
+  box-shadow: 0 0 20px rgba(255, 77, 77, 0.3);
+}
+
+/* Optimización de Impresión para Deuda */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  
+  header, .barra, .contenedor-flotante, .dash-toolbar, .dash-export-row, 
+  .form-actions, footer, .acciones-cell, .paginacion-contenedor,
+  aside, .btn-page, .pagination-container, .btn-add-deuda, .btn-add-pago,
+  .contenedor-flotante-app > header {
+    display: none !important;
+  }
+  
+  .contenido {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+  
+  .dash-principal {
+    background: #fff !important;
+    padding: 0 !important;
+  }
+
+  .kpi-card, .table-container, .chart-container, .list-container {
+    border: 1px solid #eee !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    color: #000 !important;
+    margin-bottom: 20px !important;
+    break-inside: avoid !important;
+  }
+
+  h2, h3, p, span, b {
+    color: #000 !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border-bottom: 1px solid #ddd !important;
+    padding: 8px !important;
+    text-align: left !important;
+  }
+
+  .badge {
+    border: 1px solid #ccc !important;
+    background: transparent !important;
+    color: #000 !important;
+  }
+}
