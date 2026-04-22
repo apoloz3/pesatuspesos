@@ -46,7 +46,22 @@ document
 
         e.preventDefault();
 
-        window.location.href = '../Home/index.html';
+        const usuario = document.getElementById('usuarioLogin').value;
+        const contrasena = document.getElementById('contrasenaLogin').value;
+        const msgError = document.getElementById('msgLoginError');
+
+        // Simulación de validación (puedes ajustar las credenciales correctas)
+        if (usuario === "admin@gmail.com" && contrasena === "admin123") {
+            window.location.href = '../Home/index.html';
+        } else {
+            msgError.innerHTML = "correo electronico incorrecto o contraseña incorrecta";
+            msgError.classList.add('visible');
+            
+            // Opcional: remover el mensaje después de unos segundos
+            setTimeout(() => {
+                msgError.classList.remove('visible');
+            }, 3000);
+        }
 
     });
 
