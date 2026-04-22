@@ -214,81 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Global Header Logic
-    const generarAvatarLetra = (nombre) => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 200;
-        canvas.height = 200;
-        const ctx = canvas.getContext('2d');
-        const colores = ['#cfb53b', '#b38b00', '#001524', '#2c3e50', '#8e44ad', '#2980b9', '#16a34a'];
-        let hash = 0;
-        const nombreLimpio = (nombre || "Usuario").trim();
-        for (let i = 0; i < nombreLimpio.length; i++) {
-            hash = nombreLimpio.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        const colorFondo = colores[Math.abs(hash) % colores.length];
-        // Dibujar fondo circular
-        ctx.beginPath();
-        ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
-        ctx.fillStyle = colorFondo;
-        ctx.fill();
 
-        ctx.fillStyle = '#ffffff';
-        if (colorFondo === '#cfb53b') ctx.fillStyle = '#000000';
-        ctx.font = 'bold 100px Montserrat, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        const inicial = nombreLimpio.charAt(0).toUpperCase();
-        ctx.fillText(inicial, canvas.width / 2, canvas.height / 2);
-        return canvas.toDataURL('image/png');
-    };
-
-    const elementoNombreHeader = document.getElementById("nombreUsuarioHeader");
-    const nombreGuardado = localStorage.getItem("nombre_usuario") || "Usuario";
-    const nombreCapitalizado = nombreGuardado.charAt(0).toUpperCase() + nombreGuardado.slice(1);
-
-    if (elementoNombreHeader) elementoNombreHeader.textContent = nombreCapitalizado;
-
-    const avatarPrincipal = document.getElementById("avatarPrincipal");
-    const avatarGuardado = localStorage.getItem("pesa-tus-pesos-avatar");
-    if (avatarPrincipal) {
-        avatarPrincipal.src = avatarGuardado ? avatarGuardado : generarAvatarLetra(nombreCapitalizado);
-    }
-
-    const botonConfiguracion = document.getElementById("botonConfiguracion");
-    const contenedorFlotante = document.querySelector(".contenedor-flotante");
-    if (botonConfiguracion && contenedorFlotante) {
-        botonConfiguracion.addEventListener("click", (e) => {
-            e.stopPropagation();
-            contenedorFlotante.classList.toggle("active");
-        });
-        document.addEventListener("click", (e) => {
-            if (!contenedorFlotante.contains(e.target)) contenedorFlotante.classList.remove("active");
-        });
-    }
-
-    const botonPerfil = document.getElementById("botonPerfil");
-    const panelUsuario = document.getElementById("panelUsuario");
-    const cerrarPanelBtn = document.getElementById("cerrarPanel");
-    if (botonPerfil && panelUsuario) {
-        botonPerfil.addEventListener("click", () => panelUsuario.classList.toggle("activo"));
-    }
-    if (cerrarPanelBtn && panelUsuario) {
-        cerrarPanelBtn.addEventListener("click", () => panelUsuario.classList.remove("activo"));
-    }
-
-    const elementoNombre = document.getElementById("nombre_usuario");
-    if (elementoNombre) elementoNombre.textContent = nombreCapitalizado;
-
-    const frases = [
-        "¡En la vida y en las finanzas, el riesgo es inevitable!",
-        "¡El ahorro de hoy es la libertad de mañana!",
-        "¡No gastes lo que no tienes para impresionar a quien no importa!",
-        "¡Invertir en conocimiento es la mejor inversión!",
-        "¡Controlar tus finanzas es controlar tu futuro!",
-    ];
-    const elementoFrase = document.getElementById("frase_motivadora");
-    if (elementoFrase) elementoFrase.textContent = frases[Math.floor(Math.random() * frases.length)];
 });
 
 
@@ -490,39 +416,38 @@ function enfocarFila(boton) {
 
 // Lógica de Negocio
 function actualizarResumen() {
-    const registrosMes = obtenerRegistrosMesActual();
+    const mesAct = fechaActual.getMonth();
+    const anioAct = fechaActual.getFullYear();
     
-    let totalEgresos = 0;
-    
-    registrosMes.forEach(reg => {
-        if (opcionesConceptoEgreso.includes(reg.concepto)) {
-            totalEgresos += parseFloat(reg.monto) || 0;
-        }
-    });
-    
-    // Saldo Total (Todos los registros globalmente, Ingesos - Egresos)
-    let globalIngresos = 0;
-    let globalEgresos = 0;
+    let totalEgresosMes = 0;
+    let totalIngresosMes = 0;
     
     registros.forEach(reg => {
-        if (opcionesConceptoEgreso.includes(reg.concepto)) {
-            globalEgresos += parseFloat(reg.monto) || 0;
-        } else {
-            globalIngresos += parseFloat(reg.monto) || 0;
+        if (!reg.fecha) return;
+        const fechaReg = new Date(reg.fecha + 'T00:00:00');
+        if (fechaReg.getMonth() === mesAct && fechaReg.getFullYear() === anioAct) {
+            const monto = parseFloat(reg.monto) || 0;
+            // Categorizar por tipo o concepto
+            const esEgreso = reg.tipo === 'egreso' || opcionesConceptoEgreso.includes(reg.concepto);
+            if (esEgreso) {
+                totalEgresosMes += monto;
+            } else {
+                totalIngresosMes += monto;
+            }
         }
     });
 
-    const saldo = globalIngresos - globalEgresos;
+    const saldoMes = totalIngresosMes - totalEgresosMes;
     
-    if (resumenEgresosEl) resumenEgresosEl.textContent = formatCurrency(totalEgresos);
-    if (resumenSaldoEl) resumenSaldoEl.textContent = formatCurrency(saldo);
+    if (resumenEgresosEl) resumenEgresosEl.textContent = formatCurrency(totalEgresosMes);
+    if (resumenSaldoEl) resumenSaldoEl.textContent = formatCurrency(saldoMes);
     
-    if (analisisEgresosEl) analisisEgresosEl.textContent = formatCurrency(totalEgresos);
-    if (analisisSaldoEl) analisisSaldoEl.textContent = formatCurrency(saldo);
+    if (analisisEgresosEl) analisisEgresosEl.textContent = formatCurrency(totalEgresosMes);
+    if (analisisSaldoEl) analisisSaldoEl.textContent = formatCurrency(saldoMes);
     
     // Color según saldo
-    if (analisisSaldoEl) analisisSaldoEl.style.color = saldo >= 0 ? 'var(--growth-green)' : 'var(--danger)';
-    if (resumenSaldoEl) resumenSaldoEl.style.color = saldo >= 0 ? 'var(--growth-green)' : 'var(--danger)';
+    if (analisisSaldoEl) analisisSaldoEl.style.color = saldoMes >= 0 ? 'var(--growth-green)' : 'var(--danger)';
+    if (resumenSaldoEl) resumenSaldoEl.style.color = saldoMes >= 0 ? 'var(--growth-green)' : 'var(--danger)';
 }
 
 function formatCurrency(valor) {

@@ -12,41 +12,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header class="barra">
-        <div class="caja-logo">
-            <i class="fa-solid fa-coins" style="font-size: 2rem; color: #CFB53B;"></i>
-            <span class="texto-logo">PESATUSPESOS</span>
-        </div>
-        <div class="menu-wrapper">
-            <nav class="menu">
-                <button onclick="window.location.href='../Home/index.html'">Inicio</button>
-                <button onclick="window.location.href='../panel_movimientos/movimientos.html'">Movimientos</button>
-                <button onclick="window.location.href='../panel_deuda/deuda.html'">Deuda</button>
-                <button onclick="window.location.href='../panel_ahorros/ahorros.html'">Ahorro</button>
-            </nav>
-        </div>
 
-        <div class="contenedor-flotante">
-            <div class="opciones-flotantes">
-                <button class="boton-opcion boton-manual" onclick="window.location.href='../manual_usuario/manual_usuario.html'">
-                    <img src="img/informacion (1).png" alt="Manual" />
-                </button>
-                <button class="boton-opcion boton-atencion" onclick="window.location.href='../pag_ayuda/ayuda.html'">
-                    <img src="img/apoyo (1).png" alt="Atencion" />
-                </button>
-                <button class="boton-opcion boton-editar" id="botonPerfil">
-                    <img src="img/avatar-de-usuario (1).png" alt="Editar" />
-                </button>
-            </div>
 
-            <span class="nombre-usuario-header" id="nombreUsuarioHeader">Usuario</span>
-            <button class="boton-principal" id="botonConfiguracion">
-                <img src="img/ajustes.png" alt="Configuración" />
-            </button>
-        </div>
-    </header>
-
-    <div class="contenedor-dashboard" style="margin-top: 80px;">
+    <div class="contenedor-dashboard" style="margin-top: 10px;">
         <!-- Encabezado -->
         <header class="encabezado-dashboard">
             <a href="../panel_movimientos/movimientos.html" class="btn-regresar" id="btnRegresar">
@@ -212,16 +180,7 @@
         </div>
     </div>
 
-    <!-- Panel usuario -->
-    <aside class="usuario" id="panelUsuario">
-        <button class="cerrar-panel" id="cerrarPanel" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">✕</button>
-        <h2 id="nombre_usuario" style="font-size: 1.2rem; margin-bottom: 15px;">Usuario</h2>
-        <div class="avatar-wrapper" style="margin-bottom: 15px;">
-            <img src="img/hucha.png" class="avatar" id="avatarPrincipal" alt="avatar" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--matte-gold);" />
-        </div>
-        <p class="frase" id="frase_motivadora" style="font-size: 0.9rem; font-style: italic; margin-bottom: 20px;"></p>
-        <button class="boton-cerrar" style="background: var(--danger); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer;">Cerrar sesión</button>
-    </aside>
+
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
