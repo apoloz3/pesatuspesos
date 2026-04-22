@@ -140,22 +140,104 @@ document.addEventListener("DOMContentLoaded", function () {
   const pieAnio = document.getElementById("pieAnio");
   if (pieAnio) pieAnio.textContent = String(new Date().getFullYear());
 
-  /* --- LÓGICA ESPECÍFICA DEL TABLERO --- */
-  inicializarGraficos();
-  aplicarEfectosEntrada();
-  sincronizarTotales();
-  actualizarMovimientosRecientes('Hoy'); // Filtro inicial por defecto
-  actualizarHistorialMes(0); // Cargar primera página del historial
+  /* --- LÓGICA DE FILTRADO MENSUAL --- */
+  let fechaActual = new Date();
+  
+  const nombresMeses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
 
-  // Configurar botones de filtro de movimientos
+  function actualizarInterfazDashboard() {
+      const mes = fechaActual.getMonth();
+      const anio = fechaActual.getFullYear();
+      
+      const nombreMesEl = document.getElementById('nombreMes');
+      if (nombreMesEl) nombreMesEl.textContent = `${nombresMeses[mes]} ${anio}`;
+
+      // Recargar todos los componentes
+      inicializarGraficos(fechaActual);
+      sincronizarTotales(fechaActual);
+      actualizarMovimientosRecientes('Hoy'); // Podemos dejarlo como 'Recientes' pero limitado al mes si se desea
+      actualizarHistorialMes(document.querySelector('.punto-pag.activo')?.dataset.page || 0, fechaActual);
+  }
+
+  // Navegación de Meses
+  document.getElementById('mesPrevio')?.addEventListener('click', () => {
+      fechaActual.setMonth(fechaActual.getMonth() - 1);
+      actualizarInterfazDashboard();
+  });
+
+  document.getElementById('mesSiguiente')?.addEventListener('click', () => {
+      fechaActual.setMonth(fechaActual.getMonth() + 1);
+      actualizarInterfazDashboard();
+  });
+
+  // Lógica del Picker (Calendario)
+  const abrirPickerBtn = document.getElementById('abrirPicker');
+  const pickerModal = document.getElementById('pickerCalendario');
+  const gridMeses = document.getElementById('gridMeses');
+  const inputAnio = document.getElementById('inputAnioManual');
+  const aplicarBtn = document.getElementById('aplicarPicker');
+  const limpiarBtn = document.getElementById('limpiarPicker');
+
+  if (abrirPickerBtn) {
+      abrirPickerBtn.addEventListener('click', () => {
+          pickerModal.classList.toggle('activo');
+          inputAnio.value = fechaActual.getFullYear();
+          renderizarMesesPicker();
+      });
+  }
+
+  function renderizarMesesPicker() {
+      gridMeses.innerHTML = '';
+      const mesesCortos = ["ene.", "feb.", "mar.", "abr.", "may.", "jun.", "jul.", "ago.", "sept.", "oct.", "nov.", "dic."];
+      
+      mesesCortos.forEach((nombre, index) => {
+          const btn = document.createElement('button');
+          btn.className = `mes-btn ${index === fechaActual.getMonth() ? 'seleccionado' : ''}`;
+          btn.textContent = nombre;
+          btn.onclick = () => {
+              document.querySelectorAll('.mes-btn').forEach(b => b.classList.remove('seleccionado'));
+              btn.classList.add('seleccionado');
+              btn.dataset.mes = index;
+          };
+          if (index === fechaActual.getMonth()) btn.dataset.mes = index;
+          gridMeses.appendChild(btn);
+      });
+  }
+
+  aplicarBtn?.addEventListener('click', () => {
+      const mesSeleccionado = document.querySelector('.mes-btn.seleccionado')?.dataset.mes;
+      const anioSeleccionado = parseInt(inputAnio.value);
+      if (mesSeleccionado !== undefined && !isNaN(anioSeleccionado)) {
+          fechaActual.setMonth(parseInt(mesSeleccionado));
+          fechaActual.setFullYear(anioSeleccionado);
+          actualizarInterfazDashboard();
+          pickerModal.classList.remove('activo');
+      }
+  });
+
+  limpiarBtn?.addEventListener('click', () => {
+      fechaActual = new Date();
+      actualizarInterfazDashboard();
+      pickerModal.classList.remove('activo');
+  });
+
+  // Cerrar picker al clickear fuera
+  document.addEventListener('click', (e) => {
+      if (pickerModal?.classList.contains('activo') && !pickerModal.contains(e.target) && !abrirPickerBtn.contains(e.target)) {
+          pickerModal.classList.remove('activo');
+      }
+  });
+
+  /* --- INICIALIZACIÓN --- */
+  aplicarEfectosEntrada();
+  actualizarInterfazDashboard();
+
+  // Configurar botones de filtro de movimientos (Recientes)
   const botonesFiltro = document.querySelectorAll('.btn-filtro');
   botonesFiltro.forEach(btn => {
       btn.addEventListener('click', () => {
-          // Cambiar estado activo
           botonesFiltro.forEach(b => b.classList.remove('activo'));
           btn.classList.add('activo');
-          
-          // Re-renderizar lista filtrada
           const filtro = btn.textContent.trim();
           actualizarMovimientosRecientes(filtro);
       });
@@ -183,7 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const pagina = parseInt(punto.dataset.page);
           puntosPag.forEach(p => p.classList.remove('activo'));
           punto.classList.add('activo');
-          actualizarHistorialMes(pagina);
+          actualizarHistorialMes(pagina, fechaActual);
       });
   });
 });
@@ -194,207 +276,110 @@ document.addEventListener("DOMContentLoaded", function () {
  * - Línea ROJA  con área rellena para Egresos acumulados
  * Estilo oscuro inspirado en dashboards de criptomonedas.
  */
-function inicializarGraficos() {
+function inicializarGraficos(fechaContexto = new Date()) {
     const canvas = document.getElementById('graficoBalancePrincipal');
     if (!canvas) return;
+
+    // Destruir gráfico anterior si existe
+    const chartExistente = Chart.getChart(canvas);
+    if (chartExistente) chartExistente.destroy();
 
     const registros = JSON.parse(localStorage.getItem('registros_financieros')) || [];
     const opcionesConceptoIngreso = ["Sueldo", "Venta", "Inversión", "Regalo", "Otro"];
     const opcionesConceptoEgreso  = ["Vivienda", "Alimentación", "Transporte", "Servicios", "Entretenimiento", "Salud", "Otro"];
 
-    // Ordenar registros por fecha
-    const regsSorted = registros
-        .filter(r => r.fecha)
-        .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    const mesAct = fechaContexto.getMonth();
+    const anioAct = fechaContexto.getFullYear();
 
-    let puntosIngresos = [];
-    let puntosEgresos  = [];
-    let labels         = [];
-    let acumIngreso    = 0;
-    let acumEgreso     = 0;
+    // Obtener días del mes para el eje X
+    const diasEnMes = new Date(anioAct, mesAct + 1, 0).getDate();
+    const labels = Array.from({length: diasEnMes}, (_, i) => i + 1);
+    
+    let puntosIngresos = new Array(diasEnMes).fill(0);
+    let puntosEgresos  = new Array(diasEnMes).fill(0);
 
-    if (regsSorted.length === 0) {
-        // Fallback visual cuando no hay datos
-        puntosIngresos = [100, 200, 250, 300, 320, 400, 460, 500, 560, 620, 700];
-        puntosEgresos  = [80,  150, 170, 210, 260, 290, 310, 350, 370, 400, 430];
-        labels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov'];
-    } else {
-        regsSorted.forEach(reg => {
-            const monto     = parseFloat(reg.monto) || 0;
+    // Filtrar registros del mes y agrupar por día
+    registros.forEach(reg => {
+        if (!reg.fecha) return;
+        const f = new Date(reg.fecha + 'T00:00:00');
+        if (f.getMonth() === mesAct && f.getFullYear() === anioAct) {
+            const dia = f.getDate();
+            const monto = parseFloat(reg.monto) || 0;
             const esIngreso = opcionesConceptoIngreso.includes(reg.concepto) || reg.tipo === 'ingreso';
-            const esEgreso  = opcionesConceptoEgreso.includes(reg.concepto)  || reg.tipo === 'egreso';
+            
+            if (esIngreso) {
+                puntosIngresos[dia-1] += monto;
+            } else {
+                puntosEgresos[dia-1] += monto;
+            }
+        }
+    });
 
-            if (esIngreso)     acumIngreso += monto;
-            else if (esEgreso) acumEgreso  += monto;
-
-            puntosIngresos.push(acumIngreso);
-            puntosEgresos.push(acumEgreso);
-
-            const fechaObj = new Date(reg.fecha + 'T00:00:00');
-            labels.push(fechaObj.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' }));
-        });
-    }
+    // Convertir a acumulado diario si se prefiere, o dejar como barras diarias. 
+    // Para línea usualmente es mejor acumulado o suavizado. 
+    // El usuario pidió "Análisis de flujo de caja", usaremos acumulado para ver tendencia.
+    let acumI = 0;
+    let acumE = 0;
+    const puntosIngAcum = puntosIngresos.map(v => acumI += v);
+    const puntosEgAcum = puntosEgresos.map(v => acumE += v);
 
     const ctx2d = canvas.getContext('2d');
-    const h = canvas.parentElement ? canvas.parentElement.offsetHeight || 180 : 180;
+    const h = 180;
 
-    // Gradiente VERDE (ingresos)
     const gradVerde = ctx2d.createLinearGradient(0, 0, 0, h);
-    gradVerde.addColorStop(0,   'rgba(34, 197, 94, 0.45)');
-    gradVerde.addColorStop(0.6, 'rgba(34, 197, 94, 0.10)');
-    gradVerde.addColorStop(1,   'rgba(34, 197, 94, 0.00)');
+    gradVerde.addColorStop(0, 'rgba(34, 197, 94, 0.4)');
+    gradVerde.addColorStop(1, 'rgba(34, 197, 94, 0)');
 
-    // Gradiente ROJO (egresos)
     const gradRojo = ctx2d.createLinearGradient(0, 0, 0, h);
-    gradRojo.addColorStop(0,   'rgba(255, 60, 60, 0.45)');
-    gradRojo.addColorStop(0.6, 'rgba(255, 60, 60, 0.10)');
-    gradRojo.addColorStop(1,   'rgba(255, 60, 60, 0.00)');
+    gradRojo.addColorStop(0, 'rgba(255, 60, 60, 0.4)');
+    gradRojo.addColorStop(1, 'rgba(255, 60, 60, 0)');
 
-    // Plugin: punto activo con halo de color
-    const pluginPuntoHalo = {
-        id: 'puntoHalo',
-        afterDatasetsDraw(chart) {
-            const { ctx, tooltip } = chart;
-            if (!tooltip || !tooltip._active || tooltip._active.length === 0) return;
-            tooltip._active.forEach(punto => {
-                const x     = punto.element.x;
-                const y     = punto.element.y;
-                const color = punto.datasetIndex === 0 ? '#22c55e' : '#ff3c3c';
-                ctx.save();
-                // Halo exterior
-                ctx.beginPath();
-                ctx.arc(x, y, 10, 0, Math.PI * 2);
-                ctx.fillStyle = color.replace(')', ', 0.25)').replace('rgb', 'rgba');
-                ctx.fill();
-                // Punto central
-                ctx.beginPath();
-                ctx.arc(x, y, 5, 0, Math.PI * 2);
-                ctx.fillStyle = '#ffffff';
-                ctx.shadowColor = color;
-                ctx.shadowBlur  = 10;
-                ctx.fill();
-                ctx.restore();
-            });
+    new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Ingresos',
+                    data: puntosIngAcum,
+                    borderColor: '#22c55e',
+                    backgroundColor: gradVerde,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Egresos',
+                    data: puntosEgAcum,
+                    borderColor: '#ff3c3c',
+                    backgroundColor: gradRojo,
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { 
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } }
+                },
+                x: { 
+                    grid: { display: false },
+                    ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                }
+            }
         }
-    };
-new Chart(canvas, {
-    type: 'line',
-    plugins: [pluginPuntoHalo],
-    data: {
-        labels: labels,
-        datasets: [
-            {
-                label: 'Ingresos',
-                data: puntosIngresos,
-                borderColor: '#22c55e',
-                borderWidth: 2.5,
-                backgroundColor: gradVerde,
-                fill: true,
-                tension: 0.45,
-                pointRadius: 5,
-                pointBackgroundColor: 'transparent',
-                pointBorderColor: '#22c55e',
-                pointBorderWidth: 2,
-                pointHoverRadius: 7,
-                pointHoverBackgroundColor: 'transparent',
-                pointHoverBorderColor: '#22c55e',
-                pointHoverBorderWidth: 2.5,
-            },
-            {
-                label: 'Egresos',
-                data: puntosEgresos,
-                borderColor: '#ff3c3c',
-                borderWidth: 2.5,
-                backgroundColor: gradRojo,
-                fill: true,
-                tension: 0.45,
-                pointRadius: 5,
-                pointBackgroundColor: 'transparent',
-                pointBorderColor: '#ff3c3c',
-                pointBorderWidth: 2,
-                pointHoverRadius: 7,
-                pointHoverBackgroundColor: 'transparent',
-                pointHoverBorderColor: '#ff3c3c',
-                pointHoverBorderWidth: 2.5,
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 900, easing: 'easeInOutQuart' },
-        layout: { padding: { left: 0, right: 4, top: 8, bottom: 0 } },
-        scales: {
-            y: {
-                grid: {
-                    color: 'rgba(255, 255, 255, 0.08)',
-                    drawBorder: false,
-                },
-                border: { display: false },
-                ticks: {
-                    color: 'rgba(255, 255, 255, 0.35)',
-                    font: { size: 10 },
-                    maxTicksLimit: 5,
-                    callback(value) {
-                        if (Math.abs(value) >= 1_000_000) return (value / 1_000_000).toFixed(1) + 'M';
-                        if (Math.abs(value) >= 1_000)     return (value / 1_000).toFixed(0) + 'k';
-                        return value;
-                    }
-                }
-            },
-            x: {
-                grid: {
-                    display: true,
-                    color: 'rgba(255, 255, 255, 0.08)',
-                    drawBorder: false,
-                },
-                border: { display: false },
-                ticks: {
-                    color: 'rgba(255, 255, 255, 0.35)',
-                    font: { size: 10 },
-                    maxRotation: 0,
-                    maxTicksLimit: 6,
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top',
-                align: 'end',
-                labels: {
-                    color: 'rgba(255,255,255,0.6)',
-                    font: { size: 11 },
-                    boxWidth: 12,
-                    boxHeight: 3,
-                    borderRadius: 2,
-                    padding: 14,
-                    usePointStyle: true,
-                    pointStyle: 'line',
-                }
-            },
-            tooltip: {
-                backgroundColor: 'rgba(0, 10, 18, 0.92)',
-                titleColor: 'rgba(255,255,255,0.5)',
-                bodyColor: '#ffffff',
-                borderColor: 'rgba(255,255,255,0.08)',
-                borderWidth: 1,
-                padding: 12,
-                displayColors: true,
-                boxWidth: 8,
-                boxHeight: 8,
-                callbacks: {
-                    title(items) { return items[0]?.label || ''; },
-                    label(context) {
-                        const simbolo = context.datasetIndex === 0 ? '▲ Ingresos' : '▼ Egresos';
-                        return `  ${simbolo}: $ ${context.parsed.y.toLocaleString('es-CO')}`;
-                    }
-                }
-            }
-        },
-        interaction: { intersect: false, mode: 'index' },
-    }
-});
+    });
 }
 /**
  * Añade animaciones de entrada a las tarjetas de forma secuencial
@@ -426,20 +411,27 @@ if (botonPerfil) {
 /**
  * Lee los datos de registros_financieros y actualiza los montos en el tablero principal
  */
-function sincronizarTotales() {
+function sincronizarTotales(fechaContexto = new Date()) {
     const registros = JSON.parse(localStorage.getItem('registros_financieros')) || [];
     const opcionesConceptoIngreso = ["Sueldo", "Venta", "Inversión", "Regalo", "Otro"];
     const opcionesConceptoEgreso = ["Vivienda", "Alimentación", "Transporte", "Servicios", "Entretenimiento", "Salud", "Otro"];
     
+    const mesAct = fechaContexto.getMonth();
+    const anioAct = fechaContexto.getFullYear();
+
     let totalIngresos = 0;
     let totalGastos = 0;
 
     registros.forEach(reg => {
-        const monto = parseFloat(reg.monto) || 0;
-        if (opcionesConceptoIngreso.includes(reg.concepto) || reg.tipo === 'ingreso') {
-            totalIngresos += monto;
-        } else if (opcionesConceptoEgreso.includes(reg.concepto) || reg.tipo === 'egreso') {
-            totalGastos += monto;
+        if (!reg.fecha) return;
+        const f = new Date(reg.fecha + 'T00:00:00');
+        if (f.getMonth() === mesAct && f.getFullYear() === anioAct) {
+            const monto = parseFloat(reg.monto) || 0;
+            if (opcionesConceptoIngreso.includes(reg.concepto) || reg.tipo === 'ingreso') {
+                totalIngresos += monto;
+            } else {
+                totalGastos += monto;
+            }
         }
     });
 
@@ -572,14 +564,13 @@ function actualizarMovimientosRecientes(filtro = 'Hoy') {
  * Renderiza el historial del mes con vista dividida y barras de progreso
  * @param {number} pagina - 0 para Ingresos, 1 para Egresos
  */
-function actualizarHistorialMes(pagina = 0) {
+function actualizarHistorialMes(pagina = 0, fechaContexto = new Date()) {
     const contenedor = document.getElementById('listaHistorialMes');
     if (!contenedor) return;
 
     const registros = JSON.parse(localStorage.getItem('registros_financieros')) || [];
-    const ahora = new Date();
-    const mesActual = ahora.getMonth();
-    const anioActual = ahora.getFullYear();
+    const mesActual = fechaContexto.getMonth();
+    const anioActual = fechaContexto.getFullYear();
 
     // Configuración de presupuestos y objetivos
     const limitesGastosDefecto = {
@@ -599,9 +590,9 @@ function actualizarHistorialMes(pagina = 0) {
 
     // Agrupar datos del mes actual
     const categoriasMes = {};
-    const opcionesConceptoIngreso = ["Sueldo", "Venta", "Inversión", "Regalo", "Otro"];
 
     registros.forEach(reg => {
+        if (!reg.fecha) return;
         const fechaReg = new Date(reg.fecha + 'T00:00:00');
         if (fechaReg.getMonth() === mesActual && fechaReg.getFullYear() === anioActual) {
             const monto = parseFloat(reg.monto) || 0;

@@ -831,41 +831,151 @@ tr:hover td {
    ════════════════════════════════════════════════ */
 .usuario {
   position: fixed;
-  right: 17px; top: 136px;
-  z-index: 150;
+  right: 20px;
+  top: 85px;
+  z-index: 1100;
   display: none;
-  width: min(300px, calc(100vw - 32px));
-  background: linear-gradient(180deg,
-    var(--bg-deep) 0%,
-    var(--bg-navy) 55%,
-    rgba(255,248,220,0.12) 100%);
+  width: 320px;
+  background: #000d16;
   color: var(--text-on-dark);
-  border-radius: 20px;
-  padding: 14px;
-  text-align: center;
-  border: 1px solid rgba(207,181,60,0.35);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
 }
-.usuario.activo { display: block; }
 
-#panelUsuario       { display: none; }
-#panelUsuario.activo{ display: block; }
+.usuario.activo {
+  display: block;
+  animation: slideInPanel 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-.frase { margin: 20px 0; font-size: 18px; }
+@keyframes slideInPanel {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cerrar-panel {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.cerrar-panel:hover {
+  color: var(--danger);
+}
+
+.panel-content {
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.contenedor-avatar {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.avatar-circular {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--matte-gold);
+  padding: 4px;
+  overflow: hidden;
+}
+
+.avatar-circular img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.lapiz-edit {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: var(--matte-gold);
+  color: #000;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  border: 3px solid #000d16;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+#nombre_usuario {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 25px;
+}
+
+.seccion-frase {
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.label-frase {
+  display: block;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 12px;
+}
+
+.frase {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
 
 .boton-cerrar {
-  background: var(--danger);
-  border: none;
-  padding: 12px;
-  border-radius: 20px;
+  background: #ff0000;
   color: white;
-  font-size: 16px;
+  border: none;
+  padding: 14px 40px;
+  border-radius: 30px;
+  font-size: 1.05rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s;
+  width: 100%;
+  max-width: 220px;
 }
+
 .boton-cerrar:hover {
-  box-shadow: 0 0 10px var(--danger);
+  background: #cc0000;
   transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3);
 }
 
 /* ════════════════════════════════════════════════
@@ -959,33 +1069,7 @@ tr:hover td {
 }
 
 /* Avatar lápiz */
-.avatar-wrapper {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  margin: 12px auto;
-}
-.avatar-wrapper .avatar {
-  width: 80px; height: 80px;
-  border-radius: 50%;
-  border: 2px solid var(--matte-gold);
-  transition: 0.3s;
-}
-.avatar-wrapper:hover .avatar    { box-shadow: 0 0 14px var(--gold-bright); }
-.avatar-wrapper:hover .avatar-lapiz { transform: scale(1.15); }
-
-.avatar-lapiz {
-  position: absolute;
-  bottom: 0; right: 0;
-  background: var(--matte-gold);
-  border-radius: 50%;
-  width: 26px; height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-  transition: transform 0.2s;
-}
+/* El bloque antiguo de avatar-wrapper ha sido eliminado y reemplazado por .contenedor-avatar */
 
 .cerrar-panel {
   position: absolute;
