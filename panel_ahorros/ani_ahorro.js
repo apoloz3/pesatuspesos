@@ -532,13 +532,78 @@ document.addEventListener("DOMContentLoaded", function () {
   const cardGrid     = document.getElementById('cardGrid');
   const viewBtns     = document.querySelectorAll('.view-btn');
 
+  // Paginación
+  let currentPage = 1;
+  const itemsPerPage = 8;
+  const paginationContainer = document.getElementById('paginationContainer');
+
   // Vista guardada en localStorage (default: carrusel)
   const vistaGuardada = localStorage.getItem('vistaMetas') || 'carrusel';
+
+  /** Renderiza los controles de paginación */
+  function renderPagination(totalItems, vista) {
+    if (!paginationContainer) return;
+    paginationContainer.innerHTML = '';
+    
+    // Si la vista es carrusel o no hay suficientes items, se oculta
+    if (vista === 'carrusel' || totalItems <= itemsPerPage) {
+      paginationContainer.style.display = 'none';
+      return;
+    }
+    
+    paginationContainer.style.display = 'flex';
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Botón Anterior
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'page-btn page-nav';
+    prevBtn.innerHTML = '&lt;';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        if (vista === 'lista') buildListaView();
+        else if (vista === 'card') buildCardGridView();
+      }
+    });
+    paginationContainer.appendChild(prevBtn);
+
+    // Números de página
+    for (let i = 1; i <= totalPages; i++) {
+      const pageBtn = document.createElement('button');
+      pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+      pageBtn.textContent = i;
+      pageBtn.addEventListener('click', () => {
+        currentPage = i;
+        if (vista === 'lista') buildListaView();
+        else if (vista === 'card') buildCardGridView();
+      });
+      paginationContainer.appendChild(pageBtn);
+    }
+
+    // Botón Siguiente
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'page-btn page-nav';
+    nextBtn.innerHTML = '&gt;';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        if (vista === 'lista') buildListaView();
+        else if (vista === 'card') buildCardGridView();
+      }
+    });
+    paginationContainer.appendChild(nextBtn);
+  }
 
   /** Construye la vista lista a partir de las tarjetas del track */
   function buildListaView() {
     listaMetas.innerHTML = '';
-    const cards = Array.from(document.querySelectorAll('#carouselTrack .meta-card'));
+    const allCards = Array.from(document.querySelectorAll('#carouselTrack .meta-card'));
+    renderPagination(allCards.length, 'lista');
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const cards = allCards.slice(startIndex, startIndex + itemsPerPage);
 
     cards.forEach(card => {
       const isCrear = card.classList.contains('card-crear');
@@ -605,7 +670,11 @@ document.addEventListener("DOMContentLoaded", function () {
   /** Construye la vista card-grid clonando las tarjetas del track */
   function buildCardGridView() {
     cardGrid.innerHTML = '';
-    const cards = Array.from(document.querySelectorAll('#carouselTrack .meta-card'));
+    const allCards = Array.from(document.querySelectorAll('#carouselTrack .meta-card'));
+    renderPagination(allCards.length, 'card');
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const cards = allCards.slice(startIndex, startIndex + itemsPerPage);
 
     cards.forEach(card => {
       const clone = card.cloneNode(true);
@@ -639,6 +708,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /** Activa una vista */
   function setView(vista) {
+    const vistaAnterior = localStorage.getItem('vistaMetas');
+    if (vistaAnterior !== vista) {
+      currentPage = 1; // Reiniciar a página 1 si cambia la vista
+    }
+    
     localStorage.setItem('vistaMetas', vista);
     seccionMetas.classList.remove('vista-lista', 'vista-card');
     viewBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.view === vista));
@@ -649,6 +723,8 @@ document.addEventListener("DOMContentLoaded", function () {
     } else if (vista === 'card') {
       seccionMetas.classList.add('vista-card');
       buildCardGridView();
+    } else if (vista === 'carrusel') {
+      if (paginationContainer) paginationContainer.style.display = 'none';
     }
   }
 
