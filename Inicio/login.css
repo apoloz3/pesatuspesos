@@ -655,19 +655,21 @@ input:-webkit-autofill:active {
     text-align: center;
 }
 
-/* TOOLTIP CONTRASEÑA */
-.tooltip-password {
+/* TOOLTIP CONTRASEÑA Y USUARIO */
+.tooltip-password,
+.tooltip-usuario {
     position: absolute;
-    top: -50px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%) translateX(10px);
     background: #1d1d1d;
     color: #fff;
     padding: 10px 15px;
     border-radius: 8px;
     font-size: 0.75rem;
     line-height: 1.4;
-    width: 250px;
+    width: max-content;
+    max-width: 250px;
     text-align: center;
     opacity: 0;
     visibility: hidden;
@@ -677,21 +679,23 @@ input:-webkit-autofill:active {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.tooltip-password::after {
+.tooltip-password::after,
+.tooltip-usuario::after {
     content: '';
     position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 8px 8px 0;
+    top: 50%;
+    left: -8px;
+    transform: translateY(-50%);
+    border-width: 8px 8px 8px 0;
     border-style: solid;
-    border-color: #1d1d1d transparent transparent;
+    border-color: transparent #1d1d1d transparent transparent;
 }
 
-.caja-input:hover .tooltip-password {
+.caja-input:hover .tooltip-password,
+.caja-input:hover .tooltip-usuario {
     opacity: 1;
     visibility: visible;
-    top: -85px;
+    transform: translateY(-50%) translateX(25px);
 }
 
 /* INDICADOR DE FORTALEZA */
