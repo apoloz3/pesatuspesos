@@ -46,6 +46,7 @@ const btnCancelarEliminar = document.getElementById('btnCancelarEliminar');
 let idAEliminar = null;
 let anioEnEdicion = fechaActual.getFullYear();
 let mesEnEdicion = fechaActual.getMonth();
+let estaAgregando = false;
 const mesesAbreviados = ["ene.", "feb.", "mar.", "abr.", "may.", "jun.", "jul.", "ago.", "sept.", "oct.", "nov.", "dic."];
 
 const resumenIngresosEl = document.getElementById('resumenIngresos');
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('mesSiguiente').addEventListener('click', () => cambiarMes(1));
     btnAgregar.addEventListener('click', agregarFilaVacia);
     btnGuardar.addEventListener('click', guardarCambios);
+    btnGuardar.disabled = true;
     
     if (btnPrevPag) btnPrevPag.addEventListener('click', () => cambiarPagina(-1));
     if (btnNextPag) btnNextPag.addEventListener('click', () => cambiarPagina(1));
@@ -209,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 actualizarInterfaz();
                 modalConfirmacion.classList.remove('activo');
                 idAEliminar = null;
+                estaAgregando = false; // Reset state if the new row was deleted
                 mostrarAviso("Registro eliminado correctamente");
             }
         });
@@ -274,6 +277,7 @@ function actualizarInterfaz() {
     renderizarTabla();
     actualizarResumen();
     actualizarGraficos();
+    validarEstadoGuardar();
 }
 
 // Funciones CRUD
@@ -295,23 +299,23 @@ function renderizarTabla() {
     registrosPagina.forEach((reg, index) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><input type="date" value="${reg.fecha}" data-index="${reg.id}" class="input-fecha" onfocus="this.placeholder=''" placeholder="Fecha"></td>
-            <td><input type="text" value="${reg.descripcion}" data-index="${reg.id}" class="input-desc" placeholder="Descripción" onfocus="this.placeholder=''"></td>
+            <td><input type="date" value="${reg.fecha}" data-index="${reg.id}" class="input-fecha" onfocus="this.placeholder=''" placeholder="Fecha" disabled></td>
+            <td><input type="text" value="${reg.descripcion}" data-index="${reg.id}" class="input-desc" placeholder="Descripción" onfocus="this.placeholder=''" disabled></td>
             <td>
-                <select data-index="${reg.id}" class="input-metodo">
+                <select data-index="${reg.id}" class="input-metodo" disabled>
                     <option value="" disabled ${!reg.metodo ? 'selected' : ''}>Método</option>
                     ${opcionesMetodo.map(opt => `<option value="${opt}" ${opt === reg.metodo ? 'selected' : ''}>${opt}</option>`).join('')}
                 </select>
             </td>
             <td>
-                <select data-index="${reg.id}" class="input-concepto">
+                <select data-index="${reg.id}" class="input-concepto" disabled>
                     <option value="" disabled ${!reg.concepto ? 'selected' : ''}>Concepto</option>
                     ${opcionesConcepto.map(opt => `<option value="${opt}" ${opt === reg.concepto ? 'selected' : ''}>${opt}</option>`).join('')}
                 </select>
             </td>
-            <td><input type="number" value="${reg.monto !== '' ? reg.monto : ''}" data-index="${reg.id}" class="input-monto" placeholder="Monto" onfocus="this.placeholder=''"></td>
+            <td><input type="number" value="${reg.monto !== '' ? reg.monto : ''}" data-index="${reg.id}" class="input-monto" placeholder="Monto" onfocus="this.placeholder=''" disabled></td>
             <td class="acciones">
-                <button class="btn-accion" onclick="enfocarFila(this)">
+                <button class="btn-accion" onclick="enfocarFila(this)" ${estaAgregando ? 'disabled' : ''} title="${estaAgregando ? 'Guarda el registro actual primero' : 'Editar'}">
                     <i class="fas fa-edit"></i>
                 </button>
                 <button class="btn-accion btn-eliminar" onclick="eliminarRegistro('${reg.id}')">
@@ -320,7 +324,54 @@ function renderizarTabla() {
             </td>
         `;
         cuerpoTabla.appendChild(tr);
+
+        // Añadir listeners para validación
+        tr.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('input', validarEstadoGuardar);
+            input.addEventListener('change', validarEstadoGuardar);
+        });
     });
+}
+
+function validarEstadoGuardar() {
+    const filas = cuerpoTabla.querySelectorAll('tr');
+    let hayCambiosValidos = false;
+    let todosValidos = true;
+
+    filas.forEach(fila => {
+        const id = fila.querySelector('.input-fecha').dataset.index;
+        const regOriginal = registros.find(r => r.id === id);
+        
+        const fecha = fila.querySelector('.input-fecha').value;
+        const desc = fila.querySelector('.input-desc').value;
+        const metodo = fila.querySelector('.input-metodo').value;
+        const concepto = fila.querySelector('.input-concepto').value;
+        const montoStr = fila.querySelector('.input-monto').value;
+        const monto = montoStr === '' ? 0 : parseFloat(montoStr);
+
+        // Validación de campos obligatorios
+        const esValido = fecha && desc.trim() !== "" && metodo !== "" && concepto !== "" && monto > 0;
+        
+        if (!esValido) {
+            todosValidos = false;
+        }
+
+        // Verificar si hubo cambios respecto al original
+        if (regOriginal) {
+            const huboCambio = 
+                fecha !== regOriginal.fecha ||
+                desc !== regOriginal.descripcion ||
+                metodo !== regOriginal.metodo ||
+                concepto !== regOriginal.concepto ||
+                monto !== (regOriginal.monto === '' ? 0 : parseFloat(regOriginal.monto));
+            
+            if (huboCambio && esValido) {
+                hayCambiosValidos = true;
+            }
+        }
+    });
+
+    btnGuardar.disabled = !(todosValidos && (hayCambiosValidos || estaAgregando));
 }
 
 function obtenerRegistrosMesActual() {
@@ -365,13 +416,25 @@ function agregarFilaVacia() {
         tipo: 'ingreso'
     };
     
+    
     registros.push(nuevoReg);
+    estaAgregando = true;
     
     // Ir a la última página al agregar si es necesario
     registrosMes = obtenerRegistrosMesActual();
     paginaActual = Math.ceil(registrosMes.length / registrosPorPagina) || 1;
     
     renderizarTabla();
+    
+    // Habilitar la nueva fila inmediatamente
+    const ultimaFila = cuerpoTabla.lastElementChild;
+    if (ultimaFila) {
+        ultimaFila.querySelectorAll('input, select').forEach(c => c.disabled = false);
+        const primerInput = ultimaFila.querySelector('input');
+        if (primerInput) primerInput.focus();
+    }
+    
+    validarEstadoGuardar();
 }
 
 function guardarCambios() {
@@ -390,10 +453,7 @@ function guardarCambios() {
         }
     });
     
-    // Filtrar los que estén vacíos completamente o sin monto si es necesario 
-    // pero mantendremos la lógica original de guardado
-
-    
+    estaAgregando = false;
     localStorage.setItem('registros_financieros', JSON.stringify(registros));
     actualizarInterfaz();
     mostrarAviso("Datos guardados correctamente");
@@ -415,8 +475,15 @@ function eliminarRegistro(id) {
 
 function enfocarFila(boton) {
     const fila = boton.closest('tr');
+    // Habilitar todos los inputs y selects de la fila
+    const controles = fila.querySelectorAll('input, select');
+    controles.forEach(c => c.disabled = false);
+    
     const primerInput = fila.querySelector('input');
     if (primerInput) primerInput.focus();
+    
+    // Al empezar a editar, podemos considerar que el botón guardar podría activarse si hay cambios
+    validarEstadoGuardar();
 }
 
 // Lógica de Negocio
