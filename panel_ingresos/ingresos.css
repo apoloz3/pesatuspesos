@@ -37,6 +37,10 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+html {
+  color-scheme: dark;
+}
+
 body {
   background-color: var(--bg-deep);
   color: var(--text-on-dark);
@@ -462,19 +466,21 @@ body {
 
 .contenedor-tabla {
   overflow-x: auto;
+  min-height: 300px; /* Asegura espacio para que los select abran hacia abajo */
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 1.5rem;
+  margin-bottom: 3rem; /* Aumentado para dar espacio al desplegable de la última fila */
 }
 
 th {
   text-align: left;
   font-size: 0.75rem;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--gold-light);
+  opacity: 0.8;
   padding: 1rem;
   border-bottom: 1px solid var(--glass-border);
 }
@@ -498,12 +504,22 @@ input, select {
   border-radius: 4px;
   width: 100%;
   transition: var(--transition-smooth);
+  outline: none;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+select option {
+  background-color: var(--bg-navy);
+  color: var(--text-on-dark);
 }
 
 input:disabled, select:disabled {
   background: rgba(255, 255, 255, 0.02);
   border-color: transparent;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.65);
   cursor: default;
 }
 

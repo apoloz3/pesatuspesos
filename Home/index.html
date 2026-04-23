@@ -141,29 +141,33 @@
 
         <!-- Panel usuario FUERA de .principal -->
         <aside class="usuario" id="panelUsuario">
-          <button class="cerrar-panel" id="cerrarPanel">✕</button>
-          <div class="enlace-config-panel" style="position: absolute; top: 12px; left: 14px;">
-            <a href="#" style="color: rgb(255, 255, 255); text-decoration: none; font-size: 16px; transition: color 0.3s; display: inline-flex; align-items: center; gap: 5px;" onmouseover="this.style.color='var(--matte-gold)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">
-              <i class="fa-solid fa-gear"></i> Configuraciones
-            </a>
-          </div>
-          <div class="avatar-wrapper" style="margin-top: 35px;">
-            <img
-              src="img/hucha.png"
-              class="avatar"
-              id="avatarPrincipal"
-              alt="avatar"
-            />
-            <div class="avatar-lapiz">
-              <img src="img/lapiz.png" alt="editar" width="14" height="14" />
+          <div class="panel-header">
+            <div class="header-left">
+              <i class="fas fa-cog"></i>
+              <span>Configuraciones</span>
             </div>
+            <button class="cerrar-panel" id="cerrarPanel">✕</button>
           </div>
-          <h2 id="nombre_usuario">Usuario</h2>
-          <div class="titulo-frase" style="margin-top: 25px; margin-bottom: -10px;">
-            <span style="color: #ffffff; font-size: 20px;">Frase del día</span>
+          
+          <div class="panel-content">
+            <div class="contenedor-avatar" id="contenedorAvatar">
+              <div class="avatar-circular">
+                <img src="img/hucha.png" id="avatarPrincipal" alt="avatar" />
+              </div>
+              <div class="lapiz-edit">
+                <i class="fas fa-pencil-alt"></i>
+              </div>
+            </div>
+
+            <h2 id="nombre_usuario">Usuario</h2>
+            
+            <div class="seccion-frase">
+              <span class="label-frase">Frase del día</span>
+              <p class="frase" id="frase_motivadora"></p>
+            </div>
+
+            <button class="boton-cerrar">Cerrar sesión</button>
           </div>
-          <p class="frase" id="frase_motivadora"></p>
-          <button class="boton-cerrar">Cerrar sesión</button>
         </aside>
 
         <section class="cards">
