@@ -91,9 +91,15 @@ document.addEventListener("DOMContentLoaded", function () {
   if (elementoNombreHeader) elementoNombreHeader.textContent = nombreCapitalizado;
 
   const avatarPrincipal = document.getElementById("avatarPrincipal");
+  const botonPerfilImg = document.querySelector("#botonPerfil img");
   const avatarGuardado = localStorage.getItem("pesa-tus-pesos-avatar");
+
   if (avatarPrincipal) {
     avatarPrincipal.src = avatarGuardado ? avatarGuardado : generarAvatarLetra(nombreCapitalizado);
+  }
+
+  if (botonPerfilImg) {
+    botonPerfilImg.src = avatarGuardado ? avatarGuardado : generarAvatarLetra(nombreCapitalizado);
   }
 
   /* ===============================

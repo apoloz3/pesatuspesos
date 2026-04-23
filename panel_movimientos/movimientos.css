@@ -111,6 +111,7 @@ body {
   background: none;
   border: none;
   padding: 12px 0;
+  margin-right: 35px;
   font-weight: bold;
   cursor: pointer;
   transition: color 0.3s;
@@ -332,17 +333,17 @@ body {
 
 .usuario {
   position: fixed;
-  right: 20px;
-  top: 85px;
+  right: 60px;
+  top: 100px;
   z-index: 1100;
   display: none;
-  width: 320px;
-  background: #000d16;
+  width: min(320px, calc(100vw - 32px));
+  background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-navy) 55%, var(--bg-navy) 100%);
   color: var(--text-on-dark);
-  border-radius: 24px;
+  border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .usuario.activo {
@@ -386,7 +387,7 @@ body {
 }
 
 .panel-content {
-  padding: 30px 20px;
+  padding: 20px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -395,9 +396,9 @@ body {
 
 .contenedor-avatar {
   position: relative;
-  width: 120px;
-  height: 120px;
-  margin-bottom: 20px;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 15px;
   cursor: pointer;
 }
 
@@ -575,6 +576,49 @@ body {
 
 .boton-opcion img {
   width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
+
+/* 1. Botón Manual (Libro) */
+.boton-manual {
+    width: 50px;
+    height: 50px;
+}
+
+.boton-manual img {
+    width: 25px !important;
+    height: 25px !important;
+}
+
+/* 2. Botón Ayuda (Atención/Soporte) */
+.boton-atencion {
+    width: 50px;
+    height: 50px;
+}
+
+.boton-atencion img {
+    width: 25px !important;
+    height: 25px !important;
+}
+
+/* 3. Botón Editar (Avatar de Usuario) */
+.boton-editar {
+    width: 50px !important;
+    height: 50px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden;
+}
+
+.boton-editar img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    display: block !important;
 }
 
 .boton-opcion:hover {

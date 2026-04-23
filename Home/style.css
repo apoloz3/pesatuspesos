@@ -469,6 +469,49 @@ body {
 
 .boton-opcion img {
   width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
+
+/* 1. Botón Manual (Libro) */
+.boton-manual {
+    width: 50px;
+    height: 50px;
+}
+
+.boton-manual img {
+    width: 25px !important;
+    height: 25px !important;
+}
+
+/* 2. Botón Ayuda (Atención/Soporte) */
+.boton-atencion {
+    width: 50px;
+    height: 50px;
+}
+
+.boton-atencion img {
+    width: 25px !important;
+    height: 25px !important;
+}
+
+/* 3. Botón Editar (Avatar de Usuario) */
+.boton-editar {
+    width: 50px !important;
+    height: 50px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden;
+}
+
+.boton-editar img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    display: block !important;
 }
 
 .boton-opcion:hover {

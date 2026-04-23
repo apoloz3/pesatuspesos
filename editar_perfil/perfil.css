@@ -953,3 +953,58 @@ body {
         padding: 14px 10px;
     }
 }
+/* ============================================================
+   DISE�O INDEPENDIENTE DE BOTONES (MANUAL, AYUDA, EDITAR)
+   ============================================================ */
+
+/* 1. Bot�n Manual (Libro) */
+.boton-manual {
+    width: 50px;
+    height: 50px;
+}
+
+.boton-manual img {
+    width: 25px;
+    height: 25px;
+}
+
+/* 2. Bot�n Ayuda (Atenci�n/Soporte) */
+.boton-atencion {
+    width: 50px;
+    height: 50px;
+}
+
+.boton-atencion img {
+    width: 25px;
+    height: 25px;
+}
+
+/* 3. Boton Editar (Avatar de Usuario) */
+.boton-editar {
+    width: 50px !important;
+    height: 50px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden;
+}
+
+.boton-editar img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    display: block !important;
+}
+
+/* 4. Bot�n Configuraci�n (Ajustes/Principal) */
+.boton-principal {
+    width: 60px;
+    height: 60px;
+}
+
+.boton-principal img {
+    width: 30px;
+    height: 30px;
+}
