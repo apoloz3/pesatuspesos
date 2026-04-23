@@ -201,7 +201,7 @@ cerrarTerminos.onclick = () => {
 }
 
 irTerminos.onclick = () => {
-    window.open('https://drive.google.com/file/d/1U7qVxJ6KrGPEQ5WMXAMO16hA1F6firyb/view?usp=sharing', '_blank');
+    window.open('https://drive.google.com/file/d/1LDMwHP17uk0EQeWfHzdFQlBD7sItk1q5/view?usp=drive_link', '_blank');
 }
 
 aceptarTerminos.onclick = () => {
