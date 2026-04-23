@@ -170,19 +170,29 @@ document.addEventListener("DOMContentLoaded", function () {
       actualizarInterfazDashboard();
   });
 
-  // Lógica del Picker (Calendario)
+  // Lógica de Picker (Calendario)
   const abrirPickerBtn = document.getElementById('abrirPicker');
   const pickerModal = document.getElementById('pickerCalendario');
   const gridMeses = document.getElementById('gridMeses');
   const inputAnio = document.getElementById('inputAnioManual');
+  const listaAniosDropdown = document.getElementById('listaAniosDropdown');
   const aplicarBtn = document.getElementById('aplicarPicker');
   const limpiarBtn = document.getElementById('limpiarPicker');
 
-  if (abrirPickerBtn) {
-      abrirPickerBtn.addEventListener('click', () => {
-          pickerModal.classList.toggle('activo');
-          inputAnio.value = fechaActual.getFullYear();
-          renderizarMesesPicker();
+  if (abrirPickerBtn && pickerModal) {
+      abrirPickerBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const esActivo = pickerModal.classList.contains('activo');
+          
+          if (!esActivo) {
+              pickerModal.classList.add('activo');
+              if (inputAnio) inputAnio.value = fechaActual.getFullYear();
+              renderizarMesesPicker();
+              ocultarDropdownAnios();
+          } else {
+              pickerModal.classList.remove('activo');
+          }
       });
   }
 
@@ -204,27 +214,122 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // Lógica de dropdown de años
+  if (inputAnio) {
+      inputAnio.addEventListener('focus', mostrarDropdownAnios);
+      
+      inputAnio.addEventListener('input', () => {
+          const valor = inputAnio.value;
+          
+          if (valor.length === 0) {
+              mostrarError('Campo requerido');
+          } else {
+              limpiarError();
+          }
+      });
+  }
+
+  function mostrarError(msg) {
+      const errorAnio = document.getElementById('errorAnio');
+      if (errorAnio) {
+          errorAnio.textContent = msg;
+          errorAnio.style.display = 'block';
+      }
+      if (inputAnio) {
+          inputAnio.style.borderColor = '#ff6060';
+          inputAnio.style.boxShadow = '0 0 8px rgba(255, 96, 96, 0.2)';
+      }
+  }
+
+  function limpiarError() {
+      const errorAnio = document.getElementById('errorAnio');
+      if (errorAnio) {
+          errorAnio.textContent = '';
+          errorAnio.style.display = 'none';
+      }
+      if (inputAnio) {
+          inputAnio.style.borderColor = '';
+          inputAnio.style.boxShadow = '';
+      }
+  }
+
+  function mostrarDropdownAnios() {
+      listaAniosDropdown.classList.add('activo');
+      renderizarAniosDropdown();
+  }
+
+  function ocultarDropdownAnios() {
+      listaAniosDropdown.classList.remove('activo');
+  }
+
+  function renderizarAniosDropdown() {
+      listaAniosDropdown.innerHTML = '';
+      const anioMin = 1900;
+      const anioMax = 2080;
+      
+      for (let i = anioMin; i <= anioMax; i++) {
+          const item = document.createElement('div');
+          item.className = 'anio-item';
+          item.textContent = i;
+          item.onclick = (e) => {
+              e.stopPropagation();
+              inputAnio.value = i;
+              ocultarDropdownAnios();
+          };
+          listaAniosDropdown.appendChild(item);
+      }
+      
+      // Hacer scroll hasta el año actual o el seleccionado
+      const anioActual = parseInt(inputAnio.value) || new Date().getFullYear();
+      const index = anioActual - anioMin;
+      if (index >= 0) {
+          const itemHeight = 32; // Aproximado
+          listaAniosDropdown.scrollTop = index * itemHeight - 50;
+      }
+  }
+
   aplicarBtn?.addEventListener('click', () => {
       const mesSeleccionado = document.querySelector('.mes-btn.seleccionado')?.dataset.mes;
       const anioSeleccionado = parseInt(inputAnio.value);
-      if (mesSeleccionado !== undefined && !isNaN(anioSeleccionado)) {
-          fechaActual.setMonth(parseInt(mesSeleccionado));
-          fechaActual.setFullYear(anioSeleccionado);
-          actualizarInterfazDashboard();
-          pickerModal.classList.remove('activo');
+
+      // Validar año final
+      if (isNaN(anioSeleccionado) || anioSeleccionado < 1900 || anioSeleccionado > 2080) {
+          mostrarError('Año inválido');
+          return;
       }
+
+      // Validar mes
+      if (mesSeleccionado === undefined) {
+          alert('Por favor, selecciona un mes.');
+          return;
+      }
+
+      // Si todo es válido
+      fechaActual.setMonth(parseInt(mesSeleccionado));
+      fechaActual.setFullYear(anioSeleccionado);
+      actualizarInterfazDashboard();
+      
+      // Cerrar modal
+      pickerModal.classList.remove('activo');
+      ocultarDropdownAnios();
+      limpiarError();
   });
 
   limpiarBtn?.addEventListener('click', () => {
       fechaActual = new Date();
       actualizarInterfazDashboard();
       pickerModal.classList.remove('activo');
+      ocultarDropdownAnios();
   });
 
   // Cerrar picker al clickear fuera
   document.addEventListener('click', (e) => {
       if (pickerModal?.classList.contains('activo') && !pickerModal.contains(e.target) && !abrirPickerBtn.contains(e.target)) {
           pickerModal.classList.remove('activo');
+          ocultarDropdownAnios();
+      }
+      if (listaAniosDropdown?.classList.contains('activo') && !inputAnio.contains(e.target) && !listaAniosDropdown.contains(e.target)) {
+          ocultarDropdownAnios();
       }
   });
 

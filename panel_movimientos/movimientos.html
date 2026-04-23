@@ -52,14 +52,21 @@
 
         <section class="principal">
           <div class="selector-mes-dashboard">
-            <button class="flecha-nav" id="mesPrevio"><i class="fas fa-chevron-left"></i></button>
-            <div class="mes-info-central">
-                <span class="mes-actual" id="nombreMes">ABRIL 2026</span>
-                <button class="btn-calendario" id="abrirPicker">
-                    <i class="fas fa-calendar-alt"></i>
-                </button>
+            <div class="periodo-tag">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Periodo</span>
             </div>
-            <button class="flecha-nav" id="mesSiguiente"><i class="fas fa-chevron-right"></i></button>
+            
+            <div class="navegacion-mes-premium">
+                <button class="flecha-nav" id="mesPrevio"><i class="fas fa-chevron-left"></i></button>
+                <span class="mes-actual" id="nombreMes">ABRIL 2026</span>
+                <button class="flecha-nav" id="mesSiguiente"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <button class="btn-abrir-modal-premium" id="abrirPicker">
+                <img src="img/calendario.png" alt="Elegir" style="width: 20px; height: 20px; object-fit: contain;">
+                <span>Elegir</span>
+            </button>
 
             <!-- Modal Calendario -->
             <div class="picker-calendario-premium" id="pickerCalendario">
@@ -67,7 +74,7 @@
                     <div class="columna-anio">
                         <span class="label-seccion">AÑO</span>
                         <div class="input-anio-contenedor">
-                            <input type="number" id="inputAnioManual" class="input-anio-premium" min="1900" max="2100" autocomplete="off">
+                            <input type="number" id="inputAnioManual" class="input-anio-premium" min="1900" max="2080" autocomplete="off">
                             <div id="listaAniosDropdown" class="dropdown-anios-premium"></div>
                             <span id="errorAnio" class="error-mensaje"></span>
                         </div>

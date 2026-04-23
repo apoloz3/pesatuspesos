@@ -211,9 +211,16 @@ body {
 
 /* Ocultar flechas nativas */
 .input-anio-premium::-webkit-outer-spin-button,
-.input-anio-premium::-webkit-inner-spin-button {
+.input-anio-premium::-webkit-inner-spin-button,
+.input-monto::-webkit-outer-spin-button,
+.input-monto::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.input-anio-premium,
+.input-monto {
+  -moz-appearance: textfield;
 }
 
 .input-anio-premium.input-error {
@@ -490,6 +497,14 @@ input, select {
   padding: 0.5rem;
   border-radius: 4px;
   width: 100%;
+  transition: var(--transition-smooth);
+}
+
+input:disabled, select:disabled {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: default;
 }
 
 input:focus, select:focus {
@@ -604,6 +619,15 @@ input:focus, select:focus {
   transform: scale(1.05);
 }
 
+.btn-agregar:disabled {
+  background: linear-gradient(135deg, #444, #222);
+  color: #666;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  opacity: 0.6;
+}
+
 .acciones {
   display: flex;
   gap: 0.8rem;
@@ -620,6 +644,11 @@ input:focus, select:focus {
 
 .btn-accion:hover {
   color: var(--gold-bright);
+}
+
+.btn-accion:disabled {
+  color: #444;
+  cursor: not-allowed;
 }
 
 .btn-eliminar {
