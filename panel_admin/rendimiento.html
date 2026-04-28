@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reportes | Panel de Administración</title>
+    <title>Rendimiento | Panel de Administración</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="style_admin.css" />
@@ -29,10 +29,16 @@
           <a href="configuracion.html" class="item-navegacion" data-target="configuracion">
             <i class="fa-solid fa-gear"></i> Configuración
           </a>
-          <a href="reportes.html" class="item-navegacion" data-target="reportes">
-            <i class="fa-solid fa-chart-simple"></i> Reportes
+          <a href="rendimiento.html" class="item-navegacion" data-target="rendimiento">
+            <i class="fa-solid fa-chart-simple"></i> Rendimiento
           </a>
         </nav>
+        
+        <div class="pie-barra-lateral" style="margin-top: auto; padding: 20px; box-sizing: border-box;">
+          <button class="boton boton-rojo boton-block" id="btn-emergencia-global" style="width: 100%; padding: 12px; font-size: 0.9rem;">
+            <i class="fa-solid fa-lock"></i> Protocolo Emergencia
+          </button>
+        </div>
 
       </aside>
 
@@ -44,11 +50,15 @@
               <i class="fa-solid fa-bars"></i>
             </button>
             <h1 id="titulo-pagina">
-              Panel de Administración - <span class="texto-primario">Reportes y Estadísticas</span>
+              Panel de Administración - <span class="texto-primario">Rendimiento</span>
             </h1>
           </div>
           <div class="barra-superior-derecha">
-            <i class="fa-solid fa-gear icono-barra-superior"></i>
+            <div class="contenedor-campana" id="btn-abrir-notificaciones">
+              <i class="fa-solid fa-bell icono-barra-superior"></i>
+              <span class="indicador-notificacion"></span>
+            </div>
+            <i class="fa-solid fa-gear icono-barra-superior" id="icono-ajustes"></i>
             <div class="perfil-usuario">
               <img src="https://ui-avatars.com/api/?name=Admin&background=1c84ee&color=fff" alt="Admin" class="avatar" />
               <span>Administrador <i class="fa-solid fa-chevron-down"></i></span>
@@ -57,9 +67,14 @@
         </header>
 
         <div class="area-contenido">
-          <section id="seccion-reportes" class="seccion-pagina activo">
+          <section id="seccion-rendimiento" class="seccion-pagina activo">
             <div class="panel">
-              <h2>Generación de Reportes</h2>
+              <div class="encabezado-panel" style="margin-bottom: 20px; border-bottom: 1px solid var(--color-borde); padding-bottom: 15px;">
+                <h2 style="margin: 0;">Análisis de Rendimiento</h2>
+                <button class="boton boton-primario" id="btn-visualizacion-res">
+                  <i class="fa-solid fa-eye"></i> Modo Visualización
+                </button>
+              </div>
               <div class="fila-formulario mt-20">
                 <div class="grupo-formulario flex-1">
                   <label>Tipo de Reporte</label>
@@ -87,7 +102,7 @@
               </div>
 
               <div class="mt-20">
-                <h3>Historial de Reportes</h3>
+                <h3>Historial de Rendimiento</h3>
                 <div class="contenedor-tabla">
                   <table class="tabla tabla-personalizada">
                     <thead>
@@ -104,13 +119,13 @@
                       <tr>
                         <td>1</td><td>Actividad del Usuario</td><td>Marzo 2024</td><td>Luis Pérez</td>
                         <td><span class="etiqueta etiqueta-verde">Completado</span></td>
-                        <td><a href="#" class="texto-primario">PDF</a> | <a href="#" class="texto-primario">CSV</a></td>
+                        <td><a href="#" class="texto-primario">PDF</a> | <a href="#" class="texto-primario">JSON</a></td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
                 <div style="text-align: right; margin-top: 20px">
-                  <button class="boton boton-primario">Generar Nuevo Reporte</button>
+                  <button class="boton boton-primario">Generar Nuevo Análisis</button>
                 </div>
               </div>
             </div>
@@ -156,6 +171,47 @@
         <button class="boton-cerrar-admin" id="btnCerrarSesionAdminLateral">Cerrar sesión</button>
       </div>
     </aside>
+
+    <!-- Modal de Notificaciones (Campana) -->
+    <div class="superposicion-modal" id="modal-notificaciones">
+      <div class="contenido-modal" style="max-width: 500px; padding: 20px;">
+        <div class="encabezado-modal" style="margin-bottom: 15px;">
+          <h3 style="font-size: 1.3rem;">Centro de Notificaciones</h3>
+          <button class="cerrar-modal" id="cerrar-notificaciones-btn">&times;</button>
+        </div>
+        <div class="cuerpo-notificaciones">
+          <div class="tabs-notificaciones">
+            <button class="tab-notificacion activo" data-tab="tab-admin-alertas">Alertas Admin</button>
+            <button class="tab-notificacion" data-tab="tab-app-alertas">Alertas App</button>
+          </div>
+          <div class="contenido-tabs">
+            <div class="panel-tab activo" id="tab-admin-alertas">
+              <div id="alertas-admin-lista" class="lista-alertas">
+                <!-- Se llena con JS -->
+              </div>
+            </div>
+            <div class="panel-tab" id="tab-app-alertas">
+              <div id="alertas-app-lista" class="lista-alertas">
+                <div class="item-alerta">
+                  <i class="fa-solid fa-bell" style="color:var(--color-azul-brillante)"></i>
+                  <div>
+                    <p>Nuevo usuario registrado en la app</p>
+                    <small>Hace 5 minutos</small>
+                  </div>
+                </div>
+                <div class="item-alerta">
+                  <i class="fa-solid fa-bell" style="color:var(--color-azul-brillante)"></i>
+                  <div>
+                    <p>Actualización de metas financieras</p>
+                    <small>Hace 1 hora</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Modal de Confirmación Genérico -->
     <div id="modal-confirmacion" class="modal-personalizado">
