@@ -85,14 +85,7 @@
                         <!-- Generado por JS -->
                     </div>
 
-                    <div class="calendar-footer">
-                        <div class="cal-footer-info">
-                            <div class="cal-info-icon"><i class="fas fa-info"></i></div>
-                            <span class="cal-footer-text">Aportes este mes: <strong class="white-text">$320</strong></span>
-                        </div>
-                        <span class="cal-separator">|</span>
-                        <span class="cal-footer-subtext">Faltan: $180 para el hito mensual</span>
-                    </div>
+
                 </section>
 
                 <!-- Right Column: Input & Info -->
@@ -117,27 +110,23 @@
                             <span class="currency-symbol">$</span>
                             <input type="text" id="aporte-input" value="150.00" aria-label="Cantidad a aportar">
                         </div>
-                        <div class="quick-amounts">
-                            <button class="quick-amount-btn" data-amount="20">+$20</button>
-                            <button class="quick-amount-btn" data-amount="50">+$50</button>
-                            <button class="quick-amount-btn" data-amount="100">+$100</button>
-                            <button class="quick-amount-btn outline">Otro</button>
+                        <div class="quick-amounts" id="quick-amounts-container">
+                            <!-- Botones generados por JS -->
                         </div>
                     </div>
 
                     <!-- Milestone Info -->
                     <div class="info-box milestone-box">
                         <div class="milestone-content">
-                            <div class="milestone-icon-wrapper">
-                                <i class="far fa-lightbulb"></i>
+                            <div class="milestone-icon-wrapper" style="box-shadow: 0 0 20px rgba(207, 181, 59, 0.6); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 5px;">
+                                <img src="../img/ahorro.png" alt="Ahorro" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 5px rgba(207, 181, 59, 0.8));">
                             </div>
-                            <p class="milestone-text">
-                                Con este aporte alcanzarás<br>
-                                <strong class="white-text">$1,250 / $1,500 este mes</strong>
+                            <p class="milestone-text" id="milestone-text-msg">
+                                Llevas <strong class="white-text">$0</strong> y te faltan <strong class="white-text">$0</strong> para completar tu meta
                             </p>
                         </div>
                         <div class="milestone-progress-bar">
-                            <div class="milestone-progress-fill" style="width: 83%;"></div>
+                            <div class="milestone-progress-fill" id="milestone-progress-fill" style="width: 0%;"></div>
                         </div>
                     </div>
                 </section>
@@ -173,7 +162,171 @@
       </div>
     </div>
 
-    <!-- Script de Animación e Interacción -->
+    <!-- Modal Historial Premium -->
+    <div id="modalHistorial" class="modal-premium-overlay">
+        <div class="modal-premium-content">
+            <!-- Header -->
+            <div class="modal-premium-header">
+                <div class="header-title">
+                    <i class="fas fa-file-invoice-dollar" style="color: var(--gold-light);"></i>
+                    <div>
+                        <h2>Historial de meta</h2>
+                        <p>Revisa todos los aportes que has realizado para tu meta</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-premium-body">
+                <!-- Columna Izquierda -->
+                <div class="col-izq">
+                    <!-- Resumen de Meta Superior -->
+                    <div class="resumen-meta-card">
+                        <div class="meta-img-container">
+                            <img id="historialMetaImg" src="../img/ahorro.png" alt="Meta">
+                        </div>
+                        <div class="meta-info">
+                            <span class="meta-label">MI META</span>
+                            <h3 id="historialMetaTitulo">Nombre de meta</h3>
+                            <div class="meta-stats-grid">
+                                <div>
+                                    <span class="stat-lbl">Monto objetivo</span>
+                                    <span class="stat-val" id="historialMetaObjetivo">$0</span>
+                                </div>
+                                <div>
+                                    <span class="stat-lbl">Total ahorrado</span>
+                                    <span class="stat-val" id="historialMetaAhorrado">$0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="meta-chart-container" style="position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <canvas id="historialProgresoChart" style="position: absolute; z-index: 1;"></canvas>
+                            <span id="historialProgresoTexto" style="position: relative; z-index: 2; font-size: 1.1rem; font-weight: bold; color: var(--text-primary);">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Aportes -->
+                    <div class="lista-aportes-section">
+                        <div class="lista-header">
+                            <h3>LISTA DE APORTES</h3>
+                        </div>
+                        
+                        <!-- Filtros -->
+                        <div class="filtros-container">
+                            <div class="filtro-item">
+                                <i class="far fa-calendar-alt"></i>
+                                <select id="filtroFecha">
+                                    <option value="all">Todas las fechas</option>
+                                    <option value="month">Este mes</option>
+                                    <option value="year">Este año</option>
+                                </select>
+                            </div>
+                            <div class="filtro-item">
+                                <i class="fas fa-tag"></i>
+                                <select id="filtroTipo">
+                                    <option value="all">Todos los tipos</option>
+                                    <option value="rápido">Aporte rápido</option>
+                                    <option value="manual">Aporte manual</option>
+                                </select>
+                            </div>
+                            <button id="btnLimpiarFiltros" class="btn-limpiar-filtros">
+                                <i class="fas fa-undo"></i> Limpiar filtros
+                            </button>
+                        </div>
+
+                        <!-- Tabla -->
+                        <div class="tabla-premium-container">
+                            <table class="tabla-premium">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha <i class="fas fa-arrow-down"></i></th>
+                                        <th>Tipo de aporte</th>
+                                        <th>Descripción</th>
+                                        <th>Monto</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaHistorialBody">
+                                    <!-- Dinámico -->
+                                </tbody>
+                            </table>
+                            <div id="mensajeSinHistorial" class="mensaje-vacio" style="display:none;">
+                                No hay aportes registrados aún.
+                            </div>
+                        </div>
+                        <div class="tabla-footer">
+                            <span id="txtMostrandoAportes">Mostrando 0 aportes</span>
+                            <div class="pagination-controls" id="paginationControls" style="display:none; gap: 10px; align-items: center;">
+                                <button id="btnPrevPage" class="btn-page"><i class="fas fa-chevron-left"></i></button>
+                                <span id="txtPageInfo" style="color: white; font-size: 0.9rem;">1 de 1</span>
+                                <button id="btnNextPage" class="btn-page"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha -->
+                <div class="col-der">
+                    <!-- Exportar -->
+                    <div class="exportar-card">
+                        <div class="exportar-info">
+                            <h4><i class="fas fa-download" style="color: var(--gold-light);"></i> Descargar historial</h4>
+                            <p>Obtén un reporte de tus aportes.</p>
+                        </div>
+                        <div class="exportar-btns">
+                            <button id="btnExportarPDFAporte" class="btn-export-pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+                            <button id="btnExportarExcelAporte" class="btn-export-excel"><i class="fas fa-file-excel"></i> EXCEL</button>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico Evolución -->
+                    <div class="evolucion-card">
+                        <div class="evolucion-header">
+                            <h4>TU PROGRESO EN EL TIEMPO</h4>
+                        </div>
+                        <div class="evolucion-chart-wrapper">
+                            <canvas id="historialEvolucionChart"></canvas>
+                        </div>
+                        <div class="evolucion-footer">
+                            <i class="fas fa-info-circle"></i> <span id="txtResumenEvolucion">Has ahorrado un total de $0 en esta meta</span>
+                        </div>
+                    </div>
+
+                    <!-- Resumen del historial -->
+                    <div class="resumen-historial-card">
+                        <h4>RESUMEN DEL HISTORIAL</h4>
+                        <div class="resumen-row">
+                            <span>Total de aportes</span>
+                            <span id="resTotalAportes">0</span>
+                        </div>
+                        <div class="resumen-row">
+                            <span>Monto total aportado</span>
+                            <span id="resMontoTotal" class="highlight-green">$0.00</span>
+                        </div>
+                        <div class="resumen-row">
+                            <span>Aporte promedio</span>
+                            <span id="resPromedio" class="highlight-blue">$0.00</span>
+                        </div>
+                        <div class="resumen-row">
+                            <span>Primer aporte</span>
+                            <span id="resPrimerAporte">-</span>
+                        </div>
+                        <div class="resumen-row">
+                            <span>Último aporte</span>
+                            <span id="resUltimoAporte">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-premium-footer">
+                <button id="btnCerrarHistorial" class="btn-cerrar-large">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <script src="ani_aporte.js"></script>
 </body>
 </html>
