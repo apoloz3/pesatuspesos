@@ -81,7 +81,9 @@
                   <div class="meta-card" 
                        style="background-image: url('img/moto_meta.png');"
                        data-actual="3250"
-                       data-total="5000">
+                       data-total="5000"
+                       data-aporte="150"
+                       data-frecuencia="3">
                     <div class="card-overlay">
                       <div class="card-header">
                         <span class="meta-label">Mi meta:</span>
@@ -89,7 +91,7 @@
                       </div>
                       <div class="card-footer">
                         <div class="progreso-info">
-                          <div class="progreso-texto">Progreso: <span>$3,250 de $5,000</span></div>
+                          <div class="progreso-texto">Progreso: <span>65%</span></div>
                           <div class="progreso-bar">
                             <div class="progreso-fill" style="width: 65%;"></div>
                           </div>
@@ -102,17 +104,19 @@
                   <!-- Tarjeta: Japón -->
                   <div class="meta-card" 
                        style="background-image: url('img/japon_meta.png');"
-                       data-actual="10000"
-                       data-total="12000">
+                       data-actual="12000"
+                       data-total="12000"
+                       data-aporte="500"
+                       data-frecuencia="3">
                     <div class="card-overlay">
                       <div class="card-header">
                         <h2 class="meta-titulo">Viaje a Japón</h2>
                       </div>
                       <div class="card-footer">
                         <div class="progreso-info">
-                          <div class="progreso-texto">Progreso: <span>$10.000 ahorrado</span> <span class="porcentaje">83%</span></div>
+                          <div class="progreso-texto">Progreso: <span>100%</span></div>
                           <div class="progreso-bar">
-                            <div class="progreso-fill" style="width: 83%;"></div>
+                            <div class="progreso-fill" style="width: 100%;"></div>
                           </div>
                         </div>
                         <button class="boton-aportar">Aportar</button>
@@ -204,24 +208,18 @@
                   <label class="crear-label">TÍTULO DE LA META</label>
                   <input type="text" id="tituloMeta" class="crear-input" placeholder="[Ej. Coche Nuevo]">
                   
-                  <label class="crear-label" style="margin-top: 20px; display: block; text-align: center;">FOTO O IMAGEN</label>
-                  <div class="grid-iconos" style="display: flex; justify-content: center; width: 100%;">
-                    <div class="icono-btn foto-btn" id="btnSubirFoto" style="width: 200px; height: 140px; background-size: cover; background-position: center; border-radius: 15px;">
-                      <div id="contenidoBotonFoto" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
-                        <i class="fa-solid fa-camera" style="font-size: 28px; margin-bottom: 5px;"></i>
-                        <span id="textoSubirFoto" style="font-size: 11px; text-align: center; line-height: 1.2;">SUBIR<br>FOTO</span>
+                  <label class="crear-label" style="margin-top: 25px; display: block; text-align: center;">FOTO O IMAGEN</label>
+                  <div class="grid-iconos-wrapper" style="display: flex; justify-content: center; width: 100%; margin-top: 10px;">
+                    <div class="icono-btn foto-btn-large" id="btnSubirFoto">
+                      <div id="contenidoBotonFoto">
+                        <i class="fa-solid fa-camera"></i>
+                        <span id="textoSubirFoto">SUBIR<br>FOTO</span>
                       </div>
                     </div>
                     <input type="file" id="inputFotoMeta" accept="image/*" style="display: none;">
                   </div>
                   
-                  <div class="crear-toggle-row" style="margin-top: 25px;">
-                    <label class="crear-label">MOSTRAR EN CARRUSEL</label>
-                    <label class="switch-toggle">
-                      <input type="checkbox" checked>
-                      <span class="slider-toggle round"></span>
-                    </label>
-                  </div>
+
                 </div>
               </div>
 
@@ -287,7 +285,7 @@
             </div>
 
             <div class="crear-footer-actions">
-              <button class="btn-primary-gold" id="btnGuardarMeta"><i class="fa-solid fa-plus"></i> GUARDAR Y CREAR META</button>
+              <button class="btn-primary-gold" id="btnGuardarMeta">GUARDAR Y CREAR META</button>
               <button class="btn-secondary-transparent" id="btnCancelarCrear">CANCELAR</button>
             </div>
           </div>
@@ -373,6 +371,27 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Modal Confirmar Eliminación de Meta -->
+    <div class="modal-eliminar" id="modalEliminarMeta">
+      <div class="modal-eliminar-content">
+        <button class="btn-close-modal-eliminar" id="btnCancelarEliminarMetaX">✕</button>
+        <div class="modal-icon-container">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h2>¿Eliminar meta?</h2>
+        <p>Esta acción no se puede deshacer. Puedes descargar el historial de tus aportes antes de eliminarla definitivamente.</p>
+        
+        <div class="modal-eliminar-actions">
+          <button class="btn-download-history-new" id="btnDescargarHistorialEliminar">
+            <i class="fas fa-download"></i> Descargar historial
+          </button>
+          <button class="btn-confirm-delete-new" id="btnConfirmarEliminarMeta">
+            <i class="fas fa-trash-alt"></i> Eliminar definitivamente
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="ani_ahorro.js"></script>
   </body>
 </html>

@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Interactividad de Input y Montos
     const inputAporte = document.getElementById('aporte-input');
-    const updateAmountButtons = document.querySelectorAll('.quick-amount-btn');
+    const quickAmountsContainer = document.getElementById('quick-amounts-container');
     const btnAportar = document.getElementById('btn-aportar');
     const btnCancelar = document.querySelector('.btn-secondary');
 
@@ -166,19 +166,58 @@ document.addEventListener('DOMContentLoaded', () => {
         if(btnAportar) btnAportar.innerHTML = `<i class="fas fa-coins" style="margin-right: 8px;"></i> APORTAR $${formatMonto(monto)}`;
     }
 
-    updateAmountButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const amountToAdd = e.target.getAttribute('data-amount');
-            if (amountToAdd) {
-                const currentVal = parseMonto(inputAporte.value);
-                const newVal = currentVal + parseFloat(amountToAdd);
-                inputAporte.value = formatMonto(newVal);
-                updateMainButton(newVal);
-            } else {
-                inputAporte.focus();
+    // Obtener sugerencias de aporte
+    const baseAporte = parseFloat(localStorage.getItem('metaSeleccionadaAporte')) || 150;
+    const freqAporte = localStorage.getItem('metaSeleccionadaFrecuencia') || "3";
+    
+    // Configurar el input inicial con el valor sugerido
+    if(inputAporte) {
+        inputAporte.value = formatMonto(baseAporte);
+        updateMainButton(baseAporte);
+    }
+    
+    let ultimoTipoAporte = 'manual';
+    
+    if (quickAmountsContainer) {
+        quickAmountsContainer.innerHTML = '';
+        
+        const baseBtn = document.createElement('button');
+        baseBtn.className = 'quick-amount-btn';
+        baseBtn.setAttribute('data-amount', baseAporte);
+        baseBtn.innerHTML = `$${baseAporte}`;
+        
+        const doubleBtn = document.createElement('button');
+        doubleBtn.className = 'quick-amount-btn';
+        doubleBtn.setAttribute('data-amount', baseAporte * 2);
+        doubleBtn.innerHTML = `$${baseAporte * 2}`;
+        
+        const otherBtn = document.createElement('button');
+        otherBtn.className = 'quick-amount-btn outline';
+        otherBtn.innerHTML = `<span style="color: #CFB53B;">+</span> Otro`;
+        
+        quickAmountsContainer.appendChild(baseBtn);
+        quickAmountsContainer.appendChild(doubleBtn);
+        quickAmountsContainer.appendChild(otherBtn);
+        
+        quickAmountsContainer.addEventListener('click', (e) => {
+            const btn = e.target.closest('.quick-amount-btn');
+            if (btn) {
+                const amountToSet = btn.getAttribute('data-amount');
+                if (amountToSet) {
+                    const newVal = parseFloat(amountToSet);
+                    inputAporte.value = formatMonto(newVal);
+                    updateMainButton(newVal);
+                    ultimoTipoAporte = 'rápido';
+                } else {
+                    if (inputAporte) {
+                        inputAporte.value = '';
+                        inputAporte.focus();
+                        ultimoTipoAporte = 'manual';
+                    }
+                }
             }
         });
-    });
+    }
 
     if (inputAporte) {
         inputAporte.addEventListener('input', (e) => {
@@ -187,6 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
             e.target.value = val;
             updateMainButton(parseMonto(val));
+            ultimoTipoAporte = 'manual';
         });
 
         inputAporte.addEventListener('blur', (e) => {
@@ -208,13 +248,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateFinancialUI(actual, total) {
         const porcentaje = total > 0 ? Math.min(Math.round((actual / total) * 100), 100) : 0;
-        if (statActualEl) statActualEl.textContent = `$${actual.toLocaleString("es-ES")}`;
-        if (statTotalEl) statTotalEl.textContent = `$${total.toLocaleString("es-ES")}`;
+        if (statActualEl) statActualEl.textContent = `$${actual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        if (statTotalEl) statTotalEl.textContent = `$${total.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
         if (statProgresoEl) statProgresoEl.textContent = `${porcentaje}%`;
         if (percentageEl) percentageEl.textContent = `${porcentaje}%`;
         if (circleEl) {
             circleEl.style.transition = "stroke-dasharray 1.5s ease-out";
             circleEl.style.strokeDasharray = `${porcentaje}, 100`;
+        }
+        
+        const faltante = total > actual ? total - actual : 0;
+        const msgEl = document.getElementById('milestone-text-msg');
+        if (msgEl) {
+            msgEl.innerHTML = `Llevas <strong class="white-text">$${actual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong> y te faltan <strong class="white-text">$${faltante.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong> para completar tu meta`;
+        }
+        
+        const progFill = document.getElementById('milestone-progress-fill');
+        if (progFill) {
+            progFill.style.width = `${porcentaje}%`;
         }
     }
 
@@ -257,11 +308,23 @@ document.addEventListener('DOMContentLoaded', () => {
                    savedHistory.push(dateID);
                    localStorage.setItem(historyKey, JSON.stringify(savedHistory));
                }
+               
+               // 5.2.1 Guardar Historial Detallado para Modal
+               const historyDetailedKey = `historial_detallado_meta_${metaTitulo}`;
+               const savedDetailed = JSON.parse(localStorage.getItem(historyDetailedKey)) || [];
+               savedDetailed.push({
+                   id: Date.now().toString(),
+                   date: `${String(selectedDayInfo.day).padStart(2, '0')}/${String(selectedDayInfo.month + 1).padStart(2, '0')}/${selectedDayInfo.year}`,
+                   amount: amount,
+                   tipo: ultimoTipoAporte,
+                   descripcion: ultimoTipoAporte === 'rápido' ? 'Desde botón rápido' : 'Aporte para mi meta'
+               });
+               localStorage.setItem(historyDetailedKey, JSON.stringify(savedDetailed));
 
                // 5.3 Refrescar Calendario para mostrar chulito
                renderCalendar(currentMonth, currentYear);
                
-               mostrarAlerta(`¡Aporte de $${formatMonto(amount)} realizado exitosamente! saldo: $${metaActual.toLocaleString("es-ES")}.`, () => {
+               mostrarAlerta(`¡Aporte de $${formatMonto(amount)} realizado exitosamente! saldo: $${metaActual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}.`, () => {
                    window.location.href = '../ahorros.html';
                });
             } else {
@@ -272,5 +335,345 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnCancelar) {
         btnCancelar.addEventListener('click', () => { window.location.href = '../ahorros.html'; });
+    }
+
+    // 6. Historial de Aportes y Exportación
+    const historyLink = document.querySelector('.history-link');
+    const modalHistorial = document.getElementById('modalHistorial');
+    const btnCerrarHistorial = document.getElementById('btnCerrarHistorial');
+    const btnCerrarHistorialSup = document.getElementById('btnCerrarHistorialSup');
+    const tablaHistorialBody = document.getElementById('tablaHistorialBody');
+    const mensajeSinHistorial = document.getElementById('mensajeSinHistorial');
+    const btnExportarExcelAporte = document.getElementById('btnExportarExcelAporte');
+    const btnExportarPDFAporte = document.getElementById('btnExportarPDFAporte');
+
+    let doughnutChart = null;
+    let barChart = null;
+
+    // Variables de paginación
+    let currentPage = 1;
+    const itemsPerPage = 6;
+    let filteredData = [];
+
+    function renderTablePage() {
+        tablaHistorialBody.innerHTML = '';
+        const paginationControls = document.getElementById('paginationControls');
+        const txtMostrandoAportes = document.getElementById('txtMostrandoAportes');
+
+        if (filteredData.length === 0) {
+            mensajeSinHistorial.style.display = 'block';
+            document.querySelector('.tabla-premium').style.display = 'none';
+            if(paginationControls) paginationControls.style.display = 'none';
+            if(txtMostrandoAportes) txtMostrandoAportes.textContent = `Mostrando 0 aportes`;
+            return;
+        }
+
+        mensajeSinHistorial.style.display = 'none';
+        document.querySelector('.tabla-premium').style.display = 'table';
+        
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        
+        // Revertir para mostrar más recientes primero
+        const reversed = [...filteredData].reverse();
+        const pageData = reversed.slice(startIndex, endIndex);
+
+        pageData.forEach(record => {
+            const tr = document.createElement('tr');
+            const parts = record.date.split('/');
+            const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const monthName = monthNames[parseInt(parts[1]) - 1];
+
+            const iconTipo = record.tipo === 'rápido' ? 'fa-bolt' : 'fa-pencil-alt';
+            const classTipo = record.tipo === 'rápido' ? 'rapido' : 'manual';
+            
+            const desc = record.descripcion || (record.tipo === 'rápido' ? 'Aporte rápido' : 'Aporte manual');
+
+            tr.innerHTML = `
+                <td>
+                    <div class="td-fecha-container">
+                        <div class="badge-fecha">
+                            <strong>${parts[0]}</strong>
+                            <span>${monthName}</span>
+                        </div>
+                        <span class="td-fecha-full">${record.date}</span>
+                    </div>
+                </td>
+                <td>
+                    <span class="tipo-aporte-badge ${classTipo}">
+                        <i class="fas ${iconTipo}"></i> Aporte ${record.tipo || 'manual'}
+                    </span>
+                </td>
+                <td style="color: var(--text-muted);">${desc}</td>
+                <td class="monto-green">$${parseFloat(record.amount).toLocaleString('es-CO', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
+            `;
+            tablaHistorialBody.appendChild(tr);
+        });
+
+        if(txtMostrandoAportes) txtMostrandoAportes.textContent = `Mostrando ${filteredData.length} aportes`;
+        
+        const btnPrev = document.getElementById('btnPrevPage');
+        const btnNext = document.getElementById('btnNextPage');
+        const txtPage = document.getElementById('txtPageInfo');
+
+        if (paginationControls && totalPages > 1) {
+            paginationControls.style.display = 'flex';
+            if(txtPage) txtPage.textContent = `Página ${currentPage} de ${totalPages}`;
+            if(btnPrev) btnPrev.disabled = currentPage === 1;
+            if(btnNext) btnNext.disabled = currentPage === totalPages;
+        } else if (paginationControls) {
+            paginationControls.style.display = 'none';
+        }
+    }
+
+    function cargarHistorial() {
+        const historyDetailedKey = `historial_detallado_meta_${metaTitulo}`;
+        let savedDetailed = JSON.parse(localStorage.getItem(historyDetailedKey)) || [];
+        
+        // Cargar Meta Info
+        document.getElementById('historialMetaTitulo').textContent = metaTitulo;
+        document.getElementById('historialMetaObjetivo').textContent = `$${metaTotal.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        document.getElementById('historialMetaAhorrado').textContent = `$${metaActual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        
+        const porcentaje = metaTotal > 0 ? Math.min(Math.round((metaActual / metaTotal) * 100), 100) : 0;
+        const porcentajeTextEl = document.getElementById('historialMetaPorcentajeText');
+        if (porcentajeTextEl) porcentajeTextEl.textContent = `${porcentaje}%`;
+        
+        const textCentral = document.getElementById('historialProgresoTexto');
+        if (textCentral) textCentral.textContent = `${porcentaje}%`;
+
+        // Gráfico Circular de Progreso
+        const ctxCircle = document.getElementById('historialProgresoChart');
+        if (ctxCircle) {
+            if (doughnutChart) doughnutChart.destroy();
+            doughnutChart = new Chart(ctxCircle, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [porcentaje, 100 - porcentaje],
+                        backgroundColor: ['#cfb53c', 'rgba(255,255,255,0.05)'],
+                        borderWidth: 0,
+                        cutout: '80%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { tooltip: { enabled: false }, legend: { display: false } },
+                    animation: { animateScale: true }
+                }
+            });
+        }
+
+        // Filtros
+        const fFecha = document.getElementById('filtroFecha').value;
+        const fTipo = document.getElementById('filtroTipo').value;
+
+        // Filtrar Datos
+        filteredData = savedDetailed.filter(r => {
+            if (fTipo !== 'all' && r.tipo !== fTipo) return false;
+            if (fFecha === 'month') {
+                const parts = r.date.split('/');
+                const rMonth = parts[1];
+                const rYear = parts[2];
+                const today = new Date();
+                if (rMonth != (today.getMonth() + 1).toString().padStart(2, '0') || rYear != today.getFullYear()) return false;
+            } else if (fFecha === 'year') {
+                const parts = r.date.split('/');
+                const rYear = parts[2];
+                if (rYear != new Date().getFullYear()) return false;
+            }
+            return true;
+        });
+
+        // Calcular Resumen
+        const count = filteredData.length;
+        const total = filteredData.reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
+        const prom = count > 0 ? total / count : 0;
+        const first = count > 0 ? filteredData[0].date : '-';
+        const last = count > 0 ? filteredData[count - 1].date : '-';
+
+        document.getElementById('resTotalAportes').textContent = count;
+        document.getElementById('resMontoTotal').textContent = `$${total.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        document.getElementById('resPromedio').textContent = `$${prom.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        document.getElementById('resPrimerAporte').textContent = first;
+        document.getElementById('resUltimoAporte').textContent = last;
+        document.getElementById('txtResumenEvolucion').textContent = `Has ahorrado un total de $${total.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})} en los aportes seleccionados`;
+
+        // Render Tabla
+        currentPage = 1;
+        renderTablePage();
+
+        // Gráfico Evolución (Barras)
+        const ctxBar = document.getElementById('historialEvolucionChart');
+        if (ctxBar) {
+            // Agrupar por fecha
+            const grupos = {};
+            filteredData.forEach(r => {
+                grupos[r.date] = (grupos[r.date] || 0) + parseFloat(r.amount);
+            });
+            const labels = Object.keys(grupos);
+            const dataVals = Object.values(grupos);
+
+            if (barChart) barChart.destroy();
+            barChart = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Monto ($)',
+                        data: dataVals,
+                        backgroundColor: '#cfb53c',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#666' } },
+                        x: { grid: { display: false }, ticks: { color: '#666', maxTicksLimit: 7 } }
+                    }
+                }
+            });
+        }
+    }
+
+    if (historyLink && modalHistorial) {
+        historyLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            const storedImageUrl = localStorage.getItem("metaSeleccionadaImagen");
+            if (storedImageUrl && storedImageUrl !== "none") {
+                const cleanUrl = storedImageUrl.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
+                const imgEl = document.getElementById('historialMetaImg');
+                if(imgEl) imgEl.src = cleanUrl.startsWith('img/') ? "../" + cleanUrl : cleanUrl;
+            }
+            cargarHistorial();
+            modalHistorial.classList.add('activo');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    // Listeners de filtros
+    const filtroFecha = document.getElementById('filtroFecha');
+    const filtroTipo = document.getElementById('filtroTipo');
+    const btnLimpiar = document.getElementById('btnLimpiarFiltros');
+
+    if(filtroFecha) filtroFecha.addEventListener('change', cargarHistorial);
+    if(filtroTipo) filtroTipo.addEventListener('change', cargarHistorial);
+    if(btnLimpiar) btnLimpiar.addEventListener('click', () => {
+        filtroFecha.value = 'all';
+        filtroTipo.value = 'all';
+        cargarHistorial();
+    });
+
+    const btnPrevPage = document.getElementById('btnPrevPage');
+    const btnNextPage = document.getElementById('btnNextPage');
+    if(btnPrevPage) {
+        btnPrevPage.addEventListener('click', () => {
+            if(currentPage > 1) {
+                currentPage--;
+                renderTablePage();
+            }
+        });
+    }
+    if(btnNextPage) {
+        btnNextPage.addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if(currentPage < totalPages) {
+                currentPage++;
+                renderTablePage();
+            }
+        });
+    }
+
+    const cerrarHistorial = () => { 
+        if(modalHistorial) {
+            modalHistorial.classList.remove('activo'); 
+            document.body.style.overflow = '';
+        }
+    };
+    if (btnCerrarHistorial) btnCerrarHistorial.addEventListener('click', cerrarHistorial);
+    if (btnCerrarHistorialSup) btnCerrarHistorialSup.addEventListener('click', cerrarHistorial);
+
+    if (modalHistorial) {
+        modalHistorial.addEventListener('click', (e) => {
+            if (e.target === modalHistorial) cerrarHistorial();
+        });
+    }
+
+    if (btnExportarExcelAporte) {
+        btnExportarExcelAporte.addEventListener('click', () => {
+            const historyDetailedKey = `historial_detallado_meta_${metaTitulo}`;
+            const savedDetailed = JSON.parse(localStorage.getItem(historyDetailedKey)) || [];
+            if (savedDetailed.length === 0) {
+                mostrarAlerta('No hay historial para exportar.');
+                return;
+            }
+            
+            const titulo = `Historial_Aportes_${metaTitulo.replace(/\s+/g, '_')}`;
+            let csv = "Fecha,Monto Aportado\n";
+            savedDetailed.forEach(r => {
+                csv += `${r.date},${r.amount}\n`;
+            });
+
+            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `${titulo}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
+
+    if (btnExportarPDFAporte) {
+        btnExportarPDFAporte.addEventListener('click', () => {
+            const historyDetailedKey = `historial_detallado_meta_${metaTitulo}`;
+            const savedDetailed = JSON.parse(localStorage.getItem(historyDetailedKey)) || [];
+            if (savedDetailed.length === 0) {
+                mostrarAlerta('No hay historial para exportar.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const titulo = `Historial de Aportes: ${metaTitulo}`;
+            const nombreArchivo = `Historial_Aportes_${metaTitulo.replace(/\s+/g, '_')}.pdf`;
+
+            doc.setFillColor(0, 12, 23);
+            doc.rect(0, 0, 210, 30, 'F');
+            doc.setTextColor(243, 217, 137);
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text('PesatusPesos', 14, 13);
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.text(titulo, 14, 23);
+
+            const tableData = savedDetailed.map(r => [
+                r.date, 
+                `$${parseFloat(r.amount).toLocaleString('es-ES')}`
+            ]);
+
+            doc.autoTable({
+                startY: 35,
+                head: [['Fecha', 'Monto Aportado']],
+                body: tableData,
+                theme: 'striped',
+                headStyles: { fillColor: [207, 181, 59], textColor: [0, 12, 23], fontStyle: 'bold' },
+                alternateRowStyles: { fillColor: [245, 245, 245] },
+                styles: { font: 'helvetica', fontSize: 10 }
+            });
+
+            doc.save(nombreArchivo);
+        });
     }
 });

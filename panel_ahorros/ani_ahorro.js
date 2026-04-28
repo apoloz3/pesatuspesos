@@ -48,6 +48,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (modalAviso && e.target === modalAviso) {
       modalAviso.classList.remove("activo");
     }
+    // Si el clic fue directamente en el overlay oscuro del modal de eliminar
+    const modalEliminar = document.getElementById("modalEliminarMeta");
+    if (modalEliminar && e.target === modalEliminar) {
+      modalEliminar.classList.remove("activo");
+      metaAEliminar = null;
+    }
   });
 
   /* ===============================
@@ -207,8 +213,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const cards = Array.from(track.children);
     let currentIndex = 0;
 
-    // Create indicator dots
-    cards.forEach((_, index) => {
+    // Apply state to initial cards
+    cards.forEach((card, index) => {
+      const isCrear = card.classList.contains('card-crear');
+      if (!isCrear) {
+        const actual = card.getAttribute('data-actual') || "0";
+        const total = card.getAttribute('data-total') || "0";
+        const titulo = card.querySelector('.meta-titulo') ? card.querySelector('.meta-titulo').textContent : 'Mi Meta';
+        applyMetaState(card, actual, total, titulo);
+      }
+
       const dot = document.createElement('div');
       dot.classList.add('dot');
       if (index === 0) dot.classList.add('active');
@@ -370,6 +384,12 @@ document.addEventListener("DOMContentLoaded", function () {
         // Asignamos metadatos financieros
         newCard.setAttribute("data-actual", "0");
         newCard.setAttribute("data-total", montoTotalNum);
+        const montoAporteInput = document.getElementById("montoAporte");
+        const frecuenciaAporteInput = document.getElementById("frecuenciaAporte");
+        const montoAporteNum = montoAporteInput ? parseFloat(montoAporteInput.value.replace(/[^0-9]/g, "")) || 0 : 0;
+        const frecuenciaVal = frecuenciaAporteInput ? frecuenciaAporteInput.value : "3";
+        newCard.setAttribute("data-aporte", montoAporteNum);
+        newCard.setAttribute("data-frecuencia", frecuenciaVal);
 
         newCard.innerHTML = `
           <div class="card-overlay">
@@ -379,7 +399,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             <div class="card-footer">
               <div class="progreso-info">
-                <div class="progreso-texto">Progreso: <span class="monto-dinamico">$0 de ${metaMontoStr}</span></div>
+                <div class="progreso-texto">Progreso: <span class="monto-dinamico">0%</span></div>
                 <div class="progreso-bar">
                   <div class="progreso-fill" style="width: 0%;"></div>
                 </div>
@@ -388,6 +408,8 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
           </div>
         `;
+
+        applyMetaState(newCard, 0, montoTotalNum, titulo);
 
         const track = document.getElementById('carouselTrack');
         if (track) {
@@ -416,29 +438,154 @@ document.addEventListener("DOMContentLoaded", function () {
      =============================== */
   // Usamos delegación de eventos para manejar botones actuales y futuros
   document.addEventListener("click", (e) => {
+    // Manejo de botón Aportar
     if (e.target && e.target.classList.contains("boton-aportar")) {
       const card = e.target.closest(".meta-card");
       if (card) {
         const titulo = card.querySelector(".meta-titulo") ? card.querySelector(".meta-titulo").textContent : "Mi Meta";
         const actual = card.getAttribute("data-actual") || "0";
         const total = card.getAttribute("data-total") || "0";
+        const aporteSugerido = card.getAttribute("data-aporte") || "0";
+        const frecuencia = card.getAttribute("data-frecuencia") || "3";
         
-        // Extraer la URL de la imagen de fondo
         let bgUrl = card.style.backgroundImage;
-        if (!bgUrl) {
-           bgUrl = window.getComputedStyle(card).backgroundImage;
-        }
+        if (!bgUrl) bgUrl = window.getComputedStyle(card).backgroundImage;
         
-        // Guardar en localStorage para la página de aporte
         localStorage.setItem("metaSeleccionadaTitulo", titulo);
         localStorage.setItem("metaSeleccionadaImagen", bgUrl);
         localStorage.setItem("metaSeleccionadaActual", actual);
         localStorage.setItem("metaSeleccionadaTotal", total);
+        localStorage.setItem("metaSeleccionadaAporte", aporteSugerido);
+        localStorage.setItem("metaSeleccionadaFrecuencia", frecuencia);
         
         window.location.href = "panel_aporte/aporte.html";
       }
     }
+
+    // Manejo de botón Eliminar (Meta Completada)
+    if (e.target && (e.target.classList.contains("btn-eliminar-meta") || e.target.closest(".btn-eliminar-meta"))) {
+      const card = e.target.closest(".meta-card") || e.target.closest(".lista-meta-item");
+      if (card) {
+        const titulo = card.querySelector(".meta-titulo, .lista-meta-nombre").textContent;
+        metaAEliminar = {
+          titulo: titulo,
+          elemento: card
+        };
+        const modalEliminar = document.getElementById("modalEliminarMeta");
+        if (modalEliminar) modalEliminar.classList.add("activo");
+      }
+    }
   });
+
+  /* ===============================
+       LOGICA DE ELIMINACION DE META
+     =============================== */
+  let metaAEliminar = null;
+  const modalEliminar = document.getElementById("modalEliminarMeta");
+  const btnConfirmarEliminar = document.getElementById("btnConfirmarEliminarMeta");
+  const btnCancelarEliminar = document.getElementById("btnCancelarEliminarMeta");
+  const btnCancelarEliminarX = document.getElementById("btnCancelarEliminarMetaX");
+  const btnDescargarHistorial = document.getElementById("btnDescargarHistorialEliminar");
+
+  const closeDeleteModal = () => {
+    if (modalEliminar) modalEliminar.classList.remove("activo");
+    metaAEliminar = null;
+  };
+
+  if (btnCancelarEliminar) btnCancelarEliminar.addEventListener("click", closeDeleteModal);
+  if (btnCancelarEliminarX) btnCancelarEliminarX.addEventListener("click", closeDeleteModal);
+
+  if (btnConfirmarEliminar) {
+    btnConfirmarEliminar.addEventListener("click", () => {
+      if (metaAEliminar) {
+        const { titulo, elemento } = metaAEliminar;
+        
+        // Eliminar del track original si existe
+        const originalCard = Array.from(document.querySelectorAll('#carouselTrack .meta-card')).find(c => {
+          const t = c.querySelector(".meta-titulo");
+          return t && t.textContent === titulo;
+        });
+
+        if (originalCard) originalCard.remove();
+        
+        // Limpiar localStorage
+        localStorage.removeItem(`progreso_meta_${titulo}`);
+        localStorage.removeItem(`historial_meta_${titulo}`);
+        localStorage.removeItem(`historial_detallado_meta_${titulo}`);
+
+        // Refrescar vistas
+        const currentView = localStorage.getItem('vistaMetas') || 'carrusel';
+        if (currentView === 'lista') buildListaView();
+        else if (currentView === 'card') buildCardGridView();
+        else if (typeof initCarousel === 'function') initCarousel();
+
+        modalEliminar.classList.remove("activo");
+        metaAEliminar = null;
+        mostrarAlerta("Meta eliminada exitosamente");
+      }
+    });
+  }
+
+  if (btnDescargarHistorial) {
+    btnDescargarHistorial.addEventListener("click", () => {
+      if (metaAEliminar) {
+        const { titulo } = metaAEliminar;
+        // Aquí llamaríamos a la lógica de exportación que ya existe en aporte.html
+        // Por ahora simulamos la intención
+        mostrarAlerta(`Descargando historial de ${titulo}... (Función en desarrollo)`);
+      }
+    });
+  }
+
+  function applyMetaState(card, actual, total, titulo) {
+    const isCompleted = parseFloat(actual) >= parseFloat(total) && parseFloat(total) > 0;
+    const overlay = card.querySelector(".card-overlay");
+    const footer = card.querySelector(".card-footer");
+    
+    if (isCompleted) {
+      card.classList.add("completada");
+      
+      // Añadir contenedor de éxito en el centro si no existe
+      if (!card.querySelector(".success-center-container")) {
+        const successContainer = document.createElement("div");
+        successContainer.className = "success-center-container";
+        successContainer.innerHTML = `
+          <div class="meta-completada-badge">Meta completada</div>
+          <div class="trophy-icon">
+            <img src="img/logro.png" alt="Logro" />
+          </div>
+        `;
+        card.appendChild(successContainer);
+      }
+
+      // El badge antiguo lo removemos si existiera (limpieza)
+      const oldBadge = card.querySelector(".badge-completada");
+      if (oldBadge) oldBadge.remove();
+
+      // Modificar footer
+      if (footer) {
+        footer.innerHTML = `
+          <div class="progreso-info">
+            <div class="progreso-texto">
+              <span>Objetivo logrado</span>
+              <span>100%</span>
+            </div>
+            <div class="progreso-bar">
+              <div class="progreso-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+          <button class="btn-eliminar-meta"><i class="fas fa-trash-alt"></i> Eliminar</button>
+        `;
+      }
+    } else {
+      // Si no está completada, nos aseguramos de que solo muestre el porcentaje
+      const pct = total > 0 ? Math.min(100, Math.round((actual / total) * 100)) : 0;
+      const textoProgreso = card.querySelector(".progreso-texto span");
+      if (textoProgreso) {
+        textoProgreso.textContent = `${pct}%`;
+      }
+    }
+  }
 
   /* ===============================
        BOTON SUBIR FOTO META
@@ -693,8 +840,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const pct    = total > 0 ? Math.min(100, Math.round((actual / total) * 100)) : 0;
       const bgImage = card.style.backgroundImage || '';
 
+      const isCompleted = actual >= total && total > 0;
       const row = document.createElement('div');
-      row.className = 'lista-meta-item';
+      row.className = `lista-meta-item ${isCompleted ? 'completada' : ''}`;
 
       // Creamos el thumb por separado para evitar conflicto de comillas en atributos inline
       const thumb = document.createElement('div');
@@ -707,8 +855,8 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="lista-meta-nombre">${titulo}</div>
         <div class="lista-meta-progreso-wrap">
           <div class="lista-meta-texto">
-            <span>${pct}% completado</span>
-            <span>$${actual.toLocaleString('es-ES')} / $${total.toLocaleString('es-ES')}</span>
+            <span>${isCompleted ? '¡Meta lograda!' : 'Progreso'}</span>
+            <span>${pct}%</span>
           </div>
           <div class="lista-meta-bar">
             <div class="lista-meta-fill" style="width: ${pct}%"></div>
@@ -717,21 +865,29 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
 
       const btn = document.createElement('button');
-      btn.className = 'lista-meta-btn';
-      btn.textContent = 'Aportar';
+      if (isCompleted) {
+        btn.className = 'btn-eliminar-meta';
+        btn.innerHTML = '<i class="fas fa-trash-alt"></i> Eliminar';
+      } else {
+        btn.className = 'lista-meta-btn';
+        btn.textContent = 'Aportar';
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const ap = card.getAttribute('data-aporte') || "0";
+          const fr = card.getAttribute('data-frecuencia') || "3";
+          localStorage.setItem('metaSeleccionadaTitulo', titulo);
+          localStorage.setItem('metaSeleccionadaImagen', bgImage);
+          localStorage.setItem('metaSeleccionadaActual', String(actual));
+          localStorage.setItem('metaSeleccionadaTotal', String(total));
+          localStorage.setItem('metaSeleccionadaAporte', ap);
+          localStorage.setItem('metaSeleccionadaFrecuencia', fr);
+          window.location.href = 'panel_aporte/aporte.html';
+        });
+      }
 
       row.appendChild(thumb);
       row.appendChild(info);
       row.appendChild(btn);
-
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        localStorage.setItem('metaSeleccionadaTitulo', titulo);
-        localStorage.setItem('metaSeleccionadaImagen', bgImage);
-        localStorage.setItem('metaSeleccionadaActual', String(actual));
-        localStorage.setItem('metaSeleccionadaTotal', String(total));
-        window.location.href = 'panel_aporte/aporte.html';
-      });
 
       listaMetas.appendChild(row);
     });
@@ -748,6 +904,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     cards.forEach(card => {
       const clone = card.cloneNode(true);
+      const isCrear = clone.classList.contains('card-crear');
+
+      if (!isCrear) {
+        const actual = clone.getAttribute('data-actual') || "0";
+        const total = clone.getAttribute('data-total') || "0";
+        const titulo = clone.querySelector('.meta-titulo') ? clone.querySelector('.meta-titulo').textContent : 'Mi Meta';
+        applyMetaState(clone, actual, total, titulo);
+      }
 
       const btnAportar = clone.querySelector('.boton-aportar');
       if (btnAportar) {
@@ -756,16 +920,20 @@ document.addEventListener("DOMContentLoaded", function () {
           const t  = clone.querySelector('.meta-titulo') ? clone.querySelector('.meta-titulo').textContent : 'Mi Meta';
           const ac = clone.getAttribute('data-actual') || '0';
           const to = clone.getAttribute('data-total') || '0';
+          const ap = clone.getAttribute('data-aporte') || '0';
+          const fr = clone.getAttribute('data-frecuencia') || '3';
           const bg = clone.style.backgroundImage;
           localStorage.setItem('metaSeleccionadaTitulo', t);
           localStorage.setItem('metaSeleccionadaImagen', bg);
           localStorage.setItem('metaSeleccionadaActual', ac);
           localStorage.setItem('metaSeleccionadaTotal', to);
+          localStorage.setItem('metaSeleccionadaAporte', ap);
+          localStorage.setItem('metaSeleccionadaFrecuencia', fr);
           window.location.href = 'panel_aporte/aporte.html';
         });
       }
 
-      if (clone.classList.contains('card-crear')) {
+      if (isCrear) {
         clone.addEventListener('click', () => {
           const m = document.getElementById('modalCrearMeta');
           if (m) m.classList.add('activo');
