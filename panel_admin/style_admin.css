@@ -425,16 +425,82 @@ body {
 
 .contenido-modal {
   background: var(--color-fondo-tarjeta);
-  padding: 25px;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 420px;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   margin: 20px;
-  transform: translateY(-20px);
-  transition: transform 0.3s;
+  transform: translateY(-20px) scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.superposicion-modal.activo .contenido-modal { transform: translateY(0); }
+.superposicion-modal.activo .contenido-modal { 
+  transform: translateY(0) scale(1); 
+}
+
+.encabezado-modal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.encabezado-modal h3 {
+  font-size: 1.5rem;
+  color: var(--color-texto-principal);
+  font-weight: 700;
+  margin: 0;
+}
+
+.cerrar-modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: var(--color-rojo-eliminar);
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s, transform 0.3s;
+  line-height: 1;
+  padding: 0;
+}
+
+.cerrar-modal:hover {
+  color: #cc0000;
+  transform: scale(1.1);
+}
+
+#formulario-generico .grupo-formulario {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+#formulario-generico .grupo-formulario label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-gris-medio);
+  margin-bottom: 5px;
+}
+
+#formulario-generico .grupo-checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 25px;
+}
+
+#formulario-generico .grupo-checkbox label {
+  margin-bottom: 0;
+  font-size: 0.95rem;
+  color: var(--color-texto-principal);
+}
 
 /* Responsividad Móvil */
 @media (max-width: 900px) {
@@ -519,5 +585,253 @@ body {
 .boton-paginacion:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* Panel Administrador Lateral */
+.panel-admin-lateral {
+  position: fixed;
+  right: 20px;
+  top: 80px;
+  z-index: 1100;
+  display: none;
+  width: 320px;
+  background-color: var(--color-fondo-tarjeta);
+  color: var(--color-texto-principal);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-borde);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.panel-admin-lateral.activo {
+  display: block;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.panel-admin-lateral .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #f8fafc;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.panel-admin-lateral .header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-texto-principal);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.panel-admin-lateral .cerrar-panel {
+  background: none;
+  border: none;
+  color: var(--color-gris-medio);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.panel-admin-lateral .cerrar-panel:hover {
+  color: var(--color-rojo-eliminar);
+}
+
+.panel-admin-lateral .panel-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.panel-admin-lateral .contenedor-avatar {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.panel-admin-lateral .avatar-circular {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--color-azul-brillante);
+  padding: 3px;
+  overflow: hidden;
+}
+
+.panel-admin-lateral .avatar-circular img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.panel-admin-lateral .lapiz-edit {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  background: var(--color-azul-brillante);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  border: 2px solid var(--color-fondo-tarjeta);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.panel-admin-lateral #nombre_admin_display {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--color-texto-principal);
+}
+
+.panel-admin-lateral .seccion-edicion-admin {
+  width: 100%;
+  text-align: left;
+  display: none;
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.panel-admin-lateral .seccion-edicion-admin.activo {
+  display: block;
+}
+
+.panel-admin-lateral .boton-cerrar-admin {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-rojo-eliminar);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.panel-admin-lateral .boton-cerrar-admin:hover {
+  background: var(--color-rojo-eliminar);
+  color: white;
+}
+
+/* Modal Personalizado (Alertas/Confirmaciones) */
+.modal-personalizado {
+  display: none;
+  position: fixed;
+  z-index: 2100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 21, 36, 0.6);
+  backdrop-filter: blur(3px);
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-personalizado.activo {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-contenido-personalizado {
+  background-color: var(--color-fondo-tarjeta);
+  border-radius: 12px;
+  padding: 30px;
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(-20px) scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-personalizado.activo .modal-contenido-personalizado {
+  transform: translateY(0) scale(1);
+}
+
+.cerrar-modal-personalizado {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: var(--color-rojo-eliminar);
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s, transform 0.3s;
+  line-height: 1;
+}
+
+.cerrar-modal-personalizado:hover {
+  color: #cc0000;
+  transform: scale(1.1);
+}
+
+.modal-cuerpo-personalizado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.icono-modal-personalizado {
+  font-size: 3.5rem;
+  color: var(--color-rojo-eliminar);
+  margin-bottom: 15px;
+}
+
+.modal-cuerpo-personalizado h2 {
+  margin-bottom: 10px;
+  color: var(--color-texto-principal);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.modal-cuerpo-personalizado p {
+  color: var(--color-gris-medio);
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.modal-botones-personalizado {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+  justify-content: center;
+}
+
+.modal-botones-personalizado .boton {
+  min-width: 120px;
+  padding: 10px 20px;
+}
+
+.modal-botones-personalizado #btn-cancelar-confirmacion {
+  background-color: #f1f5f9;
+  color: var(--color-texto-principal);
+  border: 1px solid var(--color-borde);
+}
+
+.modal-botones-personalizado #btn-cancelar-confirmacion:hover {
+  background-color: #e2e8f0;
 }
 
