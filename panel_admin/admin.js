@@ -49,6 +49,7 @@ window.addEventListener('DOMContentLoaded', () => {
         inicializarCentroControl();
         inicializarConfiguracion();
         inicializarMenuMovil();
+        inicializarPanelLateralAdmin();
         actualizarEstadisticasDashboard();
         renderizarAlertas();
     } catch (error) {
@@ -109,17 +110,97 @@ function inicializarMenuMovil() {
 
 function inicializarBarraSuperior() {
     const iconoAjustes = document.querySelector('.icono-barra-superior');
-    const perfilUsuario = document.querySelector('.perfil-usuario');
 
     if (iconoAjustes) {
         iconoAjustes.addEventListener('click', () => {
             window.location.href = 'configuracion.html';
         });
     }
+}
 
-    if (perfilUsuario) {
-        perfilUsuario.addEventListener('click', () => {
-            mostrarNotificacion('Opciones de perfil cargadas', 'info');
+function inicializarPanelLateralAdmin() {
+    const perfilUsuarioBtn = document.querySelector('.perfil-usuario');
+    const panelLateral = document.getElementById('panelAdminLateral');
+    const cerrarPanelBtn = document.getElementById('cerrarPanelAdmin');
+    
+    // Abrir / Cerrar panel
+    if (perfilUsuarioBtn && panelLateral) {
+        perfilUsuarioBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            panelLateral.classList.toggle('activo');
+        });
+    }
+
+    if (cerrarPanelBtn && panelLateral) {
+        cerrarPanelBtn.addEventListener('click', () => {
+            panelLateral.classList.remove('activo');
+        });
+    }
+
+    // Toggle edición
+    const contenedorAvatar = document.getElementById('contenedorAvatarAdmin');
+    const seccionEdicion = document.getElementById('seccionEdicionAdmin');
+    if (contenedorAvatar && seccionEdicion) {
+        contenedorAvatar.addEventListener('click', () => {
+            seccionEdicion.classList.toggle('activo');
+        });
+    }
+
+    // Guardar cambios
+    const btnGuardarPerfil = document.getElementById('btnGuardarPerfilAdmin');
+    const inputNombre = document.getElementById('inputNombreAdmin');
+    const inputPass = document.getElementById('inputPassAdmin');
+    const nombreDisplay = document.getElementById('nombre_admin_display');
+    const nombreBarra = document.querySelector('.perfil-usuario span');
+    
+    function actualizarAvatarAdmin(nombre) {
+        const url = `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=1c84ee&color=fff`;
+        const avatarImg1 = document.getElementById('avatarPrincipalAdmin');
+        const avatarImg2 = document.querySelector('.perfil-usuario img.avatar');
+        if (avatarImg1) avatarImg1.src = url;
+        if (avatarImg2) avatarImg2.src = url;
+    }
+
+    // Cargar nombre
+    const nombreGuardado = localStorage.getItem('ptp_admin_nombre') || 'Administrador';
+    if (nombreDisplay) nombreDisplay.innerText = nombreGuardado;
+    if (inputNombre) inputNombre.value = nombreGuardado;
+    if (nombreBarra) {
+        nombreBarra.innerHTML = `${nombreGuardado} <i class="fa-solid fa-chevron-down"></i>`;
+    }
+    actualizarAvatarAdmin(nombreGuardado);
+
+    // Guardar
+    if (btnGuardarPerfil) {
+        btnGuardarPerfil.addEventListener('click', () => {
+            const nuevoNombre = inputNombre.value.trim();
+            if (nuevoNombre) {
+                localStorage.setItem('ptp_admin_nombre', nuevoNombre);
+                if (nombreDisplay) nombreDisplay.innerText = nuevoNombre;
+                if (nombreBarra) nombreBarra.innerHTML = `${nuevoNombre} <i class="fa-solid fa-chevron-down"></i>`;
+                actualizarAvatarAdmin(nuevoNombre);
+                
+                let msj = 'Perfil actualizado correctamente.';
+                if (inputPass && inputPass.value.trim() !== '') {
+                    msj += ' Contraseña modificada.';
+                    inputPass.value = '';
+                }
+                mostrarNotificacion(msj, 'success');
+                seccionEdicion.classList.remove('activo');
+            } else {
+                mostrarNotificacion('El nombre no puede estar vacío', 'error');
+            }
+        });
+    }
+
+    // Cerrar Sesión
+    const btnCerrarSesion = document.getElementById('btnCerrarSesionAdminLateral');
+    if (btnCerrarSesion) {
+        btnCerrarSesion.addEventListener('click', () => {
+            mostrarNotificacion('Cerrando sesión...', 'info');
+            setTimeout(() => {
+                window.location.href = '../Home/index.html';
+            }, 1000);
         });
     }
 }
@@ -374,6 +455,14 @@ function inicializarModales() {
         });
     }
 
+    if (modal) {
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('activo');
+            }
+        });
+    }
+
     const btnAddResumen = document.getElementById('boton-agregar-usuario-resumen');
     const btnAddMain = document.getElementById('boton-agregar-usuario');
     const btnAddRole = document.getElementById('boton-agregar-rol');
@@ -393,6 +482,67 @@ function inicializarModales() {
             modal.classList.remove('activo');
         });
     }
+}
+
+function mostrarModalConfirmacion(mensaje, titulo = '¿Estás seguro?') {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('modal-confirmacion');
+        const txtMensaje = document.getElementById('texto-modal-confirmacion');
+        const txtTitulo = document.getElementById('titulo-modal-confirmacion');
+        const btnAceptar = document.getElementById('btn-aceptar-confirmacion');
+        const btnCancelar = document.getElementById('btn-cancelar-confirmacion');
+        const btnCerrar = document.querySelector('.cerrar-modal-personalizado');
+
+        if (!modal) {
+            resolve(confirm(mensaje));
+            return;
+        }
+
+        txtTitulo.innerText = titulo;
+        txtMensaje.innerText = mensaje;
+        modal.classList.add('activo');
+
+        const limpiar = () => {
+            modal.classList.remove('activo');
+            
+            // Remove listeners by cloning
+            const nuevoAceptar = btnAceptar.cloneNode(true);
+            btnAceptar.parentNode.replaceChild(nuevoAceptar, btnAceptar);
+            
+            const nuevoCancelar = btnCancelar.cloneNode(true);
+            btnCancelar.parentNode.replaceChild(nuevoCancelar, btnCancelar);
+            
+            const nuevoCerrar = btnCerrar.cloneNode(true);
+            btnCerrar.parentNode.replaceChild(nuevoCerrar, btnCerrar);
+            
+            window.removeEventListener('click', clickFuera);
+        };
+
+        const clickFuera = (e) => {
+            if (e.target === modal) {
+                limpiar();
+                resolve(false);
+            }
+        };
+
+        // Attach fresh listeners
+        document.getElementById('btn-aceptar-confirmacion').addEventListener('click', () => {
+            limpiar();
+            resolve(true);
+        });
+
+        document.getElementById('btn-cancelar-confirmacion').addEventListener('click', () => {
+            limpiar();
+            resolve(false);
+        });
+
+        document.querySelector('.cerrar-modal-personalizado').addEventListener('click', () => {
+            limpiar();
+            resolve(false);
+        });
+
+        window.addEventListener('click', clickFuera);
+    });
 }
 
 function abrirModal(contexto, datosItem = null) {
@@ -470,8 +620,9 @@ window.editarUsuario = function (id) {
     if (usuario) abrirModal('editar-usuario', usuario);
 }
 
-window.eliminarUsuario = function (id) {
-    if (confirm('¿Estás seguro de eliminar este usuario permanentemente?')) {
+window.eliminarUsuario = async function (id) {
+    const confirmado = await mostrarModalConfirmacion('¿Estás seguro de eliminar este usuario permanentemente?');
+    if (confirmado) {
         const nombreUsr = usuarios.find(u => u.id === id)?.nombre || "Usuario";
         usuarios = usuarios.filter(u => u.id !== id);
         registrarAlerta(`${nombreUsr} eliminado del sistema`, 'error');
@@ -481,8 +632,9 @@ window.eliminarUsuario = function (id) {
     }
 }
 
-window.eliminarRol = function (id) {
-    if (confirm("¿Eliminar este rol? Los usuarios asociados pasarán a ser rol 'Usuario'.")) {
+window.eliminarRol = async function (id) {
+    const confirmado = await mostrarModalConfirmacion("¿Eliminar este rol? Los usuarios asociados pasarán a ser rol 'Usuario'.", "Atención");
+    if (confirmado) {
         const rolObjetivo = roles.find(r => r.id === id);
         if (!rolObjetivo) return;
 
