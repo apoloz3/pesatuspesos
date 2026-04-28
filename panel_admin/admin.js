@@ -109,7 +109,7 @@ function inicializarMenuMovil() {
 }
 
 function inicializarBarraSuperior() {
-    const iconoAjustes = document.querySelector('.icono-barra-superior');
+    const iconoAjustes = document.getElementById('icono-ajustes');
 
     if (iconoAjustes) {
         iconoAjustes.addEventListener('click', () => {
@@ -199,8 +199,30 @@ function inicializarPanelLateralAdmin() {
         btnCerrarSesion.addEventListener('click', () => {
             mostrarNotificacion('Cerrando sesión...', 'info');
             setTimeout(() => {
-                window.location.href = '../Home/index.html';
+                window.location.href = '../Inicio/inicio.html';
             }, 1000);
+        });
+    }
+
+    // Modo Visualización
+    const btnVisualizacion = document.getElementById('btn-visualizacion-res');
+    if (btnVisualizacion) {
+        btnVisualizacion.addEventListener('click', () => {
+            mostrarNotificacion('Cargando vista previa...', 'info');
+            setTimeout(() => {
+                window.location.href = '../Home/index.html?preview=true';
+            }, 1000);
+        });
+    }
+
+    // Emergencia
+    const btnEmergencia = document.getElementById('btn-emergencia-global');
+    if (btnEmergencia) {
+        btnEmergencia.addEventListener('click', async () => {
+            const confirmado = await mostrarModalConfirmacion("¿Activar protocolo de emergencia? Esto suspenderá actividades en la app.", "EMERGENCIA");
+            if (confirmado) {
+                registrarAlerta("Protocolo de emergencia activado", "error");
+            }
         });
     }
 }
@@ -338,7 +360,7 @@ function renderizarUsuarios() {
     if (cuerpoTablaRecientes) {
         cuerpoTablaRecientes.innerHTML = '';
         usuarios.slice(-5).reverse().forEach(u => {
-            cuerpoTablaRecientes.innerHTML += `<tr><td><strong>ID ${u.id}</strong></td><td>${u.nombre}</td><td>${u.email}</td></tr>`;
+            cuerpoTablaRecientes.innerHTML += `<tr><td><strong>${u.nombre}</strong></td><td style="text-align: right; color: var(--color-gris-medio);">${u.email}</td></tr>`;
         });
     }
 
@@ -432,13 +454,37 @@ function renderizarMatriz() {
         roles.forEach(r => {
             if (r.activo) {
                 const estaMarcado = r.permisos >= (index * 10) ? 'checked' : '';
-                fila += `<td><input type="checkbox" ${estaMarcado} onchange="registrarAlerta('Permisos actualizados para el rol \\'${r.nombre}\\'', 'success')"></td>`;
+                fila += `<td><input type="checkbox" ${estaMarcado} onchange="manejarCambioPermiso(this, '${r.nombre}', '${perm}')"></td>`;
             }
         });
         fila += `</tr>`;
         htmlCuerpo += fila;
     });
     tbody.innerHTML = htmlCuerpo;
+}
+
+window.manejarCambioPermiso = async function(checkbox, nombreRol, nombrePermiso) {
+    const estadoDeseado = checkbox.checked;
+    checkbox.checked = !estadoDeseado;
+    const accion = estadoDeseado ? 'habilitar' : 'deshabilitar';
+
+    const confirmado = await mostrarModalConfirmacion(`¿Estás seguro de ${accion} el permiso "${nombrePermiso}" para el rol '${nombreRol}'?`, 'Confirmar Acción');
+    if (confirmado) {
+        checkbox.checked = estadoDeseado;
+        registrarAlerta(`Permiso '${nombrePermiso}' ${estadoDeseado ? 'asignado a' : 'removido de'} '${nombreRol}'`, 'success');
+    }
+}
+
+window.manejarCambioConfiguracion = async function(checkbox, nombreAjuste) {
+    const estadoDeseado = checkbox.checked;
+    checkbox.checked = !estadoDeseado;
+    const accion = estadoDeseado ? 'activar' : 'desactivar';
+
+    const confirmado = await mostrarModalConfirmacion(`¿Estás seguro de ${accion} el ajuste "${nombreAjuste}"?`, 'Confirmar Ajuste');
+    if (confirmado) {
+        checkbox.checked = estadoDeseado;
+        registrarAlerta(`Ajuste '${nombreAjuste}' actualizado`, 'success');
+    }
 }
 
 // --- OPERACIONES CRUD Y MODALES ---
@@ -462,6 +508,44 @@ function inicializarModales() {
             }
         });
     }
+
+    // Modal de Notificaciones
+    const modalNotificaciones = document.getElementById('modal-notificaciones');
+    const btnAbrirNotificaciones = document.getElementById('btn-abrir-notificaciones');
+    const btnCerrarNotificaciones = document.getElementById('cerrar-notificaciones-btn');
+    
+    if (btnAbrirNotificaciones && modalNotificaciones) {
+        btnAbrirNotificaciones.addEventListener('click', () => {
+            modalNotificaciones.classList.add('activo');
+        });
+    }
+
+    if (btnCerrarNotificaciones && modalNotificaciones) {
+        btnCerrarNotificaciones.addEventListener('click', () => {
+            modalNotificaciones.classList.remove('activo');
+        });
+    }
+
+    if (modalNotificaciones) {
+        window.addEventListener('click', (e) => {
+            if (e.target === modalNotificaciones) {
+                modalNotificaciones.classList.remove('activo');
+            }
+        });
+    }
+
+    // Tabs de Notificaciones
+    const tabsNotificaciones = document.querySelectorAll('.tab-notificacion');
+    tabsNotificaciones.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            tabsNotificaciones.forEach(t => t.classList.remove('activo'));
+            e.target.classList.add('activo');
+            const targetId = e.target.getAttribute('data-tab');
+            document.querySelectorAll('.panel-tab').forEach(p => p.classList.remove('activo'));
+            const panel = document.getElementById(targetId);
+            if(panel) panel.classList.add('activo');
+        });
+    });
 
     const btnAddResumen = document.getElementById('boton-agregar-usuario-resumen');
     const btnAddMain = document.getElementById('boton-agregar-usuario');
@@ -652,13 +736,12 @@ window.eliminarRol = async function (id) {
 
 // --- LOGS Y ALERTAS ---
 function renderizarAlertas() {
-    const contenedorResumen = document.getElementById('alertas-resumen');
-    const contenedorRoles = document.getElementById('alertas-roles');
+    const contenedorAdmin = document.getElementById('alertas-admin-lista');
 
-    if (!contenedorResumen && !contenedorRoles) return;
+    if (!contenedorAdmin) return;
 
     let html = '';
-    alertasGlobales.slice(-4).reverse().forEach(a => {
+    alertasGlobales.slice(-10).reverse().forEach(a => {
         let colorIcono = 'texto-primario';
         if (a.tipo === 'error') colorIcono = 'texto-peligro';
         if (a.tipo === 'success') colorIcono = 'fondo-verde';
@@ -675,8 +758,7 @@ function renderizarAlertas() {
         `;
     });
 
-    if (contenedorResumen) contenedorResumen.innerHTML = html;
-    if (contenedorRoles) contenedorRoles.innerHTML = html;
+    if (contenedorAdmin) contenedorAdmin.innerHTML = html;
 }
 
 function registrarAlerta(mensaje, tipo = 'success') {
