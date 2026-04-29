@@ -393,5 +393,41 @@
     </div>
 
     <script src="ani_ahorro.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        if (sessionStorage.getItem('previewMode') === 'true') {
+          const btnVolver = document.createElement('button');
+          btnVolver.innerHTML = '<i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i> Volver al Administrador';
+          btnVolver.style.position = 'fixed';
+          btnVolver.style.bottom = '30px';
+          btnVolver.style.right = '30px';
+          btnVolver.style.padding = '15px 25px';
+          btnVolver.style.backgroundColor = '#1c84ee';
+          btnVolver.style.color = '#fff';
+          btnVolver.style.border = 'none';
+          btnVolver.style.borderRadius = '8px';
+          btnVolver.style.fontSize = '1rem';
+          btnVolver.style.fontWeight = '600';
+          btnVolver.style.cursor = 'pointer';
+          btnVolver.style.boxShadow = '0 4px 15px rgba(28, 132, 238, 0.4)';
+          btnVolver.style.zIndex = '10000';
+          btnVolver.style.fontFamily = "'Inter', sans-serif";
+          
+          btnVolver.addEventListener('mouseover', () => {
+            btnVolver.style.backgroundColor = '#1565c0';
+          });
+          btnVolver.addEventListener('mouseout', () => {
+            btnVolver.style.backgroundColor = '#1c84ee';
+          });
+          
+          btnVolver.onclick = () => {
+            sessionStorage.removeItem('previewMode');
+            window.location.href = '../panel_admin/resumen.html';
+          };
+          
+          document.body.appendChild(btnVolver);
+        }
+      });
+    </script>
   </body>
 </html>

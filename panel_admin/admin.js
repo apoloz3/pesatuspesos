@@ -50,6 +50,7 @@ window.addEventListener('DOMContentLoaded', () => {
         inicializarConfiguracion();
         inicializarMenuMovil();
         inicializarPanelLateralAdmin();
+        inicializarModalAnalisis();
         actualizarEstadisticasDashboard();
         renderizarAlertas();
     } catch (error) {
@@ -788,6 +789,87 @@ function mostrarNotificacion(mensaje, tipo = 'success') {
         setTimeout(() => notificacion.remove(), 300);
     }, 3500);
 }
+
+// --- LÓGICA DEL MODAL DE NUEVO ANÁLISIS ---
+function inicializarModalAnalisis() {
+    const btnGenerarAnalisis = document.getElementById('btn-generar-analisis');
+    const modalAnalisis = document.getElementById('modal-nuevo-analisis');
+    const btnCancelarAnalisis = document.getElementById('btn-cancelar-analisis');
+    const btnCerrarModal = document.getElementById('cerrar-modal-analisis');
+    const formAnalisis = document.getElementById('form-nuevo-analisis');
+
+    if (!btnGenerarAnalisis || !modalAnalisis) return;
+
+    // Abrir Modal
+    btnGenerarAnalisis.addEventListener('click', () => {
+        const inputAdmin = document.getElementById('analisis-admin');
+        const inputFecha = document.getElementById('analisis-fecha');
+        
+        // Auto-completar
+        const nombreAdmin = localStorage.getItem('ptp_admin_nombre') || 'Administrador';
+        if (inputAdmin) inputAdmin.value = nombreAdmin;
+        
+        const hoy = new Date();
+        const fechaFormateada = hoy.toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' });
+        if (inputFecha) inputFecha.value = fechaFormateada;
+
+        modalAnalisis.classList.add('activo');
+    });
+
+    // Cerrar Modal
+    const cerrarModal = () => modalAnalisis.classList.remove('activo');
+    if (btnCancelarAnalisis) btnCancelarAnalisis.addEventListener('click', cerrarModal);
+    if (btnCerrarModal) btnCerrarModal.addEventListener('click', cerrarModal);
+
+    // Formulario Submit
+    if (formAnalisis) {
+        formAnalisis.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const nombre = document.getElementById('analisis-nombre').value;
+            const desde = document.getElementById('analisis-desde').value;
+            const hasta = document.getElementById('analisis-hasta').value;
+            const admin = document.getElementById('analisis-admin').value;
+
+            if (!nombre || !desde || !hasta) {
+                mostrarNotificacion("Por favor completa todos los campos", "error");
+                return;
+            }
+
+            // Actualizar tabla
+            const tbody = document.getElementById('tabla-historial-rendimiento');
+            if (tbody) {
+                const idNuevo = tbody.querySelectorAll('tr').length + 1;
+                const periodo = `${desde} a ${hasta}`;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${idNuevo}</td>
+                    <td>${nombre}</td>
+                    <td>${periodo}</td>
+                    <td>${admin}</td>
+                    <td><span class="etiqueta etiqueta-verde">Generado</span></td>
+                    <td><a href="#" class="texto-primario">PDF</a> | <a href="#" class="texto-primario">JSON</a></td>
+                `;
+                tbody.prepend(tr);
+            }
+
+            // Simular actualización de gráficos
+            if (miGraficoLineasReporte) {
+                miGraficoLineasReporte.data.datasets[0].data = Array.from({length: miGraficoLineasReporte.data.labels.length}, () => Math.floor(Math.random() * 100));
+                miGraficoLineasReporte.update();
+            }
+            if (miGraficoPastelReporte) {
+                miGraficoPastelReporte.data.datasets[0].data = Array.from({length: miGraficoPastelReporte.data.labels.length}, () => Math.floor(Math.random() * 50) + 10);
+                miGraficoPastelReporte.update();
+            }
+
+            cerrarModal();
+            mostrarNotificacion("Análisis generado correctamente y gráficas actualizadas.", "success");
+            formAnalisis.reset();
+        });
+    }
+}
+
 
 function inicializarNotificacionesBotones() {
     document.querySelectorAll('.boton, .enlace-oscuro').forEach(btn => {

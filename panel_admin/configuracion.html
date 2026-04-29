@@ -12,9 +12,9 @@
     <div class="contenedor-app">
       <!-- Barra Lateral -->
       <aside class="barra-lateral">
-        <div class="logo-barra-lateral">
-          <i class="fa-solid fa-scale-balanced" style="color: #1c84ee; margin-right: 12px"></i>
-          PesaTusPesos
+        <div class="logo-barra-lateral" style="font-family: 'Montserrat', sans-serif;">
+          <i class="fa-solid fa-coins" style="color: #CFB53B; margin-right: 12px"></i>
+          PESATUSPESOS
         </div>
         <nav class="navegacion-barra-lateral">
           <a href="resumen.html" class="item-navegacion" data-target="resumen">
@@ -68,69 +68,98 @@
 
         <div class="area-contenido">
           <section id="seccion-configuracion" class="seccion-pagina activo">
-            <div class="panel">
-              <h2>Ajustes de Sistema</h2>
-              <hr />
-              <div class="seccion-ajuste">
-                <h3>General</h3>
-                <div class="fila-formulario">
-                  <div class="grupo-formulario flex-1">
-                    <label>Nombre de la Aplicación</label>
-                    <input type="text" class="control-formulario" id="config-nombre-app" value="PesaTusPesos" />
-                  </div>
-                  <div class="grupo-formulario flex-1">
-                    <label>Idioma Predeterminado</label>
-                    <select class="control-formulario" id="config-idioma">
-                      <option value="es" selected>Español</option>
-                      <option value="en">English</option>
-                    </select>
-                  </div>
-                  <div class="grupo-formulario flex-1">
-                    <label>Zona Horaria</label>
-                    <select class="control-formulario" id="config-zona-horaria">
-                      <option value="GMT-5">GMT-5 (América/Bogotá)</option>
-                      <option value="GMT-6">GMT-6 (América/CDMX)</option>
-                      <option value="UTC">UTC (Universal)</option>
-                    </select>
-                  </div>
+            <div class="encabezado-panel" style="margin-bottom: 20px; border-bottom: 1px solid var(--color-borde); padding-bottom: 15px;">
+              <h2 style="margin: 0;">Ajustes de Sistema</h2>
+            </div>
+            
+            <div class="grid-configuracion">
+              <!-- Tarjeta General -->
+              <div class="tarjeta-config">
+                <h3><i class="fa-solid fa-sliders"></i> General</h3>
+                <div class="config-item flex-col">
+                  <label for="config-nombre-app">Nombre de la Aplicación</label>
+                  <input type="text" class="control-formulario" id="config-nombre-app" value="PesaTusPesos" />
+                </div>
+                <div class="config-item flex-col">
+                  <label for="config-idioma">Idioma Predeterminado</label>
+                  <select class="control-formulario" id="config-idioma">
+                    <option value="es" selected>Español</option>
+                    <option value="en">English</option>
+                  </select>
+                </div>
+                <div class="config-item flex-col">
+                  <label for="config-zona-horaria">Zona Horaria</label>
+                  <select class="control-formulario" id="config-zona-horaria">
+                    <option value="GMT-5">GMT-5 (América/Bogotá)</option>
+                    <option value="GMT-6">GMT-6 (América/CDMX)</option>
+                    <option value="UTC">UTC (Universal)</option>
+                  </select>
                 </div>
               </div>
-              <hr />
-              <div class="seccion-ajuste">
-                <h3>Seguridad</h3>
-                <div class="fila-formulario mb-20">
-                  <div class="grupo-formulario grupo-checkbox flex-1">
-                    <input type="checkbox" id="config-2fa" onchange="manejarCambioConfiguracion(this, 'Habilitar 2FA Obligatorio')" />
-                    <label>Habilitar 2FA Obligatorio</label>
+
+              <!-- Tarjeta Seguridad -->
+              <div class="tarjeta-config">
+                <h3><i class="fa-solid fa-shield-halved"></i> Seguridad</h3>
+                <div class="config-item">
+                  <div>
+                    <label>Autenticación 2FA</label>
+                    <p>Habilitar 2FA obligatorio para administradores.</p>
                   </div>
-                  <div class="grupo-formulario grupo-checkbox flex-1">
-                    <input type="checkbox" id="config-pass" checked onchange="manejarCambioConfiguracion(this, 'Longitud Mínima Contraseña: 10')" />
-                    <label>Longitud Mínima Contraseña: 10</label>
+                  <label class="switch">
+                    <input type="checkbox" id="config-2fa" onchange="manejarCambioConfiguracion(this, 'Habilitar 2FA Obligatorio')">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="config-item">
+                  <div>
+                    <label>Política de Contraseñas</label>
+                    <p>Forzar longitud mínima de 10 caracteres.</p>
                   </div>
-                  <div class="flex-1" style="text-align: right">
-                    <button class="boton boton-primario boton-block" id="boton-ssl">
-                      <i class="fa-solid fa-shield-cat"></i> Gestionar SSL
-                    </button>
-                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="config-pass" checked onchange="manejarCambioConfiguracion(this, 'Longitud Mínima Contraseña: 10')">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div style="margin-top: auto; padding-top: 15px;">
+                  <button class="boton boton-primario boton-block" id="boton-ssl" style="width: 100%;">
+                    <i class="fa-solid fa-shield-cat"></i> Gestionar Certificados SSL
+                  </button>
                 </div>
               </div>
-              <hr />
-              <div class="seccion-ajuste">
-                <h3>Notificaciones</h3>
-                <div class="fila-formulario mb-20">
-                  <div class="grupo-formulario grupo-checkbox flex-1">
-                    <input type="checkbox" id="config-correo" checked onchange="manejarCambioConfiguracion(this, 'Enviar correos de alerta')" />
-                    <label>Enviar correos de alerta</label>
+
+              <!-- Tarjeta Notificaciones -->
+              <div class="tarjeta-config">
+                <h3><i class="fa-solid fa-bell"></i> Notificaciones</h3>
+                <div class="config-item">
+                  <div>
+                    <label>Alertas por Correo</label>
+                    <p>Enviar resúmenes de actividad críticos por email.</p>
                   </div>
-                  <div class="grupo-formulario grupo-checkbox flex-1">
-                    <input type="checkbox" id="config-inapp" checked onchange="manejarCambioConfiguracion(this, 'Notificaciones in-app')" />
-                    <label>Notificaciones in-app</label>
-                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="config-correo" checked onchange="manejarCambioConfiguracion(this, 'Enviar correos de alerta')">
+                    <span class="slider"></span>
+                  </label>
                 </div>
-                <a href="#" class="enlace-oscuro" id="boton-smtp"><i class="fa-solid fa-envelope"></i> Configurar Servidor SMTP</a>
+                <div class="config-item">
+                  <div>
+                    <label>Notificaciones In-App</label>
+                    <p>Mostrar alertas en la campana superior.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="config-inapp" checked onchange="manejarCambioConfiguracion(this, 'Notificaciones in-app')">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div style="margin-top: auto; padding-top: 15px;">
+                  <button class="boton boton-block" id="boton-smtp" style="width: 100%; background: #f1f5f9; color: var(--color-texto-principal); border: 1px solid var(--color-borde);">
+                    <i class="fa-solid fa-envelope"></i> Configurar Servidor SMTP
+                  </button>
+                </div>
               </div>
-              <hr />
-              <button class="boton boton-primario mt-20" id="boton-guardar-config" style="padding: 12px 30px">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; border-top: 1px solid var(--color-borde); padding-top: 20px;">
+              <button class="boton boton-primario" id="boton-guardar-config" style="padding: 12px 30px; font-size: 1rem;">
                 <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
               </button>
             </div>

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;900&display=swap');
 :root {
   /* Paleta de colores solicitada */
   --color-barra-lateral: #001524;
@@ -153,7 +154,7 @@ body {
 .barra-superior-derecha {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 }
 
 .icono-barra-superior {
@@ -845,7 +846,6 @@ body {
   cursor: pointer;
   display: flex;
   align-items: center;
-  margin-right: 15px;
 }
 .contenedor-campana:hover .icono-barra-superior {
   color: var(--color-azul-brillante);
@@ -894,3 +894,107 @@ body {
   gap: 10px;
 }
 
+/* --- Toggle Switch --- */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #cbd5e1;
+  transition: .4s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+input:checked + .slider {
+  background-color: var(--color-azul-brillante);
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* --- Configuracion Cards --- */
+.grid-configuracion {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+  margin-top: 25px;
+  margin-bottom: 30px;
+}
+.tarjeta-config {
+  background: var(--color-fondo-tarjeta);
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+}
+.tarjeta-config h3 {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.15rem;
+  margin-bottom: 20px;
+  color: var(--color-texto-principal);
+  border-bottom: 1px solid var(--color-borde);
+  padding-bottom: 12px;
+}
+.tarjeta-config h3 i {
+  color: var(--color-azul-brillante);
+}
+.config-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.config-item.flex-col {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.config-item:last-child {
+  margin-bottom: 0;
+}
+.config-item label {
+  font-size: 0.95rem;
+  color: var(--color-texto-principal);
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+.config-item > div {
+  flex: 1;
+  margin-right: 15px;
+}
+.config-item p {
+  font-size: 0.8rem;
+  color: var(--color-gris-medio);
+  margin-top: 4px;
+}
+.config-item .control-formulario {
+  width: 100%;
+  margin-top: 10px;
+}
