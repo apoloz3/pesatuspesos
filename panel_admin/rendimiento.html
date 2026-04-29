@@ -12,9 +12,9 @@
     <div class="contenedor-app">
       <!-- Barra Lateral -->
       <aside class="barra-lateral">
-        <div class="logo-barra-lateral">
-          <i class="fa-solid fa-scale-balanced" style="color: #1c84ee; margin-right: 12px"></i>
-          PesaTusPesos
+        <div class="logo-barra-lateral" style="font-family: 'Montserrat', sans-serif;">
+          <i class="fa-solid fa-coins" style="color: #CFB53B; margin-right: 12px"></i>
+          PESATUSPESOS
         </div>
         <nav class="navegacion-barra-lateral">
           <a href="resumen.html" class="item-navegacion" data-target="resumen">
@@ -115,7 +115,7 @@
                         <th>Acciones</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tabla-historial-rendimiento">
                       <tr>
                         <td>1</td><td>Actividad del Usuario</td><td>Marzo 2024</td><td>Luis Pérez</td>
                         <td><span class="etiqueta etiqueta-verde">Completado</span></td>
@@ -125,7 +125,7 @@
                   </table>
                 </div>
                 <div style="text-align: right; margin-top: 20px">
-                  <button class="boton boton-primario">Generar Nuevo Análisis</button>
+                  <button class="boton boton-primario" id="btn-generar-analisis">Generar Nuevo Análisis</button>
                 </div>
               </div>
             </div>
@@ -226,6 +226,46 @@
             <button class="boton boton-rojo" id="btn-aceptar-confirmacion">Aceptar</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Modal Nuevo Análisis -->
+    <div id="modal-nuevo-analisis" class="superposicion-modal">
+      <div class="contenido-modal" style="max-width: 500px; padding: 25px;">
+        <div class="encabezado-modal" style="margin-bottom: 20px; border-bottom: 1px solid var(--color-borde); padding-bottom: 10px;">
+          <h3 style="font-size: 1.3rem;"><i class="fa-solid fa-chart-pie" style="color: var(--color-azul-brillante);"></i> Generar Nuevo Análisis</h3>
+          <button class="cerrar-modal" id="cerrar-modal-analisis">&times;</button>
+        </div>
+        <form id="form-nuevo-analisis">
+          <div class="grupo-formulario mb-15">
+            <label style="display: block; margin-bottom: 5px; font-weight: 500;">Nombre del Análisis</label>
+            <input type="text" class="control-formulario" id="analisis-nombre" required placeholder="Ej. Resumen Q1 2024" />
+          </div>
+          <div class="fila-formulario mb-15">
+            <div class="grupo-formulario flex-1">
+              <label style="display: block; margin-bottom: 5px; font-weight: 500;">Generado por</label>
+              <input type="text" class="control-formulario" id="analisis-admin" readonly style="background: #f1f5f9;" />
+            </div>
+            <div class="grupo-formulario flex-1">
+              <label style="display: block; margin-bottom: 5px; font-weight: 500;">Fecha Actual</label>
+              <input type="text" class="control-formulario" id="analisis-fecha" readonly style="background: #f1f5f9;" />
+            </div>
+          </div>
+          <div class="fila-formulario mb-15">
+            <div class="grupo-formulario flex-1">
+              <label style="display: block; margin-bottom: 5px; font-weight: 500;">Desde</label>
+              <input type="date" class="control-formulario" id="analisis-desde" required />
+            </div>
+            <div class="grupo-formulario flex-1">
+              <label style="display: block; margin-bottom: 5px; font-weight: 500;">Hasta</label>
+              <input type="date" class="control-formulario" id="analisis-hasta" required />
+            </div>
+          </div>
+          <div style="text-align: right; margin-top: 25px;">
+            <button type="button" class="boton" id="btn-cancelar-analisis">Cancelar</button>
+            <button type="submit" class="boton boton-primario">Generar Gráficas</button>
+          </div>
+        </form>
       </div>
     </div>
 
