@@ -22,6 +22,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const mensajeAviso = document.getElementById("mensajeAviso");
   const btnAceptarAviso = document.getElementById("btnAceptarAviso");
   const modalCrearMeta = document.getElementById("modalCrearMeta");
+  
+  let metaEditando = null; // Título de la meta que se está editando
+  let originalMetaTitle = ""; // Título original para referencia al guardar
+  let metaAEliminar = null; // Meta pendiente de eliminación
+  let originalValues = {}; // Para detectar cambios al editar
 
   function mostrarAlerta(mensaje) {
     if (mensajeAviso && modalAviso) {
@@ -53,6 +58,117 @@ document.addEventListener("DOMContentLoaded", function () {
     if (modalEliminar && e.target === modalEliminar) {
       modalEliminar.classList.remove("activo");
       metaAEliminar = null;
+    }
+
+    // --- Lógica de Menú de Acciones (Tres Puntos) ---
+    const btnMenu = e.target ? e.target.closest(".card-menu-btn") : null;
+    if (btnMenu) {
+      e.stopPropagation();
+      const dropdown = btnMenu.parentElement.querySelector(".card-dropdown");
+      
+      // Cerrar otros dropdowns abiertos
+      document.querySelectorAll('.card-dropdown.active').forEach(d => {
+        if (d !== dropdown) d.classList.remove('active');
+      });
+      
+      if (dropdown) {
+        dropdown.classList.toggle('active');
+      }
+      return;
+    } else if (e.target && !e.target.closest(".card-dropdown")) {
+      // Cerrar todos los dropdowns si se hace clic fuera
+      document.querySelectorAll('.card-dropdown.active').forEach(d => d.classList.remove('active'));
+    }
+
+    // --- Manejo de opción Editar ---
+    if (e.target && (e.target.classList.contains("edit") || e.target.closest(".edit"))) {
+      const btnEdit = e.target.classList.contains("edit") ? e.target : e.target.closest(".edit");
+      const cardEdit = btnEdit.closest(".meta-card") || btnEdit.closest(".lista-meta-item");
+      if (cardEdit) {
+        const titleEl = cardEdit.querySelector(".meta-titulo, .lista-meta-nombre");
+        const titulo = titleEl ? titleEl.textContent : "";
+        const total = cardEdit.getAttribute("data-total") || "0";
+        const aporte = cardEdit.getAttribute("data-aporte") || "0";
+        const frecuencia = cardEdit.getAttribute("data-frecuencia") || "3";
+        let bgUrl = cardEdit.style.backgroundImage;
+        if (!bgUrl) {
+            const thumb = cardEdit.querySelector('.lista-meta-thumb');
+            if (thumb) bgUrl = thumb.style.backgroundImage;
+        }
+
+        // Cargar datos al modal
+        if (tituloMetaInput) tituloMetaInput.value = titulo;
+        if (montoTotalInput) {
+            montoTotalInput.value = parseInt(total, 10).toLocaleString('es-CO');
+            if (typeof calculateAporte === 'function') calculateAporte();
+        }
+        if (frecuenciaSlider) {
+            frecuenciaSlider.value = frecuencia;
+            frecuenciaSlider.dispatchEvent(new Event('input'));
+        }
+        
+        if (btnSubirFoto) {
+            btnSubirFoto.style.backgroundImage = bgUrl;
+            const cbFoto = document.getElementById("contenidoBotonFoto");
+            if (cbFoto) cbFoto.style.display = "none";
+        }
+
+        const hTitle = document.querySelector('.crear-header h2');
+        if (hTitle) hTitle.textContent = "EDITAR META";
+        if (btnGuardarMeta) btnGuardarMeta.textContent = "GUARDAR CAMBIOS";
+
+        metaEditando = titulo;
+        originalMetaTitle = titulo;
+        
+        originalValues = {
+            titulo: titulo,
+            montoTotal: parseFloat(total),
+            duracion: duracionSlider.value,
+            frecuencia: frecuenciaSlider.value,
+            foto: bgUrl
+        };
+
+        if (modalCrearMeta) modalCrearMeta.classList.add("activo");
+        checkModalValidity();
+      }
+    }
+
+    // --- Manejo de opción Eliminar ---
+    if (e.target && (e.target.classList.contains("delete") || e.target.closest(".delete") || e.target.classList.contains("btn-eliminar-meta") || e.target.closest(".btn-eliminar-meta"))) {
+      const cardDel = e.target.closest(".meta-card") || e.target.closest(".lista-meta-item");
+      if (cardDel) {
+        const titleEl = cardDel.querySelector(".meta-titulo, .lista-meta-nombre");
+        const titulo = titleEl ? titleEl.textContent : "";
+        metaAEliminar = {
+          titulo: titulo,
+          elemento: cardDel
+        };
+        const modalDel = document.getElementById("modalEliminarMeta");
+        if (modalDel) modalDel.classList.add("activo");
+      }
+    }
+
+    // --- Manejo de botón Aportar ---
+    if (e.target && e.target.classList.contains("boton-aportar")) {
+      const cardAp = e.target.closest(".meta-card");
+      if (cardAp) {
+        const titleEl = cardAp.querySelector(".meta-titulo");
+        const titulo = titleEl ? titleEl.textContent : "Mi Meta";
+        const actual = cardAp.getAttribute("data-actual") || "0";
+        const total = cardAp.getAttribute("data-total") || "0";
+        const aporte = cardAp.getAttribute("data-aporte") || "0";
+        const frecuencia = cardAp.getAttribute("data-frecuencia") || "3";
+        const bg = cardAp.style.backgroundImage;
+        
+        localStorage.setItem("metaSeleccionadaTitulo", titulo);
+        localStorage.setItem("metaSeleccionadaImagen", bg);
+        localStorage.setItem("metaSeleccionadaActual", actual);
+        localStorage.setItem("metaSeleccionadaTotal", total);
+        localStorage.setItem("metaSeleccionadaAporte", aporte);
+        localStorage.setItem("metaSeleccionadaFrecuencia", frecuencia);
+        
+        window.location.href = "panel_aporte/aporte.html";
+      }
     }
   });
 
@@ -349,28 +465,193 @@ document.addEventListener("DOMContentLoaded", function () {
   const cardCrear = document.querySelector(".card-crear");
   const cerrarModalCrear = document.getElementById("cerrarModalCrear");
   const btnCancelarCrear = document.getElementById("btnCancelarCrear");
+  const btnGuardarMeta = document.getElementById("btnGuardarMeta");
+  const tituloMetaInput = document.getElementById("tituloMeta");
+  const montoTotalInput = document.getElementById("montoTotal");
+  const btnSubirFoto = document.getElementById("btnSubirFoto");
+  const duracionSlider = document.getElementById("duracionMeses");
+  const frecuenciaSlider = document.getElementById("frecuenciaAporte");
+  const inicioMes = document.getElementById("inicioMes");
+  const inicioAno = document.getElementById("inicioAno");
+  const metaMes = document.getElementById("metaMes");
+  const metaAno = document.getElementById("metaAno");
+  const montoAporte = document.getElementById("montoAporte");
+  const duracionText = document.getElementById("duracionText");
 
-  if (cardCrear && modalCrearMeta) {
-    cardCrear.addEventListener("click", () => {
-      modalCrearMeta.classList.add("activo");
+  /** Sistema de validación visual */
+  function setFieldError(input, message) {
+    if (!input) return;
+    input.classList.add("invalid");
+    let errorEl = input.nextElementSibling;
+    if (!errorEl || !errorEl.classList.contains("error-msg")) {
+      errorEl = document.createElement("span");
+      errorEl.className = "error-msg";
+      input.insertAdjacentElement('afterend', errorEl);
+    }
+    errorEl.textContent = message;
+  }
+
+  function clearFieldError(input) {
+    if (!input) return;
+    input.classList.remove("invalid");
+    const errorEl = input.nextElementSibling;
+    if (errorEl && errorEl.classList.contains("error-msg")) {
+      errorEl.textContent = "";
+    }
+  }
+
+  function checkModalValidity() {
+    if (!btnGuardarMeta) return;
+    let isValid = true;
+
+    // 1. Validar Título
+    const tit = (tituloMetaInput.value || "").trim();
+    if (tit.length < 3 || tit.length > 60) {
+      isValid = false;
+    }
+
+    // 2. Validar Monto Total
+    const totalStr = montoTotalInput.value.replace(/\D/g, "");
+    const total = parseFloat(totalStr) || 0;
+    if (total < 1000) {
+      isValid = false;
+    }
+
+    // 3. Validar Fechas (Meta posterior a Inicio)
+    const startM = parseInt(inicioMes.value, 10);
+    const startY = parseInt(inicioAno.value, 10);
+    const endM = parseInt(metaMes.value, 10);
+    const endY = parseInt(metaAno.value, 10);
+    const startDate = new Date(startY, startM, 1);
+    const endDate = new Date(endY, endM, 1);
+
+    if (endDate <= startDate) {
+      setFieldError(metaMes, "La fecha meta debe ser posterior al inicio");
+      isValid = false;
+    } else {
+      clearFieldError(metaMes);
+    }
+
+    // 4. Lógica de botón según Modo (Crear o Editar)
+    if (metaEditando) {
+      // Validar que el nuevo total no sea menor a lo ya ahorrado
+      const actual = parseFloat(localStorage.getItem(`progreso_meta_${originalMetaTitle}`) || "0");
+      if (total < actual) {
+        setFieldError(montoTotalInput, "El monto objetivo no puede ser menor al ya ahorrado");
+        isValid = false;
+      }
+
+      // Comprobar si realmente hubo cambios para habilitar el botón
+      const hasChanged = 
+        tit !== originalValues.titulo ||
+        total !== originalValues.montoTotal ||
+        duracionSlider.value !== originalValues.duracion ||
+        frecuenciaSlider.value !== originalValues.frecuencia ||
+        btnSubirFoto.style.backgroundImage !== originalValues.foto;
+
+      btnGuardarMeta.disabled = !(isValid && hasChanged);
+    } else {
+      // Modo Crear: solo importa que sea válido
+      btnGuardarMeta.disabled = !isValid;
+    }
+
+    // Advertencia de lógica (opcional)
+    validatePlanLogic();
+
+    return isValid;
+  }
+
+  function validatePlanLogic() {
+    const total = parseFloat(montoTotalInput.value.replace(/\D/g, "")) || 0;
+    const months = parseInt(duracionSlider.value, 10);
+    const freq = parseInt(frecuenciaSlider.value, 10);
+    
+    let pagos = months;
+    if (freq === 1) pagos = months * 4;
+    else if (freq === 2) pagos = months * 2;
+    
+    const aporteCalculado = Math.ceil(total / (pagos || 1));
+    const warningEl = document.getElementById("warningLogica");
+    
+    // Si por alguna razón el aporte es 0 pero hay meta, mostrar advertencia
+    if (warningEl) {
+      if (total > 0 && aporteCalculado <= 0) {
+        warningEl.style.display = "block";
+      } else {
+        warningEl.style.display = "none";
+      }
+    }
+  }
+
+  function setupRealTimeValidation() {
+    const inputs = [tituloMetaInput, montoTotalInput];
+    inputs.forEach(input => {
+      if (!input) return;
+      input.addEventListener("input", () => {
+        if (input === tituloMetaInput) {
+          const val = input.value.trim();
+          if (val.length === 0) setFieldError(input, "Este campo es obligatorio");
+          else if (val.length < 3) setFieldError(input, "Mínimo 3 caracteres");
+          else if (val.length > 60) setFieldError(input, "Máximo 60 caracteres");
+          else clearFieldError(input);
+        } else if (input === montoTotalInput) {
+          const val = parseFloat(input.value.replace(/\D/g, "")) || 0;
+          if (val < 1000) setFieldError(input, "El monto debe ser mayor a 1.000");
+          else clearFieldError(input);
+        }
+        checkModalValidity();
+      });
     });
 
-    const closeModal = () => modalCrearMeta.classList.remove("activo");
+    duracionSlider.addEventListener("input", checkModalValidity);
+    frecuenciaSlider.addEventListener("input", checkModalValidity);
+    
+    [inicioMes, inicioAno, metaMes, metaAno].forEach(sel => {
+      if (sel) sel.addEventListener("change", checkModalValidity);
+    });
+  }
 
-    if (cerrarModalCrear) cerrarModalCrear.addEventListener("click", closeModal);
-    if (btnCancelarCrear) btnCancelarCrear.addEventListener("click", closeModal);
+  setupRealTimeValidation();
 
-    const btnGuardarMeta = document.getElementById("btnGuardarMeta");
-    const tituloMetaInput = document.getElementById("tituloMeta");
-    const montoTotalInput = document.getElementById("montoTotal");
-    const btnSubirFoto = document.getElementById("btnSubirFoto");
+  const closeModal = () => modalCrearMeta && modalCrearMeta.classList.remove("activo");
 
-    if (btnGuardarMeta) {
-      btnGuardarMeta.addEventListener("click", () => {
+  const resetModal = () => {
+    metaEditando = null;
+    originalMetaTitle = "";
+    const headerTitle = document.querySelector('.crear-header h2');
+    if (headerTitle) headerTitle.textContent = "CREAR NUEVA META";
+    if (btnGuardarMeta) btnGuardarMeta.textContent = "GUARDAR Y CREAR META";
+    
+    if (tituloMetaInput) tituloMetaInput.value = "";
+    if (montoTotalInput) montoTotalInput.value = "";
+    if (btnSubirFoto) {
+      btnSubirFoto.style.backgroundImage = "";
+      const contBoton = document.getElementById("contenidoBotonFoto");
+      if (contBoton) contBoton.style.display = "flex";
+      const txtBoton = document.getElementById("textoSubirFoto");
+      if (txtBoton) txtBoton.innerHTML = "SUBIR<br>FOTO";
+    }
+
+    // Limpiar errores visuales
+    document.querySelectorAll(".crear-input").forEach(clearFieldError);
+    checkModalValidity();
+  };
+
+  if (cardCrear) {
+    cardCrear.addEventListener("click", () => {
+      resetModal();
+      if (modalCrearMeta) modalCrearMeta.classList.add("activo");
+    });
+  }
+
+  if (cerrarModalCrear) cerrarModalCrear.addEventListener("click", closeModal);
+  if (btnCancelarCrear) btnCancelarCrear.addEventListener("click", closeModal);
+
+  if (btnGuardarMeta) {
+    btnGuardarMeta.addEventListener("click", () => {
         const titulo = tituloMetaInput && tituloMetaInput.value.trim() ? tituloMetaInput.value : "Mi Meta";
-        const metaMontoStr = montoTotalInput && montoTotalInput.value.trim() ? montoTotalInput.value : "$0";
+        const metaMontoStr = montoTotalInput && montoTotalInput.value.trim() ? montoTotalInput.value : "0";
         
-        // Limpiamos el monto total para tener un número puro
         const montoTotalNum = parseFloat(metaMontoStr.replace(/[^0-9]/g, "")) || 0;
 
         let bgImage = "url('img/textura_oro.png')";
@@ -378,109 +659,129 @@ document.addEventListener("DOMContentLoaded", function () {
           bgImage = btnSubirFoto.style.backgroundImage;
         }
 
-        const newCard = document.createElement("div");
-        newCard.className = "meta-card";
-        newCard.style.backgroundImage = bgImage;
-        // Asignamos metadatos financieros
-        newCard.setAttribute("data-actual", "0");
-        newCard.setAttribute("data-total", montoTotalNum);
-        const montoAporteInput = document.getElementById("montoAporte");
-        const frecuenciaAporteInput = document.getElementById("frecuenciaAporte");
-        const montoAporteNum = montoAporteInput ? parseFloat(montoAporteInput.value.replace(/[^0-9]/g, "")) || 0 : 0;
-        const frecuenciaVal = frecuenciaAporteInput ? frecuenciaAporteInput.value : "3";
-        newCard.setAttribute("data-aporte", montoAporteNum);
-        newCard.setAttribute("data-frecuencia", frecuenciaVal);
+        const montoAporteNum = montoAporte ? parseFloat(montoAporte.value.replace(/[^0-9]/g, "")) || 0 : 0;
+        const frecuenciaVal = frecuenciaSlider ? frecuenciaSlider.value : "3";
 
-        newCard.innerHTML = `
-          <div class="card-overlay">
-            <div class="card-header">
-              <span class="meta-label">Mi meta:</span>
-              <h2 class="meta-titulo">${titulo}</h2>
-            </div>
-            <div class="card-footer">
-              <div class="progreso-info">
-                <div class="progreso-texto">Progreso: <span class="monto-dinamico">0%</span></div>
-                <div class="progreso-bar">
-                  <div class="progreso-fill" style="width: 0%;"></div>
+        if (metaEditando) {
+            // Validar cambios críticos antes de proceder
+            const isCriticalChange = 
+                montoTotalNum !== originalValues.montoTotal ||
+                duracionSlider.value !== originalValues.duracion ||
+                frecuenciaVal !== originalValues.frecuencia;
+
+            if (isCriticalChange) {
+                if (!confirm("Estos cambios afectarán el cálculo de tu meta. ¿Deseas continuar?")) {
+                    return;
+                }
+            }
+
+            // LÓGICA DE EDICIÓN
+            const cards = Array.from(document.querySelectorAll('.meta-card:not(.card-crear), .lista-meta-item:not(.lista-crear)'));
+            const cardAEditar = cards.find(c => {
+                const titleEl = c.querySelector('.meta-titulo') || c.querySelector('.lista-meta-nombre');
+                return titleEl && titleEl.textContent === originalMetaTitle;
+            });
+            
+            if (cardAEditar) {
+                // Actualizar atributos y visual
+                cardAEditar.style.backgroundImage = bgImage;
+                cardAEditar.setAttribute("data-total", montoTotalNum);
+                cardAEditar.setAttribute("data-aporte", montoAporteNum);
+                cardAEditar.setAttribute("data-frecuencia", frecuenciaVal);
+                
+                const titleEl = cardAEditar.querySelector('.meta-titulo');
+                if (titleEl) titleEl.textContent = titulo;
+                
+                // Si el título cambió, actualizar localStorage
+                if (titulo !== originalMetaTitle) {
+                    // Migrar datos de progreso e historial si es necesario
+                    const progreso = localStorage.getItem(`progreso_meta_${originalMetaTitle}`);
+                    if (progreso) {
+                        localStorage.setItem(`progreso_meta_${titulo}`, progreso);
+                        localStorage.removeItem(`progreso_meta_${originalMetaTitle}`);
+                    }
+                    const historial = localStorage.getItem(`historial_meta_${originalMetaTitle}`);
+                    if (historial) {
+                        localStorage.setItem(`historial_meta_${titulo}`, historial);
+                        localStorage.removeItem(`historial_meta_${originalMetaTitle}`);
+                    }
+                    const historialDet = localStorage.getItem(`historial_detallado_meta_${originalMetaTitle}`);
+                    if (historialDet) {
+                        localStorage.setItem(`historial_detallado_meta_${titulo}`, historialDet);
+                        localStorage.removeItem(`historial_detallado_meta_${originalMetaTitle}`);
+                    }
+                }
+                
+                const actual = parseFloat(cardAEditar.getAttribute('data-actual') || '0');
+                applyMetaState(cardAEditar, actual, montoTotalNum, titulo);
+                
+                mostrarAlerta("Meta actualizada exitosamente");
+            }
+        } else {
+            // LÓGICA DE CREACIÓN (Existente)
+            const newCard = document.createElement("div");
+            newCard.className = "meta-card";
+            newCard.style.backgroundImage = bgImage;
+            newCard.setAttribute("data-actual", "0");
+            newCard.setAttribute("data-total", montoTotalNum);
+            newCard.setAttribute("data-aporte", montoAporteNum);
+            newCard.setAttribute("data-frecuencia", frecuenciaVal);
+
+            newCard.innerHTML = `
+              <div class="card-menu-container">
+                <button class="card-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
+                <div class="card-dropdown">
+                  <button class="dropdown-item edit"><i class="fas fa-edit"></i> Editar</button>
+                  <button class="dropdown-item delete"><i class="fas fa-trash-alt"></i> Eliminar</button>
                 </div>
               </div>
-              <button class="boton-aportar">Aportar</button>
-            </div>
-          </div>
-        `;
+              <div class="card-overlay">
+                <div class="card-header">
+                  <span class="meta-label">Mi meta:</span>
+                  <h2 class="meta-titulo">${titulo}</h2>
+                </div>
+                <div class="card-footer">
+                  <div class="progreso-info">
+                    <div class="progreso-texto">Progreso: <span class="monto-dinamico">0%</span></div>
+                    <div class="progreso-bar">
+                      <div class="progreso-fill" style="width: 0%;"></div>
+                    </div>
+                  </div>
+                  <button class="boton-aportar">Aportar</button>
+                </div>
+              </div>
+            `;
 
-        applyMetaState(newCard, 0, montoTotalNum, titulo);
+            applyMetaState(newCard, 0, montoTotalNum, titulo);
 
-        const track = document.getElementById('carouselTrack');
-        if (track) {
-          track.insertBefore(newCard, cardCrear);
-          if (typeof initCarousel === 'function') initCarousel();
-
-          closeModal();
-          mostrarAlerta("Meta creada exitosamente");
-
-          if (tituloMetaInput) tituloMetaInput.value = "";
-          if (montoTotalInput) montoTotalInput.value = "";
-          if (btnSubirFoto) {
-            btnSubirFoto.style.background = "";
-            const contBoton = document.getElementById("contenidoBotonFoto");
-            const txtBoton = document.getElementById("textoSubirFoto");
-            if (contBoton) contBoton.style.display = "flex";
-            if (txtBoton) txtBoton.innerHTML = "SUBIR<br>FOTO";
-          }
+            if (track) {
+              track.insertBefore(newCard, cardCrear);
+            }
+            mostrarAlerta("Meta creada exitosamente");
         }
+
+        // Limpiar y cerrar
+        if (typeof initCarousel === 'function') initCarousel();
+        closeModal();
+
+        if (tituloMetaInput) tituloMetaInput.value = "";
+        if (montoTotalInput) montoTotalInput.value = "";
+        if (btnSubirFoto) {
+          btnSubirFoto.style.background = "";
+          const contBoton = document.getElementById("contenidoBotonFoto");
+          const txtBoton = document.getElementById("textoSubirFoto");
+          if (contBoton) contBoton.style.display = "flex";
+          if (txtBoton) txtBoton.innerHTML = "SUBIR<br>FOTO";
+        }
+        
+        resetModal();
       });
     }
-  }
 
-  /* ===============================
-       BOTONES APORTAR REDIRECCIÓN Y DATOS
-     =============================== */
-  // Usamos delegación de eventos para manejar botones actuales y futuros
-  document.addEventListener("click", (e) => {
-    // Manejo de botón Aportar
-    if (e.target && e.target.classList.contains("boton-aportar")) {
-      const card = e.target.closest(".meta-card");
-      if (card) {
-        const titulo = card.querySelector(".meta-titulo") ? card.querySelector(".meta-titulo").textContent : "Mi Meta";
-        const actual = card.getAttribute("data-actual") || "0";
-        const total = card.getAttribute("data-total") || "0";
-        const aporteSugerido = card.getAttribute("data-aporte") || "0";
-        const frecuencia = card.getAttribute("data-frecuencia") || "3";
-        
-        let bgUrl = card.style.backgroundImage;
-        if (!bgUrl) bgUrl = window.getComputedStyle(card).backgroundImage;
-        
-        localStorage.setItem("metaSeleccionadaTitulo", titulo);
-        localStorage.setItem("metaSeleccionadaImagen", bgUrl);
-        localStorage.setItem("metaSeleccionadaActual", actual);
-        localStorage.setItem("metaSeleccionadaTotal", total);
-        localStorage.setItem("metaSeleccionadaAporte", aporteSugerido);
-        localStorage.setItem("metaSeleccionadaFrecuencia", frecuencia);
-        
-        window.location.href = "panel_aporte/aporte.html";
-      }
-    }
-
-    // Manejo de botón Eliminar (Meta Completada)
-    if (e.target && (e.target.classList.contains("btn-eliminar-meta") || e.target.closest(".btn-eliminar-meta"))) {
-      const card = e.target.closest(".meta-card") || e.target.closest(".lista-meta-item");
-      if (card) {
-        const titulo = card.querySelector(".meta-titulo, .lista-meta-nombre").textContent;
-        metaAEliminar = {
-          titulo: titulo,
-          elemento: card
-        };
-        const modalEliminar = document.getElementById("modalEliminarMeta");
-        if (modalEliminar) modalEliminar.classList.add("activo");
-      }
-    }
-  });
 
   /* ===============================
        LOGICA DE ELIMINACION DE META
      =============================== */
-  let metaAEliminar = null;
   const modalEliminar = document.getElementById("modalEliminarMeta");
   const btnConfirmarEliminar = document.getElementById("btnConfirmarEliminarMeta");
   const btnCancelarEliminar = document.getElementById("btnCancelarEliminarMeta");
@@ -545,6 +846,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isCompleted) {
       card.classList.add("completada");
       
+      // Bloquear/Ocultar el menú de acciones en metas completadas
+      const menuBtn = card.querySelector(".card-menu-container");
+      if (menuBtn) menuBtn.style.display = "none";
+
       // Añadir contenedor de éxito en el centro si no existe
       if (!card.querySelector(".success-center-container")) {
         const successContainer = document.createElement("div");
@@ -571,18 +876,51 @@ document.addEventListener("DOMContentLoaded", function () {
               <span>100%</span>
             </div>
             <div class="progreso-bar">
-              <div class="progreso-fill" style="width: 100%;"></div>
+              <div class="progreso-fill" style="width: 100%; background: linear-gradient(90deg, #b8860b, #cfb53c, #b8860b);"></div>
             </div>
           </div>
           <button class="btn-eliminar-meta"><i class="fas fa-trash-alt"></i> Eliminar</button>
         `;
       }
     } else {
-      // Si no está completada, nos aseguramos de que solo muestre el porcentaje
+      // Si no está completada, nos aseguramos de que no tenga estilos de completada
+      card.classList.remove("completada");
+      const successContainer = card.querySelector(".success-center-container");
+      if (successContainer) successContainer.remove();
+      
+      // Mostrar el menú de nuevo si estaba oculto
+      const menuBtn = card.querySelector(".card-menu-container");
+      if (menuBtn) menuBtn.style.display = "block";
+
       const pct = total > 0 ? Math.min(100, Math.round((actual / total) * 100)) : 0;
-      const textoProgreso = card.querySelector(".progreso-texto span");
-      if (textoProgreso) {
-        textoProgreso.textContent = `${pct}%`;
+      
+      // Determinar color de barra según progreso
+      let colorBarra = "linear-gradient(90deg, #ff4d4d, #cfb53c)"; // Bajo (Rojo/Dorado)
+      if (pct >= 100) {
+        colorBarra = "linear-gradient(90deg, #b8860b, #cfb53c, #b8860b)"; // 100% (Oro)
+      } else if (pct >= 40) {
+        colorBarra = "linear-gradient(90deg, #2ecc71, #cfb53c)"; // Medio (Verde/Dorado)
+      }
+
+      // Restaurar footer si era el de completada
+      if (footer && (card.querySelector(".btn-eliminar-meta") || footer.innerHTML.includes("Objetivo logrado"))) {
+        footer.innerHTML = `
+          <div class="progreso-info">
+            <div class="progreso-texto">Progreso: <span class="monto-dinamico">${pct}%</span></div>
+            <div class="progreso-bar">
+              <div class="progreso-fill" style="width: ${pct}%; background: ${colorBarra};"></div>
+            </div>
+          </div>
+          <button class="boton-aportar">Aportar</button>
+        `;
+      } else {
+        const textoProgreso = card.querySelector(".progreso-texto span") || card.querySelector(".monto-dinamico");
+        if (textoProgreso) textoProgreso.textContent = `${pct}%`;
+        const fill = card.querySelector(".progreso-fill");
+        if (fill) {
+          fill.style.width = `${pct}%`;
+          fill.style.background = colorBarra;
+        }
       }
     }
   }
@@ -590,7 +928,6 @@ document.addEventListener("DOMContentLoaded", function () {
   /* ===============================
        BOTON SUBIR FOTO META
      =============================== */
-  const btnSubirFoto = document.getElementById("btnSubirFoto");
   const inputFotoMeta = document.getElementById("inputFotoMeta");
   const contenidoBotonFoto = document.getElementById("contenidoBotonFoto");
   const textoSubirFoto = document.getElementById("textoSubirFoto");
@@ -603,6 +940,20 @@ document.addEventListener("DOMContentLoaded", function () {
     inputFotoMeta.addEventListener("change", (e) => {
       const file = e.target.files && e.target.files[0];
       if (file) {
+        // Validar tamaño (2MB)
+        if (file.size > 2 * 1024 * 1024) {
+          mostrarAlerta("La imagen es demasiado grande. Máximo 2MB.");
+          e.target.value = "";
+          return;
+        }
+        // Validar formato
+        const allowed = ["image/jpeg", "image/png", "image/webp"];
+        if (!allowed.includes(file.type)) {
+          mostrarAlerta("Formato no permitido. Usa JPG, PNG o WEBP.");
+          e.target.value = "";
+          return;
+        }
+
         const reader = new FileReader();
         reader.onload = function (evento) {
           btnSubirFoto.style.background = `url('${evento.target.result}') center/cover no-repeat`;
@@ -617,22 +968,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /* ===============================
-       LÓGICA DE CALCULADORA DE METAS
-     =============================== */
-  const montoTotal = document.getElementById("montoTotal");
-  const duracionMeses = document.getElementById("duracionMeses");
-  const duracionText = document.getElementById("duracionText");
-  const inicioMes = document.getElementById("inicioMes");
-  const inicioAno = document.getElementById("inicioAno");
-  const metaMes = document.getElementById("metaMes");
-  const metaAno = document.getElementById("metaAno");
-  const frecuenciaAporte = document.getElementById("frecuenciaAporte");
-  const montoAporte = document.getElementById("montoAporte");
+   /* LÓGICA DE CALCULADORA DE METAS */
 
   const mesesArray = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
-  if (montoTotal && duracionMeses && inicioMes && metaMes) {
+  if (montoTotalInput && duracionSlider && inicioMes && metaMes) {
     const currentDate = new Date();
     const curYear = currentDate.getFullYear();
     const curMonth = currentDate.getMonth();
@@ -666,13 +1006,13 @@ document.addEventListener("DOMContentLoaded", function () {
     function formatCurrency(val) {
       val = val.replace(/\D/g, "");
       if (val === "") return "";
-      return "$" + parseInt(val, 10).toLocaleString("es-ES");
+      return parseInt(val, 10).toLocaleString("es-CO");
     }
 
     function calculateAporte() {
-      let total = parseFloat(montoTotal.value.replace(/\D/g, "")) || 0;
-      let months = parseInt(duracionMeses.value, 10) || 1;
-      let freq = parseInt(frecuenciaAporte.value, 10) || 3;
+      let total = parseFloat(montoTotalInput.value.replace(/\D/g, "")) || 0;
+      let months = parseInt(duracionSlider.value, 10) || 1;
+      let freq = parseInt(frecuenciaSlider.value, 10) || 3;
 
       let pagos = months;
       if (freq === 1) pagos = months * 4; // SEMANAL
@@ -680,11 +1020,11 @@ document.addEventListener("DOMContentLoaded", function () {
       else if (freq === 3) pagos = months * 1; // MENSUAL
 
       let aporte = total / (pagos || 1);
-      montoAporte.value = total === 0 ? "$0" : "$" + Math.ceil(aporte).toLocaleString("es-ES");
+      montoAporte.value = total === 0 ? "0" : Math.ceil(aporte).toLocaleString("es-CO");
     }
 
     function updateMetaDateFromSlider() {
-      let monthsToAdd = parseInt(duracionMeses.value, 10);
+      let monthsToAdd = parseInt(duracionSlider.value, 10);
       let startM = parseInt(inicioMes.value, 10);
       let startY = parseInt(inicioAno.value, 10);
 
@@ -719,23 +1059,23 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       if (diffMonths > 120) diffMonths = 120;
 
-      duracionMeses.value = diffMonths;
+      duracionSlider.value = diffMonths;
       duracionText.textContent = `${diffMonths} M`;
       calculateAporte();
     }
 
-    montoTotal.addEventListener("input", (e) => {
+    montoTotalInput.addEventListener("input", (e) => {
       let rawVal = e.target.value.replace(/\D/g, "");
       e.target.value = formatCurrency(rawVal);
       calculateAporte();
     });
 
-    duracionMeses.addEventListener("input", updateMetaDateFromSlider);
+    duracionSlider.addEventListener("input", updateMetaDateFromSlider);
     inicioMes.addEventListener("change", updateSliderFromMetaDate);
     inicioAno.addEventListener("change", updateSliderFromMetaDate);
     metaMes.addEventListener("change", updateSliderFromMetaDate);
     metaAno.addEventListener("change", updateSliderFromMetaDate);
-    frecuenciaAporte.addEventListener("input", calculateAporte);
+    frecuenciaSlider.addEventListener("input", calculateAporte);
 
     updateMetaDateFromSlider();
   }
@@ -841,6 +1181,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const bgImage = card.style.backgroundImage || '';
 
       const isCompleted = actual >= total && total > 0;
+      
+      // Determinar color de barra según progreso
+      let colorBarra = "linear-gradient(90deg, #ff4d4d, #cfb53c)"; 
+      if (pct >= 100) {
+        colorBarra = "linear-gradient(90deg, #b8860b, #cfb53c, #b8860b)";
+      } else if (pct >= 40) {
+        colorBarra = "linear-gradient(90deg, #2ecc71, #cfb53c)";
+      }
+
       const row = document.createElement('div');
       row.className = `lista-meta-item ${isCompleted ? 'completada' : ''}`;
 
@@ -859,10 +1208,21 @@ document.addEventListener("DOMContentLoaded", function () {
             <span>${pct}%</span>
           </div>
           <div class="lista-meta-bar">
-            <div class="lista-meta-fill" style="width: ${pct}%"></div>
+            <div class="lista-meta-fill" style="width: ${pct}%; background: ${colorBarra};"></div>
           </div>
         </div>
       `;
+
+      const actions = document.createElement('div');
+      actions.className = 'card-menu-container';
+      actions.innerHTML = `
+        <button class="card-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
+        <div class="card-dropdown">
+          <button class="dropdown-item edit"><i class="fas fa-edit"></i> Editar</button>
+          <button class="dropdown-item delete"><i class="fas fa-trash-alt"></i> Eliminar</button>
+        </div>
+      `;
+      if (isCompleted) actions.style.display = "none";
 
       const btn = document.createElement('button');
       if (isCompleted) {
@@ -887,6 +1247,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       row.appendChild(thumb);
       row.appendChild(info);
+      row.appendChild(actions);
       row.appendChild(btn);
 
       listaMetas.appendChild(row);
@@ -935,6 +1296,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (isCrear) {
         clone.addEventListener('click', () => {
+          if (typeof resetModal === 'function') resetModal();
           const m = document.getElementById('modalCrearMeta');
           if (m) m.classList.add('activo');
         });
