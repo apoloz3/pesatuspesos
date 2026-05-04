@@ -1,27 +1,15 @@
 // Base de datos estática simulada con persistencia en localStorage
-const DATOS_INICIALES_USUARIOS = [
-    { id: 1, nombre: "Ana García", email: "ana.garcia@mail.com", rol: "Usuario", activo: true, fecha: "12/03/2024" },
-    { id: 2, nombre: "Luis Pérez", email: "luis.perez@mail.com", rol: "Admin", activo: true, fecha: "01/02/2024" },
-    { id: 3, nombre: "María Rodríguez", email: "maria.rodriguez@mail.com", rol: "Usuario", activo: false, fecha: "25/04/2024" },
-    { id: 4, nombre: "Carlos López", email: "carlos.lopez@mail.com", rol: "Editor", activo: true, fecha: "05/01/2024" },
-    { id: 5, nombre: "Sofía Martínez", email: "sofia.martinez@mail.com", rol: "Moderador", activo: true, fecha: "15/03/2024" }
-];
+// Limpiar datos provisionales del navegador (localStorage)
+localStorage.removeItem('ptp_usuarios');
+localStorage.removeItem('ptp_roles');
+localStorage.removeItem('ptp_alertas');
+localStorage.removeItem('ptp_calificaciones');
 
-const DATOS_INICIALES_ROLES = [
-    { id: 1, nombre: "Admin", desc: "Control total del sistema", permisos: 50, activo: true },
-    { id: 2, nombre: "Editor", desc: "Creación de contenido", permisos: 25, activo: true },
-    { id: 3, nombre: "Moderador", desc: "Gestión de comunidad", permisos: 15, activo: true },
-    { id: 4, nombre: "Visor", desc: "Acceso de solo lectura", permisos: 5, activo: false },
-    { id: 5, nombre: "Usuario-Custom", desc: "Conjunto de permisos personalizado", permisos: 30, activo: true },
-    { id: 6, nombre: "Usuario", desc: "Permisos básicos", permisos: 1, activo: true }
-];
-
-// Cargar datos de localStorage o usar iniciales
-let usuarios = JSON.parse(localStorage.getItem('ptp_usuarios')) || DATOS_INICIALES_USUARIOS;
-let roles = JSON.parse(localStorage.getItem('ptp_roles')) || DATOS_INICIALES_ROLES;
-let alertasGlobales = JSON.parse(localStorage.getItem('ptp_alertas')) || [
-    { texto: "Sistema iniciado correctamente por Administrador", tipo: "info" }
-];
+// Inicializar arrays vacíos para la futura conexión con la BD
+let usuarios = [];
+let roles = [];
+let alertasGlobales = [];
+let calificaciones = [];
 
 // Estado de paginación para usuarios
 let paginaActualUsuarios = 1;
@@ -51,6 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
         inicializarMenuMovil();
         inicializarPanelLateralAdmin();
         inicializarModalAnalisis();
+        inicializarCalificaciones();
         actualizarEstadisticasDashboard();
         renderizarAlertas();
     } catch (error) {
@@ -1049,5 +1038,93 @@ function actualizarGraficos() {
         } else {
             miGraficoLineasReporte.update();
         }
+    }
+
+    // 5. Gráfico de Calificaciones eliminado, reemplazado por estrellas y lista.
+}
+
+function inicializarCalificaciones() {
+    const btnToggle = document.getElementById('btn-toggle-comentarios');
+    const contenedorComentarios = document.getElementById('contenedor-comentarios');
+    const iconoToggle = document.getElementById('icono-toggle-comentarios');
+    
+    if (btnToggle && contenedorComentarios) {
+        btnToggle.addEventListener('click', () => {
+            if (contenedorComentarios.style.display === 'none') {
+                contenedorComentarios.style.display = 'block';
+                if(iconoToggle) iconoToggle.style.transform = 'rotate(180deg)';
+            } else {
+                contenedorComentarios.style.display = 'none';
+                if(iconoToggle) iconoToggle.style.transform = 'rotate(0deg)';
+            }
+        });
+    }
+
+    renderizarCalificaciones();
+}
+
+function renderizarCalificaciones() {
+    const promedioEl = document.getElementById('promedio-calificacion');
+    const totalEl = document.getElementById('total-resenas');
+    const estrellasEl = document.getElementById('estrellas-visuales');
+    const listaComentarios = document.getElementById('lista-comentarios');
+
+    if (!promedioEl || !totalEl || !estrellasEl || !listaComentarios) return;
+
+    if (calificaciones.length === 0) {
+        promedioEl.innerText = "0.0";
+        totalEl.innerText = "0";
+        estrellasEl.innerHTML = `
+            <i class="fa-regular fa-star"></i>
+            <i class="fa-regular fa-star"></i>
+            <i class="fa-regular fa-star"></i>
+            <i class="fa-regular fa-star"></i>
+            <i class="fa-regular fa-star"></i>
+        `;
+        listaComentarios.innerHTML = '<p class="texto-secundario" style="text-align: center; font-size: 0.85rem; padding: 10px;">No hay calificaciones registradas en el sistema aún.</p>';
+        return;
+    }
+
+    let suma = 0;
+    calificaciones.forEach(c => suma += c.estrellas);
+    const promedio = (suma / calificaciones.length).toFixed(1);
+
+    promedioEl.innerText = promedio;
+    totalEl.innerText = calificaciones.length;
+
+    // Generar estrellas dinámicamente
+    let htmlEstrellas = '';
+    const promedioRounded = Math.round(promedio * 2) / 2;
+    for (let i = 1; i <= 5; i++) {
+        if (promedioRounded >= i) {
+            htmlEstrellas += '<i class="fa-solid fa-star"></i> ';
+        } else if (promedioRounded === i - 0.5) {
+            htmlEstrellas += '<i class="fa-solid fa-star-half-stroke"></i> ';
+        } else {
+            htmlEstrellas += '<i class="fa-regular fa-star"></i> ';
+        }
+    }
+    estrellasEl.innerHTML = htmlEstrellas;
+
+    // Renderizar comentarios
+    listaComentarios.innerHTML = '';
+    const calificacionesConComentario = calificaciones.filter(c => c.comentario && c.comentario.trim() !== '');
+    
+    if (calificacionesConComentario.length === 0) {
+        listaComentarios.innerHTML = '<p class="texto-secundario" style="text-align: center; font-size: 0.85rem; padding: 10px;">No hay comentarios para mostrar.</p>';
+    } else {
+        calificacionesConComentario.slice().reverse().forEach(c => {
+            listaComentarios.innerHTML += `
+                <div style="border-bottom: 1px solid var(--color-borde); padding-bottom: 10px; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <strong style="font-size: 0.85rem; color: var(--color-texto-principal);">${c.usuario || 'Usuario'}</strong>
+                        <span style="color: #facc15; font-size: 0.8rem;">
+                            ${Array(c.estrellas).fill('<i class="fa-solid fa-star"></i>').join('')}
+                        </span>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--color-gris-medio); margin: 0;">${c.comentario}</p>
+                </div>
+            `;
+        });
     }
 }
