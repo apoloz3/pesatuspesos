@@ -49,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const calendarGrid = document.getElementById('calendar-grid');
     const monthTitle = document.querySelector('.cal-month-title');
     const navBtns = document.querySelectorAll('.cal-nav-btn');
-    const calIconDay = document.querySelector('.cal-icon-day');
     const dateText = document.querySelector('.date-text');
     
     let currentDate = new Date();
@@ -134,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateSelectionText(day, month) {
-        if(calIconDay) calIconDay.textContent = day;
         if(dateText) dateText.textContent = `${day} de ${monthNamesCapitalized[month]}`;
     }
 
@@ -395,13 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tr.innerHTML = `
                 <td>
-                    <div class="td-fecha-container">
-                        <div class="badge-fecha">
-                            <strong>${parts[0]}</strong>
-                            <span>${monthName}</span>
-                        </div>
-                        <span class="td-fecha-full">${record.date}</span>
-                    </div>
+                    <span class="td-fecha-full">${record.date}</span>
                 </td>
                 <td>
                     <span class="tipo-aporte-badge ${classTipo}">

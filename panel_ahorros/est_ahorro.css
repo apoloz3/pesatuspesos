@@ -1749,8 +1749,8 @@ footer {
 }
 
 .foto-btn-large {
-  width: 280px;
-  height: 180px;
+  width: 350px;
+  height: 220px;
   background: linear-gradient(135deg, var(--gold-light), var(--matte-gold));
   color: var(--bg-deep);
   display: flex;
@@ -1968,8 +1968,8 @@ input:checked+.slider-toggle:before {
   background-size: 200% auto;
   color: var(--bg-deep);
   border: none;
-  padding: 14px 40px;
-  border-radius: 14px;
+  padding: 14px 14px;
+  border-radius: 30px;
   font-weight: 800;
   font-size: 14px;
   cursor: pointer;
@@ -1984,20 +1984,23 @@ input:checked+.slider-toggle:before {
 }
 
 .btn-secondary-transparent {
-  background: var(--matte-gold);
+  background: linear-gradient(90deg, #b8860b, #cfb53c, #b8860b);
+  background-size: 200% auto;
   border: none;
   color: var(--bg-deep);
-  padding: 14px 40px;
-  border-radius: 14px;
+  padding: 14px 14px;
+  border-radius: 30px;
   font-weight: 800;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary-transparent:hover {
+  background-position: right center;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 25px rgba(206, 176, 90, 0.4);
 }
 
 

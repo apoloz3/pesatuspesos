@@ -71,29 +71,6 @@ body {
     padding: 20px;
 }
 
-.btn-regresar {
-    position: absolute;
-    top: 30px;
-    left: 40px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    color: var(--accent-gold-light);
-    border: 1px solid var(--accent-gold-dark);
-    padding: 8px 24px;
-    border-radius: 30px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    z-index: 100;
-}
-
-.btn-regresar:hover {
-    background-color: rgba(207, 181, 60, 0.1);
-    box-shadow: 0 0 12px rgba(207, 181, 60, 0.2);
-    transform: translateX(-3px);
-}
 
 .modal-container {
     background: linear-gradient(145deg, var(--bg-navy) 0%, var(--bg-deep) 100%);
@@ -455,21 +432,11 @@ body {
     gap: 12px;
 }
 
-.calendar-icon {
-    position: relative;
-    color: var(--accent-gold);
-    font-size: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.cal-icon-day {
-    position: absolute;
-    top: 12px;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-primary);
+.selected-date-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(207, 181, 59, 0.4));
 }
 
 .date-text {
@@ -591,7 +558,7 @@ body {
     background-size: 200% auto;
     color: var(--text-ink); /* Dark teal for text to pop on gold */
     border: none;
-    padding: 12px 30px;
+    padding: 14px 14px;
     border-radius: 30px;
     font-weight: 700;
     font-size: 14px;
@@ -607,20 +574,23 @@ body {
 }
 
 .btn-secondary {
-    background: transparent;
-    border: 1px solid var(--border-light);
-    color: var(--text-primary);
-    padding: 12px 25px;
+    background: linear-gradient(90deg, var(--accent-gold-dark), var(--accent-gold-light), var(--accent-gold-dark));
+    background-size: 200% auto;
+    border: none;
+    color: var(--text-ink);
+    padding: 14px 14px;
     border-radius: 30px;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 14px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary:hover {
-    background: rgba(255,255,255,0.05);
-    border-color: var(--text-secondary);
+    background-position: right center;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(206, 176, 90, 0.4);
 }
 
 .history-link {
