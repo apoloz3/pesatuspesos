@@ -157,11 +157,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAportar = document.getElementById('btn-aportar');
     const btnCancelar = document.querySelector('.btn-secondary');
 
-    const parseMonto = (val) => parseFloat(val) || 0;
-    const formatMonto = (num) => num.toFixed(2);
+    const parseMonto = (val) => {
+        if (typeof val === 'number') return val;
+        // Eliminar todo lo que no sea dígito para procesar el número puro
+        const cleanVal = val.replace(/\D/g, '');
+        return parseFloat(cleanVal) || 0;
+    };
+    const formatMonto = (num) => num.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
     function updateMainButton(monto) {
-        if(btnAportar) btnAportar.innerHTML = `<i class="fas fa-coins" style="margin-right: 8px;"></i> APORTAR $${formatMonto(monto)}`;
+        if(btnAportar) btnAportar.innerHTML = `<i class="fas fa-coins" style="margin-right: 8px;"></i> APORTAR ${formatMonto(monto)}`;
     }
 
     // Obtener sugerencias de aporte
@@ -182,12 +187,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const baseBtn = document.createElement('button');
         baseBtn.className = 'quick-amount-btn';
         baseBtn.setAttribute('data-amount', baseAporte);
-        baseBtn.innerHTML = `$${baseAporte}`;
+        baseBtn.innerHTML = `${formatMonto(baseAporte)}`;
         
         const doubleBtn = document.createElement('button');
         doubleBtn.className = 'quick-amount-btn';
         doubleBtn.setAttribute('data-amount', baseAporte * 2);
-        doubleBtn.innerHTML = `$${baseAporte * 2}`;
+        doubleBtn.innerHTML = `${formatMonto(baseAporte * 2)}`;
         
         const otherBtn = document.createElement('button');
         otherBtn.className = 'quick-amount-btn outline';
@@ -219,11 +224,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (inputAporte) {
         inputAporte.addEventListener('input', (e) => {
-            let val = e.target.value.replace(/[^0-9.]/g, '');
-            const parts = val.split('.');
-            if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
-            e.target.value = val;
-            updateMainButton(parseMonto(val));
+            let rawVal = e.target.value.replace(/\D/g, '');
+            if (rawVal === "") {
+                e.target.value = "";
+                updateMainButton(0);
+                if(btnAportar) btnAportar.disabled = true;
+                return;
+            }
+            const num = parseInt(rawVal, 10);
+            const faltante = metaTotal - metaActual;
+            if (num > faltante) {
+                e.target.value = formatMonto(faltante);
+            } else {
+                e.target.value = num.toLocaleString('es-CO');
+            }
+            const finalNum = parseMonto(e.target.value);
+            updateMainButton(finalNum);
+            // Feedback visual
+            let errorEl = e.target.nextElementSibling;
+            if (finalNum < 1000) {
+                e.target.classList.add("invalid");
+                if (btnAportar) btnAportar.disabled = true;
+                
+                if (!errorEl || !errorEl.classList.contains("error-msg")) {
+                    errorEl = document.createElement("span");
+                    errorEl.className = "error-msg";
+                    e.target.insertAdjacentElement('afterend', errorEl);
+                }
+                errorEl.textContent = "El monto debe ser mayor a 1.000";
+            } else {
+                e.target.classList.remove("invalid");
+                if (errorEl && errorEl.classList.contains("error-msg")) {
+                    errorEl.textContent = "";
+                }
+                if (btnAportar) btnAportar.disabled = false;
+            }
             ultimoTipoAporte = 'manual';
         });
 
@@ -246,8 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateFinancialUI(actual, total) {
         const porcentaje = total > 0 ? Math.min(Math.round((actual / total) * 100), 100) : 0;
-        if (statActualEl) statActualEl.textContent = `$${actual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
-        if (statTotalEl) statTotalEl.textContent = `$${total.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        if (statActualEl) statActualEl.textContent = `${actual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        if (statTotalEl) statTotalEl.textContent = `${total.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
         if (statProgresoEl) statProgresoEl.textContent = `${porcentaje}%`;
         if (percentageEl) percentageEl.textContent = `${porcentaje}%`;
         if (circleEl) {
@@ -258,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const faltante = total > actual ? total - actual : 0;
         const msgEl = document.getElementById('milestone-text-msg');
         if (msgEl) {
-            msgEl.innerHTML = `Llevas <strong class="white-text">$${actual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong> y te faltan <strong class="white-text">$${faltante.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong> para completar tu meta`;
+            msgEl.innerHTML = `Llevas <strong class="white-text">${actual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong> y te faltan <strong class="white-text">${faltante.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong> para completar tu meta`;
         }
         
         const progFill = document.getElementById('milestone-progress-fill');
@@ -284,6 +319,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (storedImageUrl && storedImageUrl !== "none") {
             const cleanUrl = storedImageUrl.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
             goalImageEl.src = cleanUrl.startsWith('img/') ? "../" + cleanUrl : cleanUrl;
+        }
+
+        // VALIDACIÓN: Meta ya completada
+        if (metaActual >= metaTotal && metaTotal > 0) {
+            if (btnAportar) {
+                btnAportar.disabled = true;
+                btnAportar.innerHTML = '<i class="fas fa-check-circle"></i> META COMPLETADA';
+                btnAportar.style.background = "#444";
+            }
+            if (inputAporte) {
+                inputAporte.disabled = true;
+                inputAporte.placeholder = "Meta ya completada";
+            }
         }
     }
 
@@ -652,7 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const tableData = savedDetailed.map(r => [
                 r.date, 
-                `$${parseFloat(r.amount).toLocaleString('es-ES')}`
+                `$${parseFloat(r.amount).toLocaleString('es-CO', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`
             ]);
 
             doc.autoTable({
