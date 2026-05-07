@@ -509,7 +509,7 @@ body {
 .ver-mas {
   color: var(--matte-gold);
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 14px;
   margin-top: auto;
   transition: color 0.3s;
@@ -917,7 +917,7 @@ footer {
   background-position: center;
   position: relative;
   border: 2px solid rgba(207, 181, 60, 0.3);
-  overflow: visible;
+  overflow: hidden;
   transition: transform 0.3s ease, border-color 0.3s ease;
   cursor: pointer;
 }
@@ -997,22 +997,25 @@ footer {
 }
 
 .boton-aportar {
-  background: var(--matte-gold);
+  background: linear-gradient(90deg, #b8860b, #cfb53c, #b8860b);
+  background-size: 200% auto;
   color: var(--bg-deep);
   border: none;
-  padding: 12px 25px;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 1rem;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  align-self: flex-start;
+  box-shadow: 0 4px 12px rgba(206, 176, 90, 0.3);
+  align-self: center;
+  min-width: 160px; /* Tamaño consistente */
 }
 
 .boton-aportar:hover {
-  background: var(--gold-bright);
-  transform: scale(1.05);
-  box-shadow: 0 0 15px var(--gold-glow);
+  background-position: right center;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(206, 176, 90, 0.4);
 }
 
 /* Tarjeta Crear */
@@ -1136,8 +1139,8 @@ footer {
   border: 1px solid transparent;
   border-radius: 30px;
   color: rgba(255, 255, 255, 0.55);
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   letter-spacing: 0.5px;
   padding: 8px 18px;
   cursor: pointer;
@@ -1235,6 +1238,29 @@ footer {
   background-position: center;
   flex-shrink: 0;
   border: 2px solid rgba(207, 181, 60, 0.3);
+  position: relative; /* Para el icono de logro */
+}
+
+/* Overlay para meta completada en lista */
+.lista-meta-item.completada .lista-meta-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75); /* Opacidad aumentada */
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.trophy-icon-list {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  z-index: 2;
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)); /* Glow dorado */
 }
 
 .lista-meta-info {
@@ -1272,7 +1298,7 @@ footer {
 
 .lista-meta-bar {
   width: 100%;
-  height: 8px;
+  height: 12px;
   background: rgba(255,255,255,0.08);
   border-radius: 8px;
   overflow: hidden;
@@ -1283,6 +1309,50 @@ footer {
   background: linear-gradient(90deg, var(--matte-gold), var(--gold-bright));
   border-radius: 8px;
   box-shadow: 0 0 8px var(--gold-glow);
+}
+
+.lista-meta-item.completada .lista-meta-fill {
+  background: linear-gradient(90deg, #ffd700, #ffcc00);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.texto-meta-completada {
+  color: #2ecc71 !important; /* Verde */
+  text-shadow: 0 0 10px rgba(46, 204, 113, 0.5); /* Glow verde */
+  font-weight: 800;
+}
+
+.lista-meta-item.completada .lista-meta-texto {
+  max-width: 85%; /* Alineado con la barra */
+}
+
+.lista-meta-item.completada .lista-meta-bar {
+  height: 12px; /* Ancho igual al carrusel */
+  max-width: 85%; /* Más corta */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Botón eliminar en la parte inferior derecha para metas completadas */
+.lista-meta-item.completada .btn-eliminar-meta {
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+  margin-top: 0;
+  min-width: 120px; /* Más discreto */
+  padding: 6px 15px;
+  font-size: 0.8rem;
+}
+
+.lista-meta-item.completada {
+  padding-bottom: 45px; /* Ajuste por el botón absoluto */
+}
+
+/* Ajuste específico para el menú de tres puntos solo en lista */
+.lista-meta-item .card-menu-container {
+  top: 8px !important;
+  right: 10px !important;
 }
 
 .lista-meta-btn {
@@ -1426,8 +1496,8 @@ footer {
   align-items: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 15px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .page-btn.page-nav {
@@ -1962,7 +2032,7 @@ footer {
   box-shadow: 0 0 10px rgba(207, 181, 60, 0.2);
 }
 
-.foto-btn-large {
+#btnSubirFoto, .foto-btn-large {
   width: 350px;
   height: 220px;
   background: linear-gradient(135deg, var(--gold-light), var(--matte-gold));
@@ -1973,15 +2043,43 @@ footer {
   justify-content: center;
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: box-shadow 0.3s ease !important;
   border: none;
   background-size: cover;
   background-position: center;
+  position: relative;
+  overflow: hidden;
+  transform: none !important;
+  scale: 1 !important;
 }
 
-.foto-btn-large:hover {
-  
-  box-shadow: 0 0 20px rgba(207, 181, 60, 0.4);
+#btnSubirFoto:hover, .foto-btn-large:hover {
+  transform: none !important;
+  scale: 1 !important;
+  box-shadow: 0 0 25px rgba(207, 181, 60, 0.5) !important;
+}
+
+.foto-btn-large::before {
+  content: '\f030'; /* FontAwesome Camera */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+  content: '\f030' !important;
+}
+
+#btnSubirFoto.has-photo:hover::before, .foto-btn-large.has-photo:hover::before {
+  opacity: 1;
 }
 
 .foto-btn-large i {
@@ -2184,7 +2282,7 @@ input:checked+.slider-toggle:before {
   border: none;
   padding: 14px 14px;
   border-radius: 30px;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 14px;
   cursor: pointer;
   box-shadow: 0 8px 25px rgba(206, 176, 90, 0.3);
@@ -2204,7 +2302,7 @@ input:checked+.slider-toggle:before {
   color: var(--bg-deep);
   padding: 14px 14px;
   border-radius: 30px;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2650,13 +2748,14 @@ input:checked+.slider-toggle:before {
   border: 2px solid #ff4d4d;
   color: #ff4d4d;
   padding: 10px 24px;
-  border-radius: 12px;
+  border-radius: 30px;
   font-weight: 700;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 10px;
   align-self: center;
+  min-width: 160px; /* Tamaño consistente */
 }
 
 .btn-eliminar-meta:hover {
@@ -2775,9 +2874,9 @@ input:checked+.slider-toggle:before {
 .btn-download-history-new, .btn-confirm-delete-new {
   width: 100%;
   padding: 16px;
-  border-radius: 14px;
+  border-radius: 30px;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 14px;
   border: none;
   cursor: pointer;
   display: flex;
@@ -2819,7 +2918,7 @@ input:checked+.slider-toggle:before {
   color: rgba(255, 255, 255, 0.5);
   border: none;
   padding: 10px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: color 0.3s;
 }
@@ -2891,7 +2990,7 @@ input:checked+.slider-toggle:before {
     padding: 10px 14px;
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 700;
     text-decoration: none;
     border-radius: 8px;
     transition: all 0.2s ease;
@@ -2959,3 +3058,6 @@ input:checked+.slider-toggle:before {
 }
 
 
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active { -webkit-box-shadow: 0 0 0 1000px #001524 inset !important; -webkit-text-fill-color: #ffffff !important; transition: background-color 5000s ease-in-out 0s; }
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active { -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: #ffffff !important; -webkit-box-shadow: 0 0 0 1000px transparent inset !important; box-shadow: 0 0 0 1000px transparent inset !important; transition: background-color 5000s ease-in-out 0s; }
+.success-theme { border-color: #2ecc71 !important; box-shadow: 0 0 30px rgba(46, 204, 113, 0.2) !important; } .success-icon-wrapper { width: 60px; height: 60px; background: rgba(46, 204, 113, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; } .success-icon-wrapper i { font-size: 3rem !important; color: #2ecc71 !important; filter: drop-shadow(0 0 10px rgba(46, 204, 113, 0.4)); } #tituloExito { color: #2ecc71 !important; font-weight: 800; font-size: 1.3rem; }

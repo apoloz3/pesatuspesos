@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // RESET TEMPORAL PARA PRUEBAS: Comprar moto
+  localStorage.removeItem("progreso_meta_Comprar moto");
+  localStorage.removeItem("historial_meta_Comprar moto");
+  localStorage.removeItem("historial_detallado_meta_Comprar moto");
+  localStorage.removeItem("finalizada_meta_Comprar moto");
+  if(localStorage.getItem("metaSeleccionadaTitulo") === "Comprar moto") {
+      localStorage.setItem("metaSeleccionadaActual", "0");
+  }
   /* FRASE*/
 
   const frases = [
@@ -27,19 +35,28 @@ document.addEventListener("DOMContentLoaded", function () {
   let originalMetaTitle = ""; // Título original para referencia al guardar
   let metaAEliminar = null; // Meta pendiente de eliminación
   let originalValues = {}; // Para detectar cambios al editar
+  let onAlertaClose = null;
 
-  function mostrarAlerta(mensaje) {
+  function mostrarAlerta(mensaje, callback) {
     if (mensajeAviso && modalAviso) {
       mensajeAviso.textContent = mensaje;
       modalAviso.classList.add("activo");
+      document.body.style.overflow = 'hidden'; // Bloquear scroll
+      onAlertaClose = callback;
     } else {
       alert(mensaje);
+      if (callback) callback();
     }
   }
 
   if (btnAceptarAviso && modalAviso) {
     btnAceptarAviso.addEventListener("click", () => {
       modalAviso.classList.remove("activo");
+      document.body.style.overflow = ''; // Restaurar scroll
+      if (onAlertaClose) {
+          onAlertaClose();
+          onAlertaClose = null;
+      }
     });
   }
 
@@ -48,15 +65,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // Si el clic fue directamente en el overlay oscuro del modal de crear
     if (modalCrearMeta && e.target === modalCrearMeta) {
       modalCrearMeta.classList.remove("activo");
+      document.body.style.overflow = '';
     }
     // Si el clic fue directamente en el overlay oscuro del modal de aviso
     if (modalAviso && e.target === modalAviso) {
       modalAviso.classList.remove("activo");
+      document.body.style.overflow = '';
     }
     // Si el clic fue directamente en el overlay oscuro del modal de eliminar
     const modalEliminar = document.getElementById("modalEliminarMeta");
     if (modalEliminar && e.target === modalEliminar) {
       modalEliminar.classList.remove("activo");
+      document.body.style.overflow = '';
       metaAEliminar = null;
     }
 
@@ -109,6 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         if (btnSubirFoto) {
             btnSubirFoto.style.backgroundImage = bgUrl;
+            btnSubirFoto.classList.add('has-photo');
             const cbFoto = document.getElementById("contenidoBotonFoto");
             if (cbFoto) cbFoto.style.display = "none";
         }
@@ -128,7 +149,10 @@ document.addEventListener("DOMContentLoaded", function () {
             foto: bgUrl
         };
 
-        if (modalCrearMeta) modalCrearMeta.classList.add("activo");
+        if (modalCrearMeta) {
+            modalCrearMeta.classList.add("activo");
+            document.body.style.overflow = 'hidden';
+        }
         checkModalValidity();
       }
     }
@@ -144,7 +168,10 @@ document.addEventListener("DOMContentLoaded", function () {
           elemento: cardDel
         };
         const modalDel = document.getElementById("modalEliminarMeta");
-        if (modalDel) modalDel.classList.add("activo");
+        if (modalDel) {
+            modalDel.classList.add("activo");
+            document.body.style.overflow = 'hidden';
+        }
       }
     }
 
@@ -613,7 +640,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   setupRealTimeValidation();
 
-  const closeModal = () => modalCrearMeta && modalCrearMeta.classList.remove("activo");
+  const closeModal = () => {
+    if (modalCrearMeta) modalCrearMeta.classList.remove("activo");
+    document.body.style.overflow = ''; // Restaurar scroll
+  };
 
   const resetModal = () => {
     metaEditando = null;
@@ -626,6 +656,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (montoTotalInput) montoTotalInput.value = "";
     if (btnSubirFoto) {
       btnSubirFoto.style.backgroundImage = "";
+      btnSubirFoto.classList.remove('has-photo');
       const contBoton = document.getElementById("contenidoBotonFoto");
       if (contBoton) contBoton.style.display = "flex";
       const txtBoton = document.getElementById("textoSubirFoto");
@@ -641,6 +672,7 @@ document.addEventListener("DOMContentLoaded", function () {
     cardCrear.addEventListener("click", () => {
       resetModal();
       if (modalCrearMeta) modalCrearMeta.classList.add("activo");
+      document.body.style.overflow = 'hidden'; // Bloquear scroll
     });
   }
 
@@ -790,6 +822,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const closeDeleteModal = () => {
     if (modalEliminar) modalEliminar.classList.remove("activo");
+    document.body.style.overflow = ''; // Restaurar scroll
     metaAEliminar = null;
   };
 
@@ -821,6 +854,7 @@ document.addEventListener("DOMContentLoaded", function () {
         else if (typeof initCarousel === 'function') initCarousel();
 
         modalEliminar.classList.remove("activo");
+        document.body.style.overflow = ''; // Restaurar scroll
         metaAEliminar = null;
         mostrarAlerta("Meta eliminada exitosamente");
       }
@@ -839,7 +873,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function applyMetaState(card, actual, total, titulo) {
-    const isCompleted = parseFloat(actual) >= parseFloat(total) && parseFloat(total) > 0;
+    const isFinalized = localStorage.getItem(`finalizada_meta_${titulo}`) === "true";
+    const isCompleted = (parseFloat(actual) >= parseFloat(total) && parseFloat(total) > 0) || isFinalized;
     const overlay = card.querySelector(".card-overlay");
     const footer = card.querySelector(".card-footer");
     
@@ -1180,7 +1215,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const pct    = total > 0 ? Math.min(100, Math.round((actual / total) * 100)) : 0;
       const bgImage = card.style.backgroundImage || '';
 
-      const isCompleted = actual >= total && total > 0;
+      const isFinalized = localStorage.getItem(`finalizada_meta_${titulo}`) === "true";
+      const isCompleted = (actual >= total && total > 0) || isFinalized;
       
       // Determinar color de barra según progreso
       let colorBarra = "linear-gradient(90deg, #ff4d4d, #cfb53c)"; 
@@ -1204,7 +1240,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="lista-meta-nombre">${titulo}</div>
         <div class="lista-meta-progreso-wrap">
           <div class="lista-meta-texto">
-            <span>${isCompleted ? '¡Meta lograda!' : 'Progreso'}</span>
+            <span class="${isCompleted ? 'texto-meta-completada' : ''}">${isCompleted ? '✔ Meta completada' : 'Progreso'}</span>
             <span>${pct}%</span>
           </div>
           <div class="lista-meta-bar">
@@ -1212,6 +1248,11 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         </div>
       `;
+
+      // Si está completada, añadimos el icono de logro al thumb
+      if (isCompleted) {
+        thumb.innerHTML = '<img src="img/logro.png" class="trophy-icon-list" alt="Logro">';
+      }
 
       const actions = document.createElement('div');
       actions.className = 'card-menu-container';
@@ -1222,8 +1263,10 @@ document.addEventListener("DOMContentLoaded", function () {
           <button class="dropdown-item delete"><i class="fas fa-trash-alt"></i> Eliminar</button>
         </div>
       `;
-      if (isCompleted) actions.style.display = "none";
-
+      if (isCompleted) {
+        actions.style.pointerEvents = 'none';
+        actions.style.opacity = '0.5';
+      }
       const btn = document.createElement('button');
       if (isCompleted) {
         btn.className = 'btn-eliminar-meta';

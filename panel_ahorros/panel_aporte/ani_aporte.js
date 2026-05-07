@@ -208,8 +208,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const amountToSet = btn.getAttribute('data-amount');
                 if (amountToSet) {
                     const newVal = parseFloat(amountToSet);
-                    inputAporte.value = formatMonto(newVal);
-                    updateMainButton(newVal);
+                    const faltante = metaTotal - metaActual;
+                    const valorFinal = Math.min(newVal, faltante);
+                    inputAporte.value = formatMonto(valorFinal);
+                    updateMainButton(valorFinal);
                     ultimoTipoAporte = 'rápido';
                 } else {
                     if (inputAporte) {
@@ -231,18 +233,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(btnAportar) btnAportar.disabled = true;
                 return;
             }
-            const num = parseInt(rawVal, 10);
+            
+            let num = parseInt(rawVal, 10);
             const faltante = metaTotal - metaActual;
+            
+            // Si intenta poner más de lo que falta, forzar al faltante
             if (num > faltante) {
+                num = faltante;
                 e.target.value = formatMonto(faltante);
             } else {
                 e.target.value = num.toLocaleString('es-CO');
             }
+            
             const finalNum = parseMonto(e.target.value);
             updateMainButton(finalNum);
+            
             // Feedback visual
             let errorEl = e.target.nextElementSibling;
-            if (finalNum < 1000) {
+            if (finalNum < 1000 && faltante >= 1000) {
                 e.target.classList.add("invalid");
                 if (btnAportar) btnAportar.disabled = true;
                 
@@ -292,13 +300,46 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const faltante = total > actual ? total - actual : 0;
         const msgEl = document.getElementById('milestone-text-msg');
+        const milestoneBar = document.querySelector('.milestone-progress-bar');
+        const milestoneIcon = document.querySelector('.milestone-icon-wrapper');
+
         if (msgEl) {
-            msgEl.innerHTML = `Llevas <strong class="white-text">${actual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong> y te faltan <strong class="white-text">${faltante.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong> para completar tu meta`;
+            if (porcentaje >= 100) {
+                msgEl.innerHTML = `<span class="meta-completada-texto-panel">META COMPLETADA</span>`;
+                if (milestoneBar) milestoneBar.style.display = 'none';
+                if (milestoneIcon) milestoneIcon.style.display = 'none';
+                msgEl.parentElement.style.width = '100%';
+                msgEl.parentElement.style.justifyContent = 'center';
+            } else {
+                msgEl.innerHTML = `Llevas <strong class="white-text">${actual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong> y te faltan <strong class="white-text">${faltante.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong> para completar tu meta`;
+                if (milestoneBar) milestoneBar.style.display = 'block';
+                if (milestoneIcon) milestoneIcon.style.display = 'flex';
+                msgEl.parentElement.style.width = '';
+                msgEl.parentElement.style.justifyContent = '';
+            }
         }
         
         const progFill = document.getElementById('milestone-progress-fill');
         if (progFill) {
             progFill.style.width = `${porcentaje}%`;
+            if (porcentaje >= 100) {
+                progFill.style.background = "linear-gradient(90deg, #ffd700, #ffcc00)";
+                progFill.style.boxShadow = "0 0 15px rgba(255, 215, 0, 0.4)";
+            }
+        }
+
+        // Si ya está completada, deshabilitar interacciones
+        if (porcentaje >= 100) {
+            if (btnAportar) {
+                btnAportar.disabled = true;
+                btnAportar.classList.add('disabled-gold');
+                btnAportar.innerHTML = '<i class="fas fa-check-circle"></i> META COMPLETADA';
+            }
+            if (inputAporte) {
+                inputAporte.disabled = true;
+                inputAporte.placeholder = "Meta completada";
+            }
+            document.querySelectorAll('.quick-amount-btn').forEach(b => b.disabled = true);
         }
     }
 
@@ -338,8 +379,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. Botón APORTAR: Guardar Dinero y Día
     if (btnAportar) {
         btnAportar.addEventListener('click', () => {
+            if (metaActual >= metaTotal) return; // Ya completada
+
             const amount = parseMonto(inputAporte ? inputAporte.value : 0);
             if (amount > 0) {
+               const wasCompleted = metaActual >= metaTotal;
+               
                // 5.1 Guardar Dinero
                metaActual += amount;
                localStorage.setItem(`progreso_meta_${metaTitulo}`, metaActual);
@@ -370,17 +415,62 @@ document.addEventListener('DOMContentLoaded', () => {
                // 5.3 Refrescar Calendario para mostrar chulito
                renderCalendar(currentMonth, currentYear);
                
-               mostrarAlerta(`¡Aporte de $${formatMonto(amount)} realizado exitosamente! saldo: $${metaActual.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}.`, () => {
-                   window.location.href = '../ahorros.html';
-               });
+               // VERIFICAR COMPLETITUD PARA MOSTRAR MODAL CELEBRACIÓN
+               if (!wasCompleted && metaActual >= metaTotal) {
+                   const modalCompletada = document.getElementById('modalMetaCompletada');
+                   if (modalCompletada) {
+                       modalCompletada.classList.add('activo');
+                       // Quitamos la marca inmediata de finalizada aquí
+                   }
+               } else {
+                   mostrarAlerta(`¡Aporte de $${formatMonto(amount)} realizado exitosamente!`);
+               }
             } else {
                mostrarAlerta(`Ingresa un monto válido mayor a 0.`);
             }
         });
     }
 
+    // Lógica de botones del modal de meta completada
+    const btnVerMeta = document.getElementById('btnVerMeta');
+    const btnCerrarMetaCompletada = document.getElementById('btnCerrarMetaCompletada');
+    const modalMetaCompletada = document.getElementById('modalMetaCompletada');
+
+    if (btnVerMeta) {
+        btnVerMeta.addEventListener('click', () => {
+            if (modalMetaCompletada) modalMetaCompletada.classList.remove('activo');
+        });
+    }
+
+    if (btnCerrarMetaCompletada) {
+        btnCerrarMetaCompletada.addEventListener('click', () => {
+            // Marcar como finalizada permanentemente al cerrar el modal
+            if (metaActual >= metaTotal) {
+                localStorage.setItem(`finalizada_meta_${metaTitulo}`, "true");
+            }
+            window.location.href = '../ahorros.html';
+        });
+    }
+
+    // Si el usuario intenta cerrar el modal con clic fuera, igual redirigir al salir
+    if (modalMetaCompletada) {
+        modalMetaCompletada.addEventListener('click', (e) => {
+            if (e.target === modalMetaCompletada) {
+                // Si el usuario hace clic fuera, lo tomamos como "Cerrar"
+                // Pero según el requerimiento, si solo "ve la meta" y luego sale, debe redirigir.
+                // Ajustaremos el botón "Regresar" para que redirija si está completada.
+            }
+        });
+    }
+
     if (btnCancelar) {
-        btnCancelar.addEventListener('click', () => { window.location.href = '../ahorros.html'; });
+        btnCancelar.addEventListener('click', () => { 
+            // Si la meta está completada y el usuario sale, marcar como finalizada
+            if (metaActual >= metaTotal) {
+                localStorage.setItem(`finalizada_meta_${metaTitulo}`, "true");
+            }
+            window.location.href = '../ahorros.html'; 
+        });
     }
 
     // 6. Historial de Aportes y Exportación
@@ -398,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Variables de paginación
     let currentPage = 1;
-    const itemsPerPage = 6;
+    const itemsPerPage = 8;
     let filteredData = [];
 
     function renderTablePage() {
@@ -410,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mensajeSinHistorial.style.display = 'block';
             document.querySelector('.tabla-premium').style.display = 'none';
             if(paginationControls) paginationControls.style.display = 'none';
-            if(txtMostrandoAportes) txtMostrandoAportes.textContent = `Mostrando 0 aportes`;
+            // if(txtMostrandoAportes) txtMostrandoAportes.textContent = `Mostrando 0 aportes`;
             return;
         }
 
@@ -454,17 +544,30 @@ document.addEventListener('DOMContentLoaded', () => {
             tablaHistorialBody.appendChild(tr);
         });
 
-        if(txtMostrandoAportes) txtMostrandoAportes.textContent = `Mostrando ${filteredData.length} aportes`;
+        // if(txtMostrandoAportes) txtMostrandoAportes.textContent = `Mostrando ${filteredData.length} aportes`;
         
         const btnPrev = document.getElementById('btnPrevPage');
         const btnNext = document.getElementById('btnNextPage');
-        const txtPage = document.getElementById('txtPageInfo');
+        const pageNumbersContainer = document.getElementById('pageNumbers');
 
         if (paginationControls && totalPages > 1) {
             paginationControls.style.display = 'flex';
-            if(txtPage) txtPage.textContent = `Página ${currentPage} de ${totalPages}`;
             if(btnPrev) btnPrev.disabled = currentPage === 1;
             if(btnNext) btnNext.disabled = currentPage === totalPages;
+
+            if (pageNumbersContainer) {
+                pageNumbersContainer.innerHTML = '';
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = `btn-page ${i === currentPage ? 'active' : ''}`;
+                    btn.textContent = i;
+                    btn.addEventListener('click', () => {
+                        currentPage = i;
+                        renderTablePage();
+                    });
+                    pageNumbersContainer.appendChild(btn);
+                }
+            }
         } else if (paginationControls) {
             paginationControls.style.display = 'none';
         }
@@ -542,7 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('resPromedio').textContent = `$${prom.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
         document.getElementById('resPrimerAporte').textContent = first;
         document.getElementById('resUltimoAporte').textContent = last;
-        document.getElementById('txtResumenEvolucion').textContent = `Has ahorrado un total de $${total.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})} en los aportes seleccionados`;
+        // document.getElementById('txtResumenEvolucion').textContent = `Has ahorrado un total de $${total.toLocaleString("es-CO", {minimumFractionDigits: 0, maximumFractionDigits: 0})} en los aportes seleccionados`;
 
         // Render Tabla
         currentPage = 1;
@@ -560,15 +663,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const dataVals = Object.values(grupos);
 
             if (barChart) barChart.destroy();
+            
+            const gradient = ctxBar.getContext('2d').createLinearGradient(0, 0, 0, 200);
+            gradient.addColorStop(0, 'rgba(207, 181, 60, 0.4)');
+            gradient.addColorStop(1, 'rgba(207, 181, 60, 0.0)');
+
             barChart = new Chart(ctxBar, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
                         label: 'Monto ($)',
                         data: dataVals,
-                        backgroundColor: '#cfb53c',
-                        borderRadius: 4
+                        borderColor: '#cfb53c',
+                        borderWidth: 4,
+                        backgroundColor: gradient,
+                        fill: true,
+                        pointBackgroundColor: '#001524',
+                        pointBorderColor: '#cfb53c',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.3
                     }]
                 },
                 options: {
@@ -576,8 +692,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#666' } },
-                        x: { grid: { display: false }, ticks: { color: '#666', maxTicksLimit: 7 } }
+                        y: { 
+                            beginAtZero: false, 
+                            grid: { color: 'rgba(255,255,255,0.05)' }, 
+                            ticks: { 
+                                color: '#999',
+                                callback: function(value) {
+                                    if (value >= 1000) return (value / 1000).toFixed(1) + 'k';
+                                    return value;
+                                }
+                            } 
+                        },
+                        x: { 
+                            grid: { display: true, color: 'rgba(255,255,255,0.05)' }, 
+                            ticks: { color: '#999', maxTicksLimit: 10, font: { size: 10 } } 
+                        }
                     }
                 }
             });
