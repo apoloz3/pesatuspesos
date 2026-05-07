@@ -1203,7 +1203,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (isCrear) {
         const row = document.createElement('div');
         row.className = 'lista-meta-item lista-crear';
-        row.innerHTML = '<div class="lista-crear-inner"><i class="fa-solid fa-plus"></i><span>Crear tu propia meta</span></div>';
+        row.innerHTML = '<div class="lista-crear-inner"><div class="lista-crear-icon"><i class="fa-solid fa-plus"></i></div><span>Crear tu propia meta</span></div>';
         row.addEventListener('click', () => card.click());
         listaMetas.appendChild(row);
         return;
