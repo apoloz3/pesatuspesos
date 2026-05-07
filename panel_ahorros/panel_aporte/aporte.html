@@ -133,7 +133,7 @@
                     <button class="btn-primary" id="btn-aportar">
                         <i class="fas fa-coins" style="margin-right: 8px;"></i> APORTAR $150.00
                     </button>
-                    <button class="btn-secondary">CANCELAR</button>
+                    <button class="btn-secondary">CERRAR</button>
                 </div>
                 <a href="#" class="history-link">
                     <i class="fas fa-wallet" style="margin-right: 5px;"></i> Ver historial <i class="fas fa-chevron-right arrow-sm"></i>
@@ -156,6 +156,21 @@
       </div>
     </div>
 
+    <!-- Modal de Meta Completada -->
+    <div id="modalMetaCompletada" class="modal-aviso">
+      <div class="modal-aviso-contenido">
+        <div class="modal-aviso-header">
+          <i class="fa-solid fa-trophy" style="color: #ffd700;"></i>
+          <span>¡FELICITACIONES!</span>
+        </div>
+        <p class="modal-aviso-mensaje"> Has completado tu meta.<br>Esta meta será deshabilitada automáticamente.</p>
+        <div class="modal-aviso-footer" style="display: flex; gap: 10px; justify-content: center;">
+          <button id="btnVerMeta" class="btn-secondary" style="margin: 0; min-width: 120px;">Ver meta</button>
+          <button id="btnCerrarMetaCompletada" class="btn-primary" style="margin: 0; min-width: 120px;">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal Historial Premium -->
     <div id="modalHistorial" class="modal-premium-overlay">
         <div class="modal-premium-content">
@@ -168,6 +183,7 @@
                         <p>Revisa todos los aportes que has realizado para tu meta</p>
                     </div>
                 </div>
+                <button id="btnCerrarHistorial" class="btn-cerrar-large">Cerrar</button>
             </div>
 
             <div class="modal-premium-body">
@@ -247,10 +263,10 @@
                             </div>
                         </div>
                         <div class="tabla-footer">
-                            <span id="txtMostrandoAportes">Mostrando 0 aportes</span>
-                            <div class="pagination-controls" id="paginationControls" style="display:none; gap: 10px; align-items: center;">
+                            <!-- <span id="txtMostrandoAportes">Mostrando 0 aportes</span> -->
+                            <div class="pagination-controls" id="paginationControls" style="display:none;">
                                 <button id="btnPrevPage" class="btn-page"><i class="fas fa-chevron-left"></i></button>
-                                <span id="txtPageInfo" style="color: white; font-size: 0.9rem;">1 de 1</span>
+                                <div id="pageNumbers" class="page-numbers"></div>
                                 <button id="btnNextPage" class="btn-page"><i class="fas fa-chevron-right"></i></button>
                             </div>
                         </div>
@@ -279,9 +295,9 @@
                         <div class="evolucion-chart-wrapper">
                             <canvas id="historialEvolucionChart"></canvas>
                         </div>
-                        <div class="evolucion-footer">
+                        <!-- <div class="evolucion-footer">
                             <i class="fas fa-info-circle"></i> <span id="txtResumenEvolucion">Has ahorrado un total de $0 en esta meta</span>
-                        </div>
+                        </div> -->
                     </div>
 
                     <!-- Resumen del historial -->
@@ -311,9 +327,7 @@
                 </div>
             </div>
 
-            <div class="modal-premium-footer">
-                <button id="btnCerrarHistorial" class="btn-cerrar-large">Cerrar</button>
-            </div>
+
         </div>
     </div>
 
