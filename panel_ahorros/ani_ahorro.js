@@ -60,6 +60,45 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  /* ===============================
+       MODAL DE CONFIRMACIÓN
+     =============================== */
+  const modalConfirmar = document.getElementById("modalConfirmar");
+  const mensajeConfirmar = document.getElementById("mensajeConfirmar");
+  const btnConfirmarAceptar = document.getElementById("btnConfirmarAceptar");
+  const btnConfirmarCancelar = document.getElementById("btnConfirmarCancelar");
+  let onConfirmCallback = null;
+
+  function mostrarConfirmacion(mensaje, callback) {
+    if (mensajeConfirmar && modalConfirmar) {
+      mensajeConfirmar.textContent = mensaje;
+      modalConfirmar.classList.add("activo");
+      document.body.style.overflow = 'hidden';
+      onConfirmCallback = callback;
+    } else {
+      if (confirm(mensaje)) callback();
+    }
+  }
+
+  if (btnConfirmarAceptar) {
+    btnConfirmarAceptar.addEventListener("click", () => {
+      modalConfirmar.classList.remove("activo");
+      document.body.style.overflow = '';
+      if (onConfirmCallback) {
+        onConfirmCallback();
+        onConfirmCallback = null;
+      }
+    });
+  }
+
+  if (btnConfirmarCancelar) {
+    btnConfirmarCancelar.addEventListener("click", () => {
+      modalConfirmar.classList.remove("activo");
+      document.body.style.overflow = '';
+      onConfirmCallback = null;
+    });
+  }
+
   // Cierre de modales al hacer clic fuera del contenido
   document.addEventListener("click", (e) => {
     // Si el clic fue directamente en el overlay oscuro del modal de crear
@@ -71,6 +110,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (modalAviso && e.target === modalAviso) {
       modalAviso.classList.remove("activo");
       document.body.style.overflow = '';
+    }
+    // Si el clic fue directamente en el overlay oscuro del modal de confirmación
+    if (modalConfirmar && e.target === modalConfirmar) {
+      modalConfirmar.classList.remove("activo");
+      document.body.style.overflow = '';
+      onConfirmCallback = null;
     }
     // Si el clic fue directamente en el overlay oscuro del modal de eliminar
     const modalEliminar = document.getElementById("modalEliminarMeta");
@@ -138,11 +183,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (hTitle) hTitle.textContent = "EDITAR META";
         if (btnGuardarMeta) btnGuardarMeta.textContent = "GUARDAR CAMBIOS";
 
-        metaEditando = titulo;
-        originalMetaTitle = titulo;
+        metaEditando = titulo.trim();
+        originalMetaTitle = titulo.trim();
         
         originalValues = {
-            titulo: titulo,
+            titulo: titulo.trim(),
             montoTotal: parseFloat(total),
             duracion: duracionSlider.value,
             frecuencia: frecuenciaSlider.value,
@@ -694,6 +739,114 @@ document.addEventListener("DOMContentLoaded", function () {
         const montoAporteNum = montoAporte ? parseFloat(montoAporte.value.replace(/[^0-9]/g, "")) || 0 : 0;
         const frecuenciaVal = frecuenciaSlider ? frecuenciaSlider.value : "3";
 
+        const ejecutarGuardado = () => {
+            if (metaEditando) {
+                // LÓGICA DE EDICIÓN
+                const cards = Array.from(document.querySelectorAll('.meta-card:not(.card-crear), .lista-meta-item:not(.lista-crear)'));
+                const cardAEditar = cards.find(c => {
+                    const titleEl = c.querySelector('.meta-titulo') || c.querySelector('.lista-meta-nombre');
+                    return titleEl && titleEl.textContent.trim() === originalMetaTitle;
+                });
+                
+                if (cardAEditar) {
+                    // Actualizar atributos y visual
+                    cardAEditar.style.backgroundImage = bgImage;
+                    cardAEditar.setAttribute("data-total", montoTotalNum);
+                    cardAEditar.setAttribute("data-aporte", montoAporteNum);
+                    cardAEditar.setAttribute("data-frecuencia", frecuenciaVal);
+                    
+                    const titleEl = cardAEditar.querySelector('.meta-titulo');
+                    if (titleEl) titleEl.textContent = titulo;
+                    
+                    // Si el título cambió, actualizar localStorage
+                    if (titulo !== originalMetaTitle) {
+                        // Migrar datos de progreso e historial si es necesario
+                        const progreso = localStorage.getItem(`progreso_meta_${originalMetaTitle}`);
+                        if (progreso) {
+                            localStorage.setItem(`progreso_meta_${titulo}`, progreso);
+                            localStorage.removeItem(`progreso_meta_${originalMetaTitle}`);
+                        }
+                        const historial = localStorage.getItem(`historial_meta_${originalMetaTitle}`);
+                        if (historial) {
+                            localStorage.setItem(`historial_meta_${titulo}`, historial);
+                            localStorage.removeItem(`historial_meta_${originalMetaTitle}`);
+                        }
+                        const historialDet = localStorage.getItem(`historial_detallado_meta_${originalMetaTitle}`);
+                        if (historialDet) {
+                            localStorage.setItem(`historial_detallado_meta_${titulo}`, historialDet);
+                            localStorage.removeItem(`historial_detallado_meta_${originalMetaTitle}`);
+                        }
+                    }
+                    
+                    const actual = parseFloat(cardAEditar.getAttribute('data-actual') || '0');
+                    applyMetaState(cardAEditar, actual, montoTotalNum, titulo);
+                    
+                    mostrarAlerta("Meta actualizada exitosamente");
+                }
+            } else {
+                // LÓGICA DE CREACIÓN (Existente)
+                const newCard = document.createElement("div");
+                newCard.className = "meta-card";
+                newCard.style.backgroundImage = bgImage;
+                newCard.setAttribute("data-actual", "0");
+                newCard.setAttribute("data-total", montoTotalNum);
+                newCard.setAttribute("data-aporte", montoAporteNum);
+                newCard.setAttribute("data-frecuencia", frecuenciaVal);
+
+                newCard.innerHTML = `
+                  <div class="card-menu-container">
+                    <button class="card-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
+                    <div class="card-dropdown">
+                      <button class="dropdown-item edit"><i class="fas fa-edit"></i> Editar</button>
+                      <button class="dropdown-item delete"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                    </div>
+                  </div>
+                  <div class="card-overlay">
+                    <div class="card-header">
+                      <span class="meta-label">Mi meta:</span>
+                      <h2 class="meta-titulo">${titulo}</h2>
+                    </div>
+                    <div class="card-footer">
+                      <div class="progreso-info">
+                        <div class="progreso-texto">Progreso: <span class="monto-dinamico">0%</span></div>
+                        <div class="progreso-bar">
+                          <div class="progreso-fill" style="width: 0%;"></div>
+                        </div>
+                      </div>
+                      <button class="boton-aportar">Aportar</button>
+                    </div>
+                  </div>
+                `;
+
+                applyMetaState(newCard, 0, montoTotalNum, titulo);
+
+                if (track) {
+                  track.insertBefore(newCard, cardCrear);
+                }
+                mostrarAlerta("Meta creada exitosamente");
+            }
+
+            // Actualizar vista y carrusel
+            if (typeof initCarousel === 'function') initCarousel();
+            
+            // Si estábamos editando, actualizamos los valores originales para que el botón se deshabilite
+            if (metaEditando) {
+                originalValues = {
+                    titulo: titulo,
+                    montoTotal: montoTotalNum,
+                    duracion: duracionSlider.value,
+                    frecuencia: frecuenciaVal,
+                    foto: bgImage
+                };
+                originalMetaTitle = titulo;
+                metaEditando = titulo;
+                checkModalValidity();
+            } else {
+                // Si era una creación nueva, sí reseteamos para permitir crear otra si se desea
+                resetModal();
+            }
+        };
+
         if (metaEditando) {
             // Validar cambios críticos antes de proceder
             const isCriticalChange = 
@@ -702,111 +855,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 frecuenciaVal !== originalValues.frecuencia;
 
             if (isCriticalChange) {
-                if (!confirm("Estos cambios afectarán el cálculo de tu meta. ¿Deseas continuar?")) {
-                    return;
-                }
+                mostrarConfirmacion("Estos cambios afectarán el cálculo de tu meta. ¿Deseas continuar?", ejecutarGuardado);
+                return;
             }
-
-            // LÓGICA DE EDICIÓN
-            const cards = Array.from(document.querySelectorAll('.meta-card:not(.card-crear), .lista-meta-item:not(.lista-crear)'));
-            const cardAEditar = cards.find(c => {
-                const titleEl = c.querySelector('.meta-titulo') || c.querySelector('.lista-meta-nombre');
-                return titleEl && titleEl.textContent === originalMetaTitle;
-            });
-            
-            if (cardAEditar) {
-                // Actualizar atributos y visual
-                cardAEditar.style.backgroundImage = bgImage;
-                cardAEditar.setAttribute("data-total", montoTotalNum);
-                cardAEditar.setAttribute("data-aporte", montoAporteNum);
-                cardAEditar.setAttribute("data-frecuencia", frecuenciaVal);
-                
-                const titleEl = cardAEditar.querySelector('.meta-titulo');
-                if (titleEl) titleEl.textContent = titulo;
-                
-                // Si el título cambió, actualizar localStorage
-                if (titulo !== originalMetaTitle) {
-                    // Migrar datos de progreso e historial si es necesario
-                    const progreso = localStorage.getItem(`progreso_meta_${originalMetaTitle}`);
-                    if (progreso) {
-                        localStorage.setItem(`progreso_meta_${titulo}`, progreso);
-                        localStorage.removeItem(`progreso_meta_${originalMetaTitle}`);
-                    }
-                    const historial = localStorage.getItem(`historial_meta_${originalMetaTitle}`);
-                    if (historial) {
-                        localStorage.setItem(`historial_meta_${titulo}`, historial);
-                        localStorage.removeItem(`historial_meta_${originalMetaTitle}`);
-                    }
-                    const historialDet = localStorage.getItem(`historial_detallado_meta_${originalMetaTitle}`);
-                    if (historialDet) {
-                        localStorage.setItem(`historial_detallado_meta_${titulo}`, historialDet);
-                        localStorage.removeItem(`historial_detallado_meta_${originalMetaTitle}`);
-                    }
-                }
-                
-                const actual = parseFloat(cardAEditar.getAttribute('data-actual') || '0');
-                applyMetaState(cardAEditar, actual, montoTotalNum, titulo);
-                
-                mostrarAlerta("Meta actualizada exitosamente");
-            }
-        } else {
-            // LÓGICA DE CREACIÓN (Existente)
-            const newCard = document.createElement("div");
-            newCard.className = "meta-card";
-            newCard.style.backgroundImage = bgImage;
-            newCard.setAttribute("data-actual", "0");
-            newCard.setAttribute("data-total", montoTotalNum);
-            newCard.setAttribute("data-aporte", montoAporteNum);
-            newCard.setAttribute("data-frecuencia", frecuenciaVal);
-
-            newCard.innerHTML = `
-              <div class="card-menu-container">
-                <button class="card-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
-                <div class="card-dropdown">
-                  <button class="dropdown-item edit"><i class="fas fa-edit"></i> Editar</button>
-                  <button class="dropdown-item delete"><i class="fas fa-trash-alt"></i> Eliminar</button>
-                </div>
-              </div>
-              <div class="card-overlay">
-                <div class="card-header">
-                  <span class="meta-label">Mi meta:</span>
-                  <h2 class="meta-titulo">${titulo}</h2>
-                </div>
-                <div class="card-footer">
-                  <div class="progreso-info">
-                    <div class="progreso-texto">Progreso: <span class="monto-dinamico">0%</span></div>
-                    <div class="progreso-bar">
-                      <div class="progreso-fill" style="width: 0%;"></div>
-                    </div>
-                  </div>
-                  <button class="boton-aportar">Aportar</button>
-                </div>
-              </div>
-            `;
-
-            applyMetaState(newCard, 0, montoTotalNum, titulo);
-
-            if (track) {
-              track.insertBefore(newCard, cardCrear);
-            }
-            mostrarAlerta("Meta creada exitosamente");
         }
 
-        // Limpiar y cerrar
-        if (typeof initCarousel === 'function') initCarousel();
-        closeModal();
-
-        if (tituloMetaInput) tituloMetaInput.value = "";
-        if (montoTotalInput) montoTotalInput.value = "";
-        if (btnSubirFoto) {
-          btnSubirFoto.style.background = "";
-          const contBoton = document.getElementById("contenidoBotonFoto");
-          const txtBoton = document.getElementById("textoSubirFoto");
-          if (contBoton) contBoton.style.display = "flex";
-          if (txtBoton) txtBoton.innerHTML = "SUBIR<br>FOTO";
-        }
-        
-        resetModal();
+        ejecutarGuardado();
       });
     }
 
