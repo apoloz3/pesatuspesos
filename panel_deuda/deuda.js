@@ -164,9 +164,22 @@ document.addEventListener("DOMContentLoaded", function () {
   function renderTablaDeudas(pagina) {
     const body = document.getElementById('tablaDeudasBody');
     if (!body) return;
+
+    const filtroEntidad = document.getElementById('filtroEntidad') ? document.getElementById('filtroEntidad').value : 'Todas';
+    const filtroTipo = document.getElementById('filtroTipo') ? document.getElementById('filtroTipo').value : 'Todas';
+    const filtroEstado = document.getElementById('filtroEstado') ? document.getElementById('filtroEstado').value : 'Todos';
+
+    const deudasFiltradas = deudas.filter(d => {
+      let ok = true;
+      if (filtroEntidad !== 'Todas' && d.acreedor !== filtroEntidad) ok = false;
+      if (filtroTipo !== 'Todas' && d.tipo !== filtroTipo) ok = false;
+      if (filtroEstado !== 'Todos' && d.estado !== filtroEstado) ok = false;
+      return ok;
+    });
+
     paginaDeudas = pagina;
     const inicio = (pagina - 1) * REG_POR_PAG;
-    const slice  = deudas.slice(inicio, inicio + REG_POR_PAG);
+    const slice  = deudasFiltradas.slice(inicio, inicio + REG_POR_PAG);
 
     if (slice.length === 0) {
       body.innerHTML = `<tr><td colspan="8" class="td-empty">Sin deudas registradas</td></tr>`;
@@ -194,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }).join('');
     }
 
-    renderPaginacion('paginacionDeudas', deudas.length, paginaDeudas, 'cambiarPaginaDeudas');
+    renderPaginacion('paginacionDeudas', deudasFiltradas.length, paginaDeudas, 'cambiarPaginaDeudas');
   }
 
   window.cambiarPaginaDeudas = (n) => renderTablaDeudas(n);
@@ -394,6 +407,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const titulo = document.getElementById('modalPagoTitulo');
     document.getElementById('formPago').reset();
     document.getElementById('pagoIndex').value = index !== null ? index : '';
+    
+    const selectDeuda = document.getElementById('deudaAsociada');
+    if (selectDeuda) {
+      if (deudas.length === 0) {
+        selectDeuda.innerHTML = '<option value="">No hay deudas registradas</option>';
+      } else {
+        selectDeuda.innerHTML = '<option value="">Seleccione una deuda</option>' + deudas.map((d, i) => `<option value="${i}">${d.acreedor} - ${d.actual}</option>`).join('');
+      }
+    }
 
     if (index !== null) {
       titulo.textContent = 'Editar Pago';
@@ -402,6 +424,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById('montoPago').value   = parseMoney(p.monto);
       document.getElementById('metodoPago').value  = p.metodo;
       document.getElementById('notasPago').value   = p.notas || '';
+      if (selectDeuda && p.deudaIdx !== undefined) selectDeuda.value = p.deudaIdx;
     } else {
       titulo.textContent = 'Nuevo Pago';
       // Prefill fecha de hoy
@@ -419,13 +442,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const fecha  = document.getElementById('fechaPago').value;
     const monto  = parseFloat(document.getElementById('montoPago').value);
     const metodo = document.getElementById('metodoPago').value;
-    const notas  = document.getElementById('notasPago').value.trim();
+    let notas  = document.getElementById('notasPago').value.trim();
+    const selectDeuda = document.getElementById('deudaAsociada');
+    const deudaIdx = selectDeuda ? selectDeuda.value : '';
+
+    if (index === '' && deudaIdx !== '' && deudas[deudaIdx] && !notas) {
+        notas = `Abono a ${deudas[deudaIdx].acreedor}`;
+    }
 
     const nuevoPago = {
       fecha,
       monto: `$${monto.toLocaleString('es-CO')}`,
       metodo,
-      notas
+      notas,
+      deudaIdx
     };
 
     if (index !== '') {
@@ -433,6 +463,14 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       pagos.push(nuevoPago);
       paginaPagos = Math.ceil(pagos.length / REG_POR_PAG);
+      
+      if (deudaIdx !== '' && deudas[deudaIdx]) {
+        let actualVal = parseMoney(deudas[deudaIdx].actual);
+        actualVal -= monto;
+        if (actualVal < 0) actualVal = 0;
+        deudas[deudaIdx].actual = `$${actualVal.toLocaleString('es-CO')}`;
+        renderTablaDeudas(paginaDeudas);
+      }
     }
 
     renderHistorialPagos(paginaPagos);
@@ -707,11 +745,23 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnPdf = document.getElementById('btnDescargarPDF');
   const btnExc = document.getElementById('btnExportarExcel');
 
-  if (btnApp) btnApp.addEventListener('click', () => mostrarAviso('Filtros aplicados correctamente.'));
-  if (btnCle) btnCle.addEventListener('click', () => mostrarAviso('Filtros restablecidos.'));
+  if (btnApp) btnApp.addEventListener('click', () => {
+    renderTablaDeudas(1);
+    // You can also add filter logic for Pagos if you want here, but we mainly applied it to Deudas
+    renderHistorialPagos(1);
+  });
+  if (btnCle) btnCle.addEventListener('click', () => {
+    document.getElementById('filtroEntidad').value = 'Todas';
+    document.getElementById('filtroTipo').value = 'Todas';
+    document.getElementById('filtroEstado').value = 'Todos';
+    document.getElementById('filtroFecha').value = 'Este año';
+    document.getElementById('filtroMoneda').value = 'COP';
+    renderTablaDeudas(1);
+    renderHistorialPagos(1);
+  });
   if (btnPdf) btnPdf.addEventListener('click', () => {
     if (deudas.length === 0 && pagos.length === 0) {
-      mostrarAviso("No hay datos suficientes para generar un reporte.");
+      alert("No hay datos suficientes para generar un reporte.");
       return;
     }
     window.print();
@@ -719,7 +769,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (btnExc) btnExc.addEventListener('click', () => {
     if (deudas.length === 0 && pagos.length === 0) {
-      mostrarAviso("No hay datos para exportar.");
+      alert("No hay datos para exportar.");
       return;
     }
 
