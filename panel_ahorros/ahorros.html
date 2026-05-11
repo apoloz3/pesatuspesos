@@ -77,69 +77,8 @@
 
               <div class="carousel-track-container">
                 <div class="carousel-track" id="carouselTrack">
-                  <!-- Tarjeta: Moto -->
-                  <div class="meta-card" 
-                       style="background-image: url('img/moto_meta.png');"
-                       data-actual="3250"
-                       data-total="5000"
-                       data-aporte="150"
-                       data-frecuencia="3">
-                    <div class="card-menu-container">
-                      <button class="card-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
-                      <div class="card-dropdown">
-                        <button class="dropdown-item edit"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="dropdown-item delete"><i class="fas fa-trash-alt"></i> Eliminar</button>
-                      </div>
-                    </div>
-                    <div class="card-overlay">
-                      <div class="card-header">
-                        <span class="meta-label">Mi meta:</span>
-                        <h2 class="meta-titulo">Comprar moto</h2>
-                      </div>
-                      <div class="card-footer">
-                        <div class="progreso-info">
-                          <div class="progreso-texto">Progreso: <span>65%</span></div>
-                          <div class="progreso-bar">
-                            <div class="progreso-fill" style="width: 65%;"></div>
-                          </div>
-                        </div>
-                        <button class="boton-aportar">Aportar</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Tarjeta: Japón -->
-                  <div class="meta-card" 
-                       style="background-image: url('img/japon_meta.png');"
-                       data-actual="12000"
-                       data-total="12000"
-                       data-aporte="500"
-                       data-frecuencia="3">
-                    <div class="card-menu-container">
-                      <button class="card-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
-                      <div class="card-dropdown">
-                        <button class="dropdown-item edit"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="dropdown-item delete"><i class="fas fa-trash-alt"></i> Eliminar</button>
-                      </div>
-                    </div>
-                    <div class="card-overlay">
-                      <div class="card-header">
-                        <h2 class="meta-titulo">Viaje a Japón</h2>
-                      </div>
-                      <div class="card-footer">
-                        <div class="progreso-info">
-                          <div class="progreso-texto">Progreso: <span>100%</span></div>
-                          <div class="progreso-bar">
-                            <div class="progreso-fill" style="width: 100%;"></div>
-                          </div>
-                        </div>
-                        <button class="boton-aportar">Aportar</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Tarjeta: Crear Nueva -->
-                  <div class="meta-card card-crear">
+                  <!-- Tarjeta para crear nueva meta -->
+                  <div class="meta-card card-crear" id="cardCrear">
                     <div class="card-overlay-crear">
                       <div class="icon-plus">
                         <i class="fa-solid fa-plus"></i>

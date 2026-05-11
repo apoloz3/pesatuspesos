@@ -1020,9 +1020,13 @@ footer {
 
 /* Tarjeta Crear */
 .card-crear {
-  border-style: dashed;
-  background-color: #001524;
-  border-color: rgba(207, 181, 60, 0.4) !important;
+  background: 
+    linear-gradient(135deg, var(--matte-gold) 0%, var(--bg-navy) 100%) padding-box,
+    linear-gradient(135deg, var(--matte-gold) 0%, var(--bg-navy) 100%) border-box !important;
+  border: 3px solid transparent !important;
+  border-radius: 24px !important;
+  position: relative;
+  overflow: hidden;
 }
 
 .card-overlay-crear {
@@ -1033,7 +1037,7 @@ footer {
   align-items: center;
   justify-content: center;
   gap: 20px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.05);
   transition: background 0.3s ease;
 }
 
@@ -1045,13 +1049,14 @@ footer {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 3px solid var(--matte-gold);
+  border: 3px solid white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  color: var(--matte-gold);
+  color: white;
   transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .card-crear:hover .icon-plus {
@@ -1062,9 +1067,10 @@ footer {
 }
 
 .card-crear p {
-  color: var(--gold-light);
+  color: white;
   font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 
@@ -1405,11 +1411,13 @@ footer {
 
 /* Fila especial para "Crear" en vista lista */
 .lista-meta-item.lista-crear {
-  border-style: dashed;
-  background: #001524;
+  background: 
+    linear-gradient(135deg, var(--matte-gold) 0%, var(--bg-navy) 100%) padding-box,
+    linear-gradient(135deg, var(--matte-gold) 0%, var(--bg-navy) 100%) border-box !important;
+  border: 2px solid transparent !important;
   justify-content: center;
   cursor: pointer;
-  padding: 14px 24px; /* Grosor reducido ya que no tiene botones */
+  padding: 14px 24px;
   min-height: auto;
 }
 
@@ -1421,16 +1429,17 @@ footer {
   display: flex;
   align-items: center;
   gap: 20px;
-  color: var(--matte-gold);
+  color: white;
   font-weight: 700;
   font-size: 1.1rem;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 .lista-crear-icon {
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  border: 2px solid var(--matte-gold);
+  border: 2px solid white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1440,7 +1449,7 @@ footer {
 
 .lista-meta-item.lista-crear .lista-crear-inner i {
   font-size: 1.2rem;
-  color: var(--matte-gold);
+  color: white;
   transition: all 0.4s ease;
 }
 

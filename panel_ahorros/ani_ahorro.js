@@ -822,48 +822,28 @@ document.addEventListener("DOMContentLoaded", function () {
                     const actual = parseFloat(cardAEditar.getAttribute('data-actual') || '0');
                     applyMetaState(cardAEditar, actual, montoTotalNum, titulo, !!cardAEditar.closest('#cardGrid'));
                     
+                    saveMetasToStorage(); // Persistir cambios tras editar
                     mostrarAlerta("Meta actualizada exitosamente");
                 }
             } else {
-                // LÓGICA DE CREACIÓN (Existente)
-                const newCard = document.createElement("div");
-                newCard.className = "meta-card";
-                newCard.style.backgroundImage = bgImage;
-                newCard.setAttribute("data-actual", "0");
-                newCard.setAttribute("data-total", montoTotalNum);
-                newCard.setAttribute("data-aporte", montoAporteNum);
-                newCard.setAttribute("data-frecuencia", frecuenciaVal);
+                // LÓGICA DE CREACIÓN (Dinámica)
+                const metaData = {
+                  titulo: titulo,
+                  actual: "0",
+                  total: String(montoTotalNum),
+                  aporte: String(montoAporteNum),
+                  frecuencia: frecuenciaVal,
+                  imagen: bgImage
+                };
 
-                newCard.innerHTML = `
-                  <div class="card-menu-container">
-                    <button class="card-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
-                    <div class="card-dropdown">
-                      <button class="dropdown-item edit"><i class="fas fa-edit"></i> Editar</button>
-                      <button class="dropdown-item delete"><i class="fas fa-trash-alt"></i> Eliminar</button>
-                    </div>
-                  </div>
-                  <div class="card-overlay">
-                    <div class="card-header">
-                      <span class="meta-label">Mi meta:</span>
-                      <h2 class="meta-titulo">${titulo}</h2>
-                    </div>
-                    <div class="card-footer">
-                      <div class="progreso-info">
-                        <div class="progreso-texto">Progreso: <span class="monto-dinamico">0%</span></div>
-                        <div class="progreso-bar">
-                          <div class="progreso-fill" style="width: 0%;"></div>
-                        </div>
-                      </div>
-                      <button class="boton-aportar">Aportar</button>
-                    </div>
-                  </div>
-                `;
-
-                applyMetaState(newCard, 0, montoTotalNum, titulo);
+                const newCard = createMetaCardElement(metaData);
 
                 if (track) {
                   track.insertBefore(newCard, cardCrear);
                 }
+
+                saveMetasToStorage(); // Persistir cambios
+
                 if (typeof closeModal === 'function') closeModal();
                 mostrarExitoMeta();
             }
@@ -946,7 +926,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (originalCard) originalCard.remove();
         
-        // Limpiar localStorage
+        saveMetasToStorage(); // Persistir tras eliminar
+
+        // Limpiar localStorage de metadatos específicos
         localStorage.removeItem(`progreso_meta_${titulo}`);
         localStorage.removeItem(`historial_meta_${titulo}`);
         localStorage.removeItem(`historial_detallado_meta_${titulo}`);
@@ -1498,6 +1480,91 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Aplicar vista guardada al cargar
   setView(vistaGuardada);
+
+  /* ===============================
+       SISTEMA DINÁMICO DE PERSISTENCIA
+     =============================== */
+
+  function createMetaCardElement(data) {
+    const { titulo, actual, total, aporte, frecuencia, imagen } = data;
+    const newCard = document.createElement("div");
+    newCard.className = "meta-card";
+    newCard.style.backgroundImage = imagen || "url('img/default_meta.png')";
+    newCard.setAttribute("data-actual", actual || "0");
+    newCard.setAttribute("data-total", total || "0");
+    newCard.setAttribute("data-aporte", aporte || "0");
+    newCard.setAttribute("data-frecuencia", frecuencia || "3");
+
+    newCard.innerHTML = `
+      <div class="card-menu-container">
+        <button class="card-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
+        <div class="card-dropdown">
+          <button class="dropdown-item edit"><i class="fas fa-edit"></i> Editar</button>
+          <button class="dropdown-item delete"><i class="fas fa-trash-alt"></i> Eliminar</button>
+        </div>
+      </div>
+      <div class="card-overlay">
+        <div class="card-header">
+          <span class="meta-label">Mi meta:</span>
+          <h2 class="meta-titulo">${titulo}</h2>
+        </div>
+        <div class="card-footer">
+          <div class="progreso-info">
+            <div class="progreso-texto">Progreso: <span class="monto-dinamico">0%</span></div>
+            <div class="progreso-bar">
+              <div class="progreso-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+          <button class="boton-aportar">Aportar</button>
+        </div>
+      </div>
+    `;
+
+    applyMetaState(newCard, parseFloat(actual || 0), parseFloat(total || 0), titulo);
+    return newCard;
+  }
+
+  function saveMetasToStorage() {
+    const track = document.getElementById("carouselTrack");
+    if (!track) return;
+    const cards = Array.from(track.querySelectorAll(".meta-card:not(.card-crear)"));
+    const metasData = cards.map(card => ({
+      titulo: card.querySelector(".meta-titulo").textContent.trim(),
+      actual: card.getAttribute("data-actual"),
+      total: card.getAttribute("data-total"),
+      aporte: card.getAttribute("data-aporte"),
+      frecuencia: card.getAttribute("data-frecuencia"),
+      imagen: card.style.backgroundImage
+    }));
+    localStorage.setItem("metas_usuario_lista", JSON.stringify(metasData));
+  }
+
+  function loadMetasFromStorage() {
+    const track = document.getElementById("carouselTrack");
+    const cardCrear = document.getElementById("cardCrear");
+    if (!track || !cardCrear) return;
+
+    // Limpiar track (excepto cardCrear)
+    Array.from(track.querySelectorAll(".meta-card:not(.card-crear)")).forEach(c => c.remove());
+
+    const data = localStorage.getItem("metas_usuario_lista");
+    if (data) {
+      const metasData = JSON.parse(data);
+      metasData.forEach(meta => {
+        const newCard = createMetaCardElement(meta);
+        track.insertBefore(newCard, cardCrear);
+      });
+    }
+
+    // Inicializar carrusel y refrescar vistas
+    if (typeof initCarousel === 'function') initCarousel();
+    const currentView = localStorage.getItem('vistaMetas') || 'carrusel';
+    if (currentView === 'lista') buildListaView();
+    else if (currentView === 'card') buildCardGridView();
+  }
+
+  // Cargar metas al iniciar
+  loadMetasFromStorage();
 
 });
 
