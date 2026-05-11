@@ -731,7 +731,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         const montoTotalNum = parseFloat(metaMontoStr.replace(/[^0-9]/g, "")) || 0;
 
-        let bgImage = "url('img/textura_oro.png')";
+        let bgImage = "linear-gradient(135deg, #001524, #cfb53b)"; // Degrade entre dorado y azul
         if (btnSubirFoto && btnSubirFoto.style.backgroundImage && btnSubirFoto.style.backgroundImage !== 'initial' && btnSubirFoto.style.backgroundImage !== 'none') {
           bgImage = btnSubirFoto.style.backgroundImage;
         }
@@ -779,7 +779,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     
                     const actual = parseFloat(cardAEditar.getAttribute('data-actual') || '0');
-                    applyMetaState(cardAEditar, actual, montoTotalNum, titulo);
+                    applyMetaState(cardAEditar, actual, montoTotalNum, titulo, !!cardAEditar.closest('#cardGrid'));
                     
                     mostrarAlerta("Meta actualizada exitosamente");
                 }
@@ -926,7 +926,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  function applyMetaState(card, actual, total, titulo) {
+  function applyMetaState(card, actual, total, titulo, isGrid = false) {
     const isFinalized = localStorage.getItem(`finalizada_meta_${titulo}`) === "true";
     const isCompleted = (parseFloat(actual) >= parseFloat(total) && parseFloat(total) > 0) || isFinalized;
     const overlay = card.querySelector(".card-overlay");
@@ -943,13 +943,21 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!card.querySelector(".success-center-container")) {
         const successContainer = document.createElement("div");
         successContainer.className = "success-center-container";
+        
+        // Solo mostramos el badge superior si NO estamos en vista Grid (según solicitud)
+        const badgeHTML = isGrid ? '' : '<div class="meta-completada-badge">Meta completada</div>';
+        
         successContainer.innerHTML = `
-          <div class="meta-completada-badge">Meta completada</div>
+          ${badgeHTML}
           <div class="trophy-icon">
             <img src="img/logro.png" alt="Logro" />
           </div>
         `;
         card.appendChild(successContainer);
+      } else if (isGrid) {
+        // Si ya existe pero estamos en grid, nos aseguramos de quitar el badge si estuviera
+        const badge = card.querySelector(".meta-completada-badge");
+        if (badge) badge.remove();
       }
 
       // El badge antiguo lo removemos si existiera (limpieza)
@@ -958,10 +966,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Modificar footer
       if (footer) {
+        // Cambiar texto para vista grid
+        const footerLabel = isGrid ? '<span style="color: #2ecc71; font-weight: 700;">✔ Meta completada</span>' : 'Objetivo logrado';
+        
         footer.innerHTML = `
           <div class="progreso-info">
             <div class="progreso-texto">
-              <span>Objetivo logrado</span>
+              <span>${footerLabel}</span>
               <span>100%</span>
             </div>
             <div class="progreso-bar">
@@ -995,7 +1006,9 @@ document.addEventListener("DOMContentLoaded", function () {
       if (footer && (card.querySelector(".btn-eliminar-meta") || footer.innerHTML.includes("Objetivo logrado"))) {
         footer.innerHTML = `
           <div class="progreso-info">
-            <div class="progreso-texto">Progreso: <span class="monto-dinamico">${pct}%</span></div>
+            <div class="progreso-texto">
+              ${isGrid ? `<span>Progreso</span><span class="monto-dinamico">${pct}%</span>` : `Progreso: <span class="monto-dinamico">${pct}%</span>`}
+            </div>
             <div class="progreso-bar">
               <div class="progreso-fill" style="width: ${pct}%; background: ${colorBarra};"></div>
             </div>
@@ -1003,7 +1016,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <button class="boton-aportar">Aportar</button>
         `;
       } else {
-        const textoProgreso = card.querySelector(".progreso-texto span") || card.querySelector(".monto-dinamico");
+        const textoProgreso = card.querySelector(".monto-dinamico") || card.querySelector(".progreso-texto span:last-child");
         if (textoProgreso) textoProgreso.textContent = `${pct}%`;
         const fill = card.querySelector(".progreso-fill");
         if (fill) {
@@ -1368,7 +1381,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const actual = clone.getAttribute('data-actual') || "0";
         const total = clone.getAttribute('data-total') || "0";
         const titulo = clone.querySelector('.meta-titulo') ? clone.querySelector('.meta-titulo').textContent : 'Mi Meta';
-        applyMetaState(clone, actual, total, titulo);
+        applyMetaState(clone, actual, total, titulo, true);
       }
 
       const btnAportar = clone.querySelector('.boton-aportar');
