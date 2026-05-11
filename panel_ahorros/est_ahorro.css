@@ -1239,6 +1239,10 @@ footer {
   flex-shrink: 0;
   border: 2px solid rgba(207, 181, 60, 0.3);
   position: relative; /* Para el icono de logro */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 /* Overlay para meta completada en lista */
@@ -1251,16 +1255,37 @@ footer {
   z-index: 1;
 }
 
-.trophy-icon-list {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 42px;
-  height: 42px;
-  object-fit: contain;
+.trophy-icon-list-container {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   z-index: 2;
-  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)); /* Glow dorado */
+  animation: trophyFloatList 3s ease-in-out infinite;
+}
+
+@keyframes trophyFloatList {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-5px) scale(1.05); }
+}
+
+.trophy-icon-list-container::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(207, 181, 60, 0.4) 0%, transparent 70%);
+  z-index: -1;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+.trophy-icon-list {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
 }
 
 .lista-meta-info {
@@ -2626,6 +2651,11 @@ input:checked+.slider-toggle:before {
     border-radius: 10px;
   }
 
+  .trophy-icon-list-container {
+    width: 35px;
+    height: 35px;
+  }
+
   .lista-meta-nombre {
     font-size: 0.95rem;
   }
@@ -2696,6 +2726,11 @@ input:checked+.slider-toggle:before {
     height: 46px;
   }
 
+  .trophy-icon-list-container {
+    width: 30px;
+    height: 30px;
+  }
+
   .lista-meta-nombre {
     font-size: 0.9rem;
   }
@@ -2720,9 +2755,7 @@ input:checked+.slider-toggle:before {
   animation: fadeInOverlay 0.6s ease forwards;
 }
 
-.meta-card.completada .card-overlay {
-  /* Estilo base removido para carrusel */
-}
+
 
 @keyframes fadeInOverlay {
   from { opacity: 0; }
@@ -3119,7 +3152,49 @@ input:checked+.slider-toggle:before {
 
 input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active { -webkit-box-shadow: 0 0 0 1000px #001524 inset !important; -webkit-text-fill-color: #ffffff !important; transition: background-color 5000s ease-in-out 0s; }
 input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active { -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: #ffffff !important; -webkit-box-shadow: 0 0 0 1000px transparent inset !important; box-shadow: 0 0 0 1000px transparent inset !important; transition: background-color 5000s ease-in-out 0s; }
-.success-theme { border-color: #2ecc71 !important; box-shadow: 0 0 30px rgba(46, 204, 113, 0.2) !important; } .success-icon-wrapper { width: 60px; height: 60px; background: rgba(46, 204, 113, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; } .success-icon-wrapper i { font-size: 3rem !important; color: #2ecc71 !important; filter: drop-shadow(0 0 10px rgba(46, 204, 113, 0.4)); } #tituloExito { color: #2ecc71 !important; font-weight: 800; font-size: 1.3rem; }
+.success-theme {
+  border-color: var(--matte-gold) !important;
+  box-shadow: 0 0 40px rgba(207, 181, 60, 0.15) !important;
+  padding-top: 45px !important;
+  border-radius: 28px !important;
+  max-width: 380px !important;
+}
+
+.success-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  background: rgba(207, 181, 60, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.success-icon-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 1px solid rgba(207, 181, 60, 0.2);
+  animation: pulseGlow 2s infinite;
+}
+
+.success-icon-wrapper i {
+  font-size: 3.5rem !important;
+  color: var(--matte-gold) !important;
+  filter: drop-shadow(0 0 15px rgba(207, 181, 60, 0.5));
+}
+
+#tituloExito {
+  color: var(--matte-gold) !important;
+  font-weight: 900;
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  display: block;
+}
 
 /* --- Modal de Confirmación --- */
 .modal-confirmar {
