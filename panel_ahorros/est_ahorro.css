@@ -1472,19 +1472,37 @@ footer {
 }
 
 .card-grid-container .meta-card .card-footer {
-  padding: 15px;
+  padding: 8px 15px 4px;
+  gap: 5px;
+}
+
+.card-grid-container .meta-card.completada .card-overlay {
+  padding-top: 12px;
 }
 
 .card-grid-container .meta-card .progreso-texto {
   font-size: 0.75rem;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
-.card-grid-container .meta-card .boton-aportar {
-  padding: 8px 12px;
-  font-size: 0.8rem;
+.card-grid-container .meta-card .trophy-icon {
+  width: 80px;
+  height: 80px;
+}
+
+.card-grid-container .meta-card .success-center-container {
+  top: 45%;
+}
+
+.card-grid-container .meta-card .boton-aportar,
+.card-grid-container .meta-card .btn-eliminar-meta {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  min-width: 110px;
+  margin-top: 5px;
 }
 
 /* Ocultar elementos sobrantes en la versiÃ³n compacta si es necesario */
@@ -2700,6 +2718,10 @@ input:checked+.slider-toggle:before {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   animation: fadeInOverlay 0.6s ease forwards;
+}
+
+.meta-card.completada .card-overlay {
+  /* Estilo base removido para carrusel */
 }
 
 @keyframes fadeInOverlay {
