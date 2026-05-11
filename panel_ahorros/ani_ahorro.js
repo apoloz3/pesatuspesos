@@ -99,6 +99,30 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  /* ===============================
+       MODAL DE ÉXITO (NUEVA META)
+     =============================== */
+  const modalExitoMeta = document.getElementById("modalExitoMeta");
+  const btnIrAMetas = document.getElementById("btnIrAMetas");
+
+  function mostrarExitoMeta() {
+    if (modalExitoMeta) {
+      modalExitoMeta.classList.add("activo");
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  if (btnIrAMetas) {
+    btnIrAMetas.addEventListener("click", () => {
+      modalExitoMeta.classList.remove("activo");
+      document.body.style.overflow = '';
+      // Redirigir a la vista de carrusel (panel principal)
+      if (typeof setView === 'function') {
+        setView('carrusel');
+      }
+    });
+  }
+
   // Cierre de modales al hacer clic fuera del contenido
   document.addEventListener("click", (e) => {
     // Si el clic fue directamente en el overlay oscuro del modal de crear
@@ -123,6 +147,13 @@ document.addEventListener("DOMContentLoaded", function () {
       modalEliminar.classList.remove("activo");
       document.body.style.overflow = '';
       metaAEliminar = null;
+    }
+
+    // Si el clic fue directamente en el overlay oscuro del modal de éxito
+    if (modalExitoMeta && e.target === modalExitoMeta) {
+      modalExitoMeta.classList.remove("activo");
+      document.body.style.overflow = '';
+      if (typeof setView === 'function') setView('carrusel');
     }
 
     // --- Lógica de Menú de Acciones (Tres Puntos) ---
@@ -208,9 +239,19 @@ document.addEventListener("DOMContentLoaded", function () {
       if (cardDel) {
         const titleEl = cardDel.querySelector(".meta-titulo, .lista-meta-nombre");
         const titulo = titleEl ? titleEl.textContent : "";
+        
+        // Obtener el índice real en el track original
+        let trackIndex = cardDel.dataset.trackIndex;
+        if (trackIndex === undefined) {
+          const allTrackCards = Array.from(document.querySelectorAll('#carouselTrack .meta-card'));
+          const foundIndex = allTrackCards.indexOf(cardDel);
+          if (foundIndex !== -1) trackIndex = foundIndex;
+        }
+
         metaAEliminar = {
           titulo: titulo,
-          elemento: cardDel
+          elemento: cardDel,
+          trackIndex: trackIndex
         };
         const modalDel = document.getElementById("modalEliminarMeta");
         if (modalDel) {
@@ -731,7 +772,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         const montoTotalNum = parseFloat(metaMontoStr.replace(/[^0-9]/g, "")) || 0;
 
-        let bgImage = "linear-gradient(135deg, #001524, #cfb53b)"; // Degrade entre dorado y azul
+        let bgImage = "url('img/default_meta.png')"; // Imagen por defecto (moneda y degrade)
         if (btnSubirFoto && btnSubirFoto.style.backgroundImage && btnSubirFoto.style.backgroundImage !== 'initial' && btnSubirFoto.style.backgroundImage !== 'none') {
           bgImage = btnSubirFoto.style.backgroundImage;
         }
@@ -823,7 +864,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (track) {
                   track.insertBefore(newCard, cardCrear);
                 }
-                mostrarAlerta("Meta creada exitosamente");
+                if (typeof closeModal === 'function') closeModal();
+                mostrarExitoMeta();
             }
 
             // Actualizar vista y carrusel
@@ -886,13 +928,21 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnConfirmarEliminar) {
     btnConfirmarEliminar.addEventListener("click", () => {
       if (metaAEliminar) {
-        const { titulo, elemento } = metaAEliminar;
+        const { titulo, trackIndex } = metaAEliminar;
         
-        // Eliminar del track original si existe
-        const originalCard = Array.from(document.querySelectorAll('#carouselTrack .meta-card')).find(c => {
-          const t = c.querySelector(".meta-titulo");
-          return t && t.textContent === titulo;
-        });
+        // Obtener todas las tarjetas originales del track
+        const trackCards = Array.from(document.querySelectorAll('#carouselTrack .meta-card'));
+        let originalCard;
+
+        if (trackIndex !== undefined) {
+          originalCard = trackCards[parseInt(trackIndex, 10)];
+        } else {
+          // Fallback por título si el índice fallara por alguna razón
+          originalCard = trackCards.find(c => {
+            const t = c.querySelector(".meta-titulo");
+            return t && t.textContent === titulo;
+          });
+        }
 
         if (originalCard) originalCard.remove();
         
@@ -1264,7 +1314,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const cards = allCards.slice(startIndex, startIndex + itemsPerPage);
 
-    cards.forEach(card => {
+    cards.forEach((card, indexInView) => {
       const isCrear = card.classList.contains('card-crear');
 
       if (isCrear) {
@@ -1295,11 +1345,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const row = document.createElement('div');
       row.className = `lista-meta-item ${isCompleted ? 'completada' : ''}`;
+      row.dataset.trackIndex = startIndex + indexInView;
 
       // Creamos el thumb por separado para evitar conflicto de comillas en atributos inline
       const thumb = document.createElement('div');
       thumb.className = 'lista-meta-thumb';
-      thumb.style.backgroundImage = bgImage || "url('img/textura_oro.png')";
+      thumb.style.backgroundImage = bgImage || "url('img/default_meta.png')";
 
       const info = document.createElement('div');
       info.className = 'lista-meta-info';
@@ -1318,7 +1369,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Si está completada, añadimos el icono de logro al thumb
       if (isCompleted) {
-        thumb.innerHTML = '<img src="img/logro.png" class="trophy-icon-list" alt="Logro">';
+        thumb.innerHTML = `
+          <div class="trophy-icon-list-container">
+            <img src="img/logro.png" class="trophy-icon-list" alt="Logro">
+          </div>
+        `;
       }
 
       const actions = document.createElement('div');
@@ -1373,8 +1428,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const cards = allCards.slice(startIndex, startIndex + itemsPerPage);
 
-    cards.forEach(card => {
+    cards.forEach((card, indexInView) => {
       const clone = card.cloneNode(true);
+      clone.dataset.trackIndex = startIndex + indexInView;
       const isCrear = clone.classList.contains('card-crear');
 
       if (!isCrear) {
