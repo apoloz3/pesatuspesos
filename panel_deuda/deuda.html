@@ -66,8 +66,6 @@
                 <label><i class="fa-solid fa-building"></i> Entidad</label>
                 <select id="filtroEntidad">
                   <option>Todas</option>
-                  <option>Banco Nacional</option>
-                  <option>Tarjeta Corp</option>
                 </select>
               </div>
               <div class="filter-group">
@@ -75,7 +73,10 @@
                 <select id="filtroTipo">
                   <option>Todas</option>
                   <option>Crédito</option>
+                  <option>Tarjeta</option>
                   <option>Préstamo</option>
+                  <option>Comercial</option>
+                  <option>Otro</option>
                 </select>
               </div>
               <div class="filter-group">
@@ -86,18 +87,20 @@
                   <option>Pendiente</option>
                 </select>
               </div>
-              <div class="filter-group">
-                <label><i class="fa-solid fa-coins"></i> Moneda</label>
-                <select id="filtroMoneda">
-                  <option>COP</option>
-                  <option>USD</option>
-                </select>
-              </div>
+
               <button class="btn-apply" id="btnAplicarFiltros">
                 <i class="fa-solid fa-filter"></i> Aplicar Filtros
               </button>
               <button class="btn-clean" id="btnLimpiarFiltros">
                 <i class="fa-solid fa-rotate-left"></i> Limpiar
+              </button>
+            </div>
+            <div class="dash-actions">
+              <button id="btnExportarExcel" class="btn-exportar" title="Exportar Excel">
+                <i class="fas fa-file-excel"></i> <span>EXCEL</span>
+              </button>
+              <button id="btnDescargarPDF" class="btn-exportar" title="Descargar PDF">
+                <i class="fas fa-file-pdf"></i> <span>PDF</span>
               </button>
             </div>
           </div>
@@ -165,7 +168,7 @@
                       <th>Tipo</th>
                       <th>Saldo Inicial</th>
                       <th>Saldo Actual</th>
-                      <th>Tasa</th>
+                      
                       <th>Vencimiento</th>
                       <th>Estado</th>
                       <th>Acciones</th>
@@ -181,7 +184,26 @@
               </div>
             </div>
 
-            <!-- DERECHA: Historial de Pagos -->
+            <!-- DERECHA: Evolución de la Deuda -->
+            <div class="chart-container">
+              <div class="chart-header">
+                <h2>Evolución de la Deuda</h2>
+                <select class="chart-select" id="selectEvolucion">
+                  <option value="12">12 meses</option>
+                  <option value="6">6 meses</option>
+                </select>
+              </div>
+              <div class="chart-body">
+                <canvas id="chartEvolucion"></canvas>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ══════════ PARTE INFERIOR: Gráficas ══════════ -->
+          <div class="dash-charts-grid">
+
+            <!-- IZQUIERDA: Historial de Pagos -->
             <div class="table-container">
               <div class="table-header">
                 <h2>Historial de Pagos</h2>
@@ -210,25 +232,6 @@
               </div>
             </div>
 
-          </div>
-
-          <!-- ══════════ PARTE INFERIOR: Gráficas ══════════ -->
-          <div class="dash-charts-grid">
-
-            <!-- Gráfica 1: Evolución de la Deuda -->
-            <div class="chart-container">
-              <div class="chart-header">
-                <h2>Evolución de la Deuda</h2>
-                <select class="chart-select" id="selectEvolucion">
-                  <option value="12">12 meses</option>
-                  <option value="6">6 meses</option>
-                </select>
-              </div>
-              <div class="chart-body">
-                <canvas id="chartEvolucion"></canvas>
-              </div>
-            </div>
-
             <!-- Gráfica 2: Pagos por Mes (reemplaza "Deuda por Tipo") -->
             <div class="chart-container">
               <div class="chart-header">
@@ -239,39 +242,10 @@
               </div>
             </div>
 
-            <!-- Gráfica 3: Distribución por Método de Pago -->
-            <div class="chart-container">
-              <div class="chart-header">
-                <h2>Método de Pago</h2>
-              </div>
-              <div class="chart-body doughnut-wrap">
-                <canvas id="chartMetodoPago"></canvas>
-                <div id="metodoPagoLegend" class="chart-legend"></div>
-              </div>
-            </div>
-
-            <!-- Gráfica 4: Próximos Vencimientos -->
-            <div class="list-container">
-              <div class="list-header">
-                <h2>Próximos Vencimientos</h2>
-                <button class="btn-text">Ver todos</button>
-              </div>
-              <div class="list-content" id="listaVencimientos">
-                <!-- Se llenará vía JS -->
-              </div>
-            </div>
-
           </div>
 
           <!-- ══════════ BOTONES PDF / EXCEL ══════════ -->
-          <div class="dash-export-row" style="display: flex; gap: 15px; justify-content: center; margin-top: 2rem;">
-            <button id="btnExportarExcel" class="btn-exportar" title="Descargar Excel">
-                <i class="fas fa-file-excel"></i> <span>EXPORTAR EXCEL</span>
-            </button>
-            <button id="btnDescargarPDF" class="btn-exportar" title="Descargar PDF">
-                <i class="fas fa-file-pdf"></i> <span>DESCARGAR PDF</span>
-            </button>
-          </div>
+
 
         </section>
 
@@ -379,7 +353,7 @@
         <form id="formDeuda" class="form-grid">
           <input type="hidden" id="deudaIndex">
           <div class="form-group">
-            <label for="acreedor">Acreedor</label>
+            <label for="acreedor">Entidad (Acreedor)</label>
             <input type="text" id="acreedor" required placeholder="Ej: Banco Nacional">
           </div>
           <div class="form-group">
@@ -394,16 +368,13 @@
           </div>
           <div class="form-group">
             <label for="saldoInicial">Saldo Inicial ($)</label>
-            <input type="number" id="saldoInicial" required step="0.01" placeholder="0.00">
+            <input type="text" id="saldoInicial" required placeholder="0">
           </div>
           <div class="form-group">
             <label for="saldoActual">Saldo Actual ($)</label>
-            <input type="number" id="saldoActual" required step="0.01" placeholder="0.00">
+            <input type="text" id="saldoActual" required placeholder="0">
           </div>
-          <div class="form-group">
-            <label for="tasa">Tasa (%)</label>
-            <input type="number" id="tasa" required step="0.1" placeholder="0.0">
-          </div>
+
           <div class="form-group">
             <label for="vencimiento">Vencimiento</label>
             <input type="date" id="vencimiento" required>
@@ -443,7 +414,7 @@
           </div>
           <div class="form-group">
             <label for="montoPago">Monto Abonado ($)</label>
-            <input type="number" id="montoPago" required step="0.01" placeholder="0.00">
+            <input type="text" id="montoPago" required placeholder="0">
           </div>
           <div class="form-group">
             <label for="metodoPago">Método de Pago</label>
@@ -465,6 +436,21 @@
             <button type="submit" class="btn-save">Guardar</button>
           </div>
         </form>
+      </div>
+    </div>
+    
+    <!-- Modal de Confirmación Premium -->
+    <div id="modalConfirm" class="modal-dash">
+      <div class="modal-dash-content modal-confirm">
+        <div class="confirm-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h2 id="confirmTitle">¿Estás seguro?</h2>
+        <p id="confirmMessage">Esta acción no se puede deshacer.</p>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" id="btnConfirmCancel">Cancelar</button>
+          <button type="button" class="btn-save btn-confirm-action" id="btnConfirmOk">Confirmar</button>
+        </div>
       </div>
     </div>
 

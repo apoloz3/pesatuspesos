@@ -99,26 +99,46 @@ document.addEventListener("DOMContentLoaded", function () {
   let deudas  = [];
   let pagos   = [];
 
-  let paginaDeudas   = 1;
-  let paginaPagos    = 1;
-  const REG_POR_PAG  = 4;
-
-  /* Referencias a instancias de Chart.js para poder actualizarlas */
   let chartEvolucionInst  = null;
   let chartPagosMesInst   = null;
-  let chartMetodoPagoInst = null;
+  let confirmCallback     = null;
+
+  let paginaDeudas = 1;
+  let paginaPagos  = 1;
+  const REG_POR_PAG = 6;
 
   /* ─── INICIALIZAR ───────────────────────────────────────────── */
   inicializarDashboard();
 
   function inicializarDashboard() {
-    renderTablaDeudas(1);
-    renderHistorialPagos(1);
-    actualizarKPIs();
-    initCharts();
-    poblarListaVencimientos();
     configurarEventosModalDeuda();
     configurarEventosModalPago();
+    configurarEventosModalConfirm();
+    configurarFormateoInputs();
+    poblarFiltrosEntidad();
+    
+    actualizarKPIs();
+    renderTablaDeudas(1);
+    renderHistorialPagos(1);
+    initCharts();
+  }
+
+  function configurarFormateoInputs() {
+    const ids = ['saldoInicial', 'saldoActual', 'montoPago'];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', (e) => {
+          let value = e.target.value.replace(/[^\d]/g, '');
+          if (value === '') {
+            e.target.value = '';
+            return;
+          }
+          const num = parseInt(value, 10);
+          e.target.value = new Intl.NumberFormat('de-DE').format(num);
+        });
+      }
+    });
   }
 
   /* ═══════════════════════════════════════════════════════════════
@@ -158,6 +178,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function capitalize(str) {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+
+  function poblarFiltrosEntidad() {
+    const selEntidad = document.getElementById('filtroEntidad');
+    if (!selEntidad) return;
+    const valorActual = selEntidad.value;
+    const entidades = [...new Set(deudas.map(d => d.acreedor))].sort();
+    selEntidad.innerHTML = '<option>Todas</option>' + 
+      entidades.map(e => `<option ${e === valorActual ? 'selected' : ''}>${e}</option>`).join('');
+  }
+
   /* ═══════════════════════════════════════════════════════════════
                       TABLA DEUDAS (con paginación)
    ═══════════════════════════════════════════════════════════════ */
@@ -192,9 +226,9 @@ document.addEventListener("DOMContentLoaded", function () {
             <td><span style="color:var(--dash-blue)">${d.tipo}</span></td>
             <td>${d.inicial}</td>
             <td><b>${d.actual}</b></td>
-            <td>${d.tasa}</td>
-            <td style="color:var(--status-bad)">${formatFecha(d.venc)}</td>
-            <td><span class="badge ${d.badge}">${d.estado}</span></td>
+
+            <td>${formatFecha(d.venc)}</td>
+            <td><span class="badge ${d.badge}">${capitalize(d.estado)}</span></td>
             <td class="acciones-cell">
               <button class="btn-edit" title="Editar" onclick="abrirModalDeuda(${gi})">
                 <i class="fa-solid fa-pencil"></i>
@@ -213,14 +247,19 @@ document.addEventListener("DOMContentLoaded", function () {
   window.cambiarPaginaDeudas = (n) => renderTablaDeudas(n);
 
   window.eliminarDeuda = function(index) {
-    if (confirm('¿Seguro que deseas eliminar esta deuda?')) {
-      deudas.splice(index, 1);
-      const total = Math.ceil(deudas.length / REG_POR_PAG);
-      if (paginaDeudas > total && total > 0) paginaDeudas = total;
-      renderTablaDeudas(paginaDeudas);
-      actualizarKPIs();
-      actualizarGraficas();
-    }
+    showConfirmModal(
+      '¿Eliminar Deuda?', 
+      `¿Estás seguro de que deseas eliminar la deuda con "${deudas[index].acreedor}"? Esta acción es permanente.`,
+      () => {
+        deudas.splice(index, 1);
+        const total = Math.ceil(deudas.length / REG_POR_PAG);
+        if (paginaDeudas > total && total > 0) paginaDeudas = total;
+        renderTablaDeudas(paginaDeudas);
+        poblarFiltrosEntidad();
+        actualizarKPIs();
+        actualizarGraficas();
+      }
+    );
   };
 
   /* ═══════════════════════════════════════════════════════════════
@@ -250,7 +289,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <tr>
             <td>${formatFecha(p.fecha)}</td>
             <td><b>${p.monto}</b></td>
-            <td><span class="badge metodo-badge">${p.metodo}</span></td>
+            <td><span class="badge metodo-badge">${capitalize(p.metodo)}</span></td>
             <td>${notaIcon}</td>
             <td class="acciones-cell">
               <button class="btn-edit" title="Editar" onclick="abrirModalPago(${gi})">
@@ -271,14 +310,18 @@ document.addEventListener("DOMContentLoaded", function () {
   window.cambiarPaginaPagos = (n) => renderHistorialPagos(n);
 
   window.eliminarPago = function(index) {
-    if (confirm('¿Seguro que deseas eliminar este pago?')) {
-      pagos.splice(index, 1);
-      const total = Math.ceil(pagos.length / REG_POR_PAG);
-      if (paginaPagos > total && total > 0) paginaPagos = total;
-      renderHistorialPagos(paginaPagos);
-      actualizarKPIs();
-      actualizarGraficas();
-    }
+    showConfirmModal(
+      '¿Eliminar Pago?',
+      `¿Deseas eliminar el registro de pago por valor de ${pagos[index].monto}?`,
+      () => {
+        pagos.splice(index, 1);
+        const total = Math.ceil(pagos.length / REG_POR_PAG);
+        if (paginaPagos > total && total > 0) paginaPagos = total;
+        renderHistorialPagos(paginaPagos);
+        actualizarKPIs();
+        actualizarGraficas();
+      }
+    );
   };
 
   /* ─── Popover de notas ──────────────────────────────────────── */
@@ -339,7 +382,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById('tipo').value         = d.tipo;
       document.getElementById('saldoInicial').value = parseMoney(d.inicial);
       document.getElementById('saldoActual').value  = parseMoney(d.actual);
-      document.getElementById('tasa').value         = parseMoney(d.tasa);
+
       document.getElementById('vencimiento').value  = d.venc;
       document.getElementById('estado').value       = d.estado;
     } else {
@@ -354,20 +397,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function guardarDeuda() {
     const index   = document.getElementById('deudaIndex').value;
-    const acreedor = document.getElementById('acreedor').value;
+    const acreedor = capitalize(document.getElementById('acreedor').value);
     const tipo     = document.getElementById('tipo').value;
-    const inicial  = parseFloat(document.getElementById('saldoInicial').value);
-    const actual   = parseFloat(document.getElementById('saldoActual').value);
-    const tasa     = parseFloat(document.getElementById('tasa').value);
+    const inicial  = parseMoney(document.getElementById('saldoInicial').value);
+    const actual   = parseMoney(document.getElementById('saldoActual').value);
+
     const venc     = document.getElementById('vencimiento').value;
     const estado   = document.getElementById('estado').value;
     const badge    = estado === 'Al día' ? 'success' : (estado === 'Próximo' ? 'warning' : 'danger');
 
     const nuevaDeuda = {
       acreedor, tipo,
-      inicial: `$${inicial.toLocaleString('es-CO')}`,
-      actual:  `$${actual.toLocaleString('es-CO')}`,
-      tasa:    `${tasa}%`,
+      inicial: formatCurrency(inicial),
+      actual:  formatCurrency(actual),
+
       venc, estado, badge
     };
 
@@ -381,6 +424,7 @@ document.addEventListener("DOMContentLoaded", function () {
     renderTablaDeudas(paginaDeudas);
     actualizarKPIs();
     actualizarGraficas();
+    poblarFiltrosEntidad();
     cerrarModalDeuda();
   }
 
@@ -440,9 +484,9 @@ document.addEventListener("DOMContentLoaded", function () {
   function guardarPago() {
     const index  = document.getElementById('pagoIndex').value;
     const fecha  = document.getElementById('fechaPago').value;
-    const monto  = parseFloat(document.getElementById('montoPago').value);
-    const metodo = document.getElementById('metodoPago').value;
-    let notas  = document.getElementById('notasPago').value.trim();
+    const monto  = parseMoney(document.getElementById('montoPago').value);
+    const metodo = capitalize(document.getElementById('metodoPago').value);
+    let notas  = capitalize(document.getElementById('notasPago').value.trim());
     const selectDeuda = document.getElementById('deudaAsociada');
     const deudaIdx = selectDeuda ? selectDeuda.value : '';
 
@@ -452,7 +496,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const nuevoPago = {
       fecha,
-      monto: `$${monto.toLocaleString('es-CO')}`,
+      monto: formatCurrency(monto),
       metodo,
       notas,
       deudaIdx
@@ -468,7 +512,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let actualVal = parseMoney(deudas[deudaIdx].actual);
         actualVal -= monto;
         if (actualVal < 0) actualVal = 0;
-        deudas[deudaIdx].actual = `$${actualVal.toLocaleString('es-CO')}`;
+        deudas[deudaIdx].actual = formatCurrency(actualVal);
         renderTablaDeudas(paginaDeudas);
       }
     }
@@ -480,17 +524,63 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ═══════════════════════════════════════════════════════════════
+                      MODAL CONFIRMACIÓN (PREMIUM)
+   ═══════════════════════════════════════════════════════════════ */
+  function configurarEventosModalConfirm() {
+    const btnOk     = document.getElementById('btnConfirmOk');
+    const btnCancel = document.getElementById('btnConfirmCancel');
+    const modal     = document.getElementById('modalConfirm');
+
+    if (btnOk) {
+      btnOk.onclick = () => {
+        if (confirmCallback) confirmCallback();
+        cerrarConfirmModal();
+      };
+    }
+    if (btnCancel) btnCancel.onclick = cerrarConfirmModal;
+
+    window.addEventListener('click', (e) => { 
+      if (e.target === modal) cerrarConfirmModal(); 
+    });
+  }
+
+  window.showConfirmModal = function(title, message, callback) {
+    const modal = document.getElementById('modalConfirm');
+    if (!modal) return;
+    
+    document.getElementById('confirmTitle').innerText = title;
+    document.getElementById('confirmMessage').innerText = message;
+    confirmCallback = callback;
+    
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('activo'), 10);
+  }
+
+  function cerrarConfirmModal() {
+    const modal = document.getElementById('modalConfirm');
+    if (!modal) return;
+    
+    modal.classList.remove('activo');
+    setTimeout(() => {
+      modal.style.display = 'none';
+      confirmCallback = null;
+    }, 300);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
                          GRÁFICAS
    ═══════════════════════════════════════════════════════════════ */
   function initCharts() {
+    // Global defaults for dark background
+    Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
+    Chart.defaults.font.family = "'Montserrat', sans-serif";
+    
     initChartEvolucion();
     initChartPagosMes();
-    initChartMetodoPago();
   }
 
   function actualizarGraficas() {
     actualizarChartPagosMes();
-    actualizarChartMetodoPago();
     actualizarChartEvolucion();
   }
 
@@ -499,19 +589,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const ctx = document.getElementById('chartEvolucion');
     if (!ctx) return;
     chartEvolucionInst = new Chart(ctx, {
-      type: 'bar',
+      type: 'line',
       data: buildDatosEvolucion(12),
-      options: {
+        options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: { display: true, position: 'top',
-            labels: { color: '#1e293b', font: { size: 12 } } }
+            labels: { color: '#f3d989', font: { size: 12, weight: 'bold' } } }
         },
         scales: {
-          y: { beginAtZero: true, grid: { color: '#e2e8f0' },
-               ticks: { callback: v => `$${v.toLocaleString('es-CO')}` } },
-          x: { grid: { display: false } }
+          y: { 
+            beginAtZero: true, 
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { 
+              color: 'rgba(255, 255, 255, 0.5)', 
+              callback: v => formatCurrency(v) 
+            } 
+          },
+          x: { 
+            grid: { display: false },
+            ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+          }
         }
       }
     });
@@ -552,18 +651,26 @@ document.addEventListener("DOMContentLoaded", function () {
           label: 'Saldo Deuda',
           type: 'line',
           data: dataDeuda,
-          borderColor: '#2563eb',
-          backgroundColor: 'rgba(37,99,235,0.08)',
+          borderColor: '#cfb53c',
+          backgroundColor: 'rgba(207, 181, 60, 0.1)',
           fill: true,
           tension: 0.4,
-          pointRadius: 4,
-          pointBackgroundColor: '#2563eb'
+          pointRadius: 0,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#cfb53c',
+          pointBorderColor: '#000d1a',
+          pointBorderWidth: 2,
+          borderWidth: 3
         },
         {
           label: 'Pagos realizados',
+          type: 'line',
           data: dataPagos,
-          backgroundColor: 'rgba(16,185,129,0.8)',
-          borderRadius: 6
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          borderColor: 'rgba(255, 255, 255, 0.3)',
+          borderWidth: 2,
+          tension: 0.4,
+          pointRadius: 0
         }
       ]
     };
@@ -584,14 +691,23 @@ document.addEventListener("DOMContentLoaded", function () {
     chartPagosMesInst = new Chart(ctx, {
       type: 'bar',
       data: buildDatosPagosMes(),
-      options: {
+        options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true, grid: { color: '#e2e8f0' },
-               ticks: { callback: v => `$${v.toLocaleString('es-CO')}` } },
-          x: { grid: { display: false } }
+          y: { 
+            beginAtZero: true, 
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { 
+              color: 'rgba(255, 255, 255, 0.5)', 
+              callback: v => formatCurrency(v) 
+            } 
+          },
+          x: { 
+            grid: { display: false },
+            ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+          }
         }
       }
     });
@@ -618,10 +734,13 @@ document.addEventListener("DOMContentLoaded", function () {
       datasets: [{
         label: 'Monto abonado',
         data,
-        backgroundColor: data.map((_, i) =>
-          `hsla(${160 + i * 15}, 70%, 50%, 0.85)`),
-        borderRadius: 8,
-        borderSkipped: false
+        backgroundColor: 'rgba(207, 181, 60, 0.15)',
+        borderColor: '#cfb53c',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: '#cfb53c'
       }]
     };
   }
@@ -632,110 +751,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chartPagosMesInst.update();
   }
 
-  /* --- Método de Pago (doughnut) --- */
-  function initChartMetodoPago() {
-    const ctx = document.getElementById('chartMetodoPago');
-    if (!ctx) return;
-    const { labels, data, colors } = buildDatosMetodo();
-    chartMetodoPagoInst = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels,
-        datasets: [{ data, backgroundColor: colors, borderWidth: 0 }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '70%',
-        plugins: { legend: { display: false } }
-      }
-    });
-    renderLeyendaMetodo(labels, data, colors);
-  }
 
-  function buildDatosMetodo() {
-    const palette = ['#2563eb','#10b981','#f59e0b','#ec4899','#8b5cf6','#94a3b8'];
-    const conteo  = {};
-    pagos.forEach(p => { conteo[p.metodo] = (conteo[p.metodo] || 0) + parseMoney(p.monto); });
-    const labels = Object.keys(conteo);
-    const data   = Object.values(conteo);
-    const colors = labels.map((_, i) => palette[i % palette.length]);
-    if (labels.length === 0) {
-      return { labels: ['Sin datos'], data: [1], colors: ['#e2e8f0'] };
-    }
-    return { labels, data, colors };
-  }
-
-  function actualizarChartMetodoPago() {
-    if (!chartMetodoPagoInst) return;
-    const { labels, data, colors } = buildDatosMetodo();
-    chartMetodoPagoInst.data.labels = labels;
-    chartMetodoPagoInst.data.datasets[0].data = data;
-    chartMetodoPagoInst.data.datasets[0].backgroundColor = colors;
-    chartMetodoPagoInst.update();
-    renderLeyendaMetodo(labels, data, colors);
-  }
-
-  function renderLeyendaMetodo(labels, data, colors) {
-    const legend = document.getElementById('metodoPagoLegend');
-    if (!legend) return;
-    const total = data.reduce((a, b) => a + b, 0);
-    if (total === 0 || labels[0] === 'Sin datos') {
-      legend.innerHTML = `<p style="color:#64748b;font-size:0.85rem;text-align:center;">Sin datos disponibles</p>`;
-      return;
-    }
-    legend.innerHTML = labels.map((label, i) => {
-      const per = ((data[i] / total) * 100).toFixed(1);
-      return `<div class="legend-item">
-        <div class="legend-label">
-          <span class="legend-dot" style="background:${colors[i]}"></span>${label}
-        </div>
-        <div class="legend-value">$${data[i].toLocaleString('es-CO')} <span style="color:#64748b;font-weight:400;margin-left:6px">${per}%</span></div>
-      </div>`;
-    }).join('');
-  }
-
-  /* ─── Lista Próximos Vencimientos ───────────────────────────── */
-  function poblarListaVencimientos() {
-    const container = document.getElementById('listaVencimientos');
-    if (!container) return;
-    const hoy     = new Date();
-    const proximas = deudas
-      .filter(d => d.venc)
-      .map(d => {
-        const f = new Date(d.venc);
-        return {
-          ...d,
-          diff: Math.ceil((f - hoy) / 86400000),
-          dia: f.getDate(),
-          mes: ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'][f.getMonth()]
-        };
-      })
-      .filter(d => d.diff >= 0)
-      .sort((a, b) => a.diff - b.diff)
-      .slice(0, 5);
-
-    if (proximas.length === 0) {
-      container.innerHTML = `<p style="color:#64748b;font-size:0.9rem;text-align:center;">Sin vencimientos próximos</p>`;
-      return;
-    }
-
-    container.innerHTML = proximas.map(item => `
-      <div class="list-item">
-        <div class="date-box">
-          <span class="date-day">${item.dia}</span>
-          <span class="date-month">${item.mes}</span>
-        </div>
-        <div class="item-info">
-          <span class="item-title">${item.acreedor}</span>
-          <span class="item-sub">${item.tipo}</span>
-        </div>
-        <div class="item-amount">
-          <span class="amount-val">${item.actual}</span>
-          <span class="due-in">en ${item.diff} días</span>
-        </div>
-      </div>`).join('');
-  }
 
   /* ═══════════════════════════════════════════════════════════════
                       FILTROS / EXPORTAR
@@ -755,7 +771,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById('filtroTipo').value = 'Todas';
     document.getElementById('filtroEstado').value = 'Todos';
     document.getElementById('filtroFecha').value = 'Este año';
-    document.getElementById('filtroMoneda').value = 'COP';
+
     renderTablaDeudas(1);
     renderHistorialPagos(1);
   });
@@ -803,11 +819,22 @@ document.addEventListener("DOMContentLoaded", function () {
   function parseMoney(str) {
     if (typeof str === 'number') return str;
     if (!str) return 0;
-    return parseFloat(String(str).replace(/[^0-9.-]+/g, '')) || 0;
+    // Remove everything except numbers and commas, then convert comma to dot for parseFloat
+    // Also remove dots if they are thousand separators
+    let clean = String(str).replace(/[^\d,]/g, '');
+    clean = clean.replace(/,/g, '.');
+    return parseFloat(clean) || 0;
   }
 
   function formatCurrency(n) {
-    return `$${n.toLocaleString('es-CO')}`;
+    if (n === undefined || n === null) return '---';
+    const num = typeof n === 'number' ? n : parseMoney(n);
+    // Force dot as thousand separator using 'de-DE' or similar, then add $
+    const formatted = new Intl.NumberFormat('de-DE', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(Math.round(num));
+    return `$ ${formatted}`;
   }
 
   function formatFecha(str) {
@@ -828,6 +855,22 @@ document.addEventListener("DOMContentLoaded", function () {
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function capitalize(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+
+  function poblarFiltrosEntidad() {
+    const sel = document.getElementById('filtroEntidad');
+    if (!sel) return;
+    const entidades = [...new Set(deudas.map(d => d.acreedor))];
+    const actual = sel.value;
+    sel.innerHTML = '<option>Todas</option>' + entidades.map(e => `<option>${e}</option>`).join('');
+    // Restaurar selección si sigue existiendo
+    if ([...sel.options].some(o => o.value === actual)) sel.value = actual;
+    else sel.value = 'Todas';
   }
 
 }); // DOMContentLoaded
