@@ -226,7 +226,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <td><span style="color:var(--dash-blue)">${d.tipo}</span></td>
             <td>${d.inicial}</td>
             <td><b>${d.actual}</b></td>
-
+            <td>${d.tasa ? d.tasa + '%' : '-'}</td>
             <td>${formatFecha(d.venc)}</td>
             <td><span class="badge ${d.badge}">${capitalize(d.estado)}</span></td>
             <td class="acciones-cell">
@@ -343,9 +343,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalPags = Math.max(Math.ceil(total / REG_POR_PAG), 1);
     let html = `<button class="btn-page" ${actual === 1 ? 'disabled' : ''} onclick="${fnName}(${actual - 1})">
                   <i class="fa-solid fa-chevron-left"></i></button>`;
-    for (let i = 1; i <= totalPags; i++) {
-      html += `<button class="btn-page ${i === actual ? 'active' : ''}" onclick="${fnName}(${i})">${i}</button>`;
-    }
+    
+    html += `<button class="btn-page active">${actual}</button>`;
+    
     html += `<button class="btn-page" ${actual === totalPags ? 'disabled' : ''} onclick="${fnName}(${actual + 1})">
                <i class="fa-solid fa-chevron-right"></i></button>`;
     container.innerHTML = html;
@@ -382,6 +382,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById('tipo').value         = d.tipo;
       document.getElementById('saldoInicial').value = parseMoney(d.inicial);
       document.getElementById('saldoActual').value  = parseMoney(d.actual);
+      document.getElementById('tasa').value         = d.tasa || '';
 
       document.getElementById('vencimiento').value  = d.venc;
       document.getElementById('estado').value       = d.estado;
@@ -401,6 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const tipo     = document.getElementById('tipo').value;
     const inicial  = parseMoney(document.getElementById('saldoInicial').value);
     const actual   = parseMoney(document.getElementById('saldoActual').value);
+    const tasa     = document.getElementById('tasa').value;
 
     const venc     = document.getElementById('vencimiento').value;
     const estado   = document.getElementById('estado').value;
@@ -410,7 +412,7 @@ document.addEventListener("DOMContentLoaded", function () {
       acreedor, tipo,
       inicial: formatCurrency(inicial),
       actual:  formatCurrency(actual),
-
+      tasa,
       venc, estado, badge
     };
 
