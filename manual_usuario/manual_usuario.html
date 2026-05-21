@@ -12,12 +12,12 @@
     <!-- Estilos -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="manual.css" />
   </head>
   <body>
     <!-- Botón Regresar -->
-    <a href="../Home/index.html" class="btn-regresar" style="position: absolute; top: 20px; left: 20px; z-index: 1000; display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; background-color: #001524; color: #cfb53b; border-radius: 8px; text-decoration: none; font-weight: bold; font-family: sans-serif; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: all 0.3s ease; border: 2px solid #cfb53b;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 12px rgba(207, 181, 59, 0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.3)';">
+    <a href="../Home/index.html" class="btn-regresar" style="position: absolute; top: 20px; left: 20px; z-index: 1000; display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; background-color: #001524; color: #cfb53b; border-radius: 8px; text-decoration: none; font-weight: bold; font-family: 'Poppins', sans-serif; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: all 0.3s ease; border: 2px solid #cfb53b;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 12px rgba(207, 181, 59, 0.4)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.3)';">
       <i class='bx bx-arrow-back' style="margin-right: 8px; font-size: 1.2rem;"></i> Regresar
     </a>
 
@@ -34,8 +34,8 @@
             <h3>Manual de Usuario</h3>
 
             <div class="redes-sociales">
-              <a href="#"><i class="bx bxl-gmail"></i></a>
-              <a href="#"><i class="bx bxl-whatsapp"></i></a>
+              <a href="#" style="pointer-events: none;"><i class="bx bxl-gmail"></i></a>
+              <a href="#" style="pointer-events: none;"><i class="bx bxl-whatsapp"></i></a>
             </div>
 
             <p>
@@ -44,7 +44,7 @@
             </p>
 
             <div class="caja-botones">
-              <a href="#" class="boton">Descargar</a>
+              <a href="#" class="boton" id="btnDescargarManual">Descargar</a>
               <a href="#" class="boton contactame">¡Contáctanos!</a>
             </div>
           </div>
@@ -187,7 +187,7 @@
                   <span><i class="bx bxl-python"></i>Python</span>
                   <span><i class="bx bxl-django"></i>Django</span>
                   <span><i class="bx bx-data"></i>MySQL</span>
-                  <span><i class="bx bx-data"></i>Git</span>
+                  <span><i class="bx bx-data"></i>GitHub</span>
                 </div>
               </div>
 
@@ -213,7 +213,7 @@
 
             <div class="caja-portafolio">
                 <div class="caja-img">
-                    <img src="website 3.png" alt="">
+                    <img src="img/Applogo.png" alt="Logo de la Aplicación" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                 </div>
 
                 <div class="caja-info">
@@ -268,37 +268,20 @@
 
                 <!-- Página 6 (Diseños Creativos) -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">Acceso del sistema</h1>
+                    <h1 class="titulo">Acceder al registro</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso1.png" alt="Registro de Usuario - Paso 1" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Registro de Usuario</h3>
+                                <h3>Registro:</h3>
                             </div>
-                            <ol class="lista-pasos" style="margin-left: 1.5rem; margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
-                                <li>Ingresar a la página principal.</li>
-                                <li>Hacer clic en el botón Registrarse.</li>
-                            </ol>
-                            <span class="desc-corta"></span>
-                            <div class="desc-larga" style="display:none;">
-                                <ol class="lista-pasos" start="3" style="margin-left: 1.5rem; margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
-                                    <li>Completar el formulario con:
-                                        <ul style="list-style-type: disc; margin-left: 1.5rem; margin-top:0.3rem;">
-                                            <li>Nombre</li>
-                                            <li>Correo electrónico</li>
-                                            <li>Contraseña</li>
-                                        </ul>
-                                    </li>
-                                    <li>Confirmar el registro.</li>
-                                </ol>
-                            </div>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="javascript:void(0)" class="boton leer-mas-btn">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Desde la pantalla de inicio, el usuario debe seleccionar la opción “Regístrate” para comenzar el proceso de creación de cuenta.
+                            </p>
                         </div>
                     </div>
 
@@ -315,30 +298,20 @@
             <div class="pagina-libro pagina-der giro" id="giro-4">
                 <!-- Página 7 -->
                 <div class="frente-pagina">
-                    <h1 class="titulo">Acceso</h1>
+                    <h1 class="titulo">Completar el formulario</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/paso2.png" alt="Registro de Usuario - Paso 2" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Inicio de Sesión</h3>
+                                <h3>Registro:</h3>
                             </div>
-                            <ol class="lista-pasos" style="margin-left: 1.5rem; margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
-                                <li>Ingresar al sistema.</li>
-                            </ol>
-                            <span class="desc-corta"></span>
-                            <div class="desc-larga" style="display:none;">
-                                <ol class="lista-pasos" start="2" style="margin-left: 1.5rem; margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
-                                    <li>Introducir correo electrónico y contraseña.</li>
-                                    <li>Hacer clic en Iniciar sesión.</li>
-                                </ol>
-                            </div>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="javascript:void(0)" class="boton leer-mas-btn">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                El usuario deberá ingresar sus datos personales, correo electrónico, número telefónico y crear una contraseña segura para continuar.
+                            </p>
                         </div>
                     </div>
 
@@ -352,20 +325,20 @@
 
                 <!-- Página 8 -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">Interfaz principal</h1>
+                    <h1 class="titulo">Aceptar términos y condiciones</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso3.png" alt="Aceptar Términos y Condiciones - Paso 3" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
-                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">Una vez dentro del sistema, el usuario encontrará:</p>
-                            <ul style="list-style-type: disc; margin-left: 1.5rem; margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
-                                <li>Panel de control (Dashboard)</li>
-                                <li>Menú de navegación</li>
-                                <li>Resumen financiero</li>
-                            </ul>
+                            <div class="titulo-info">
+                                <h3>Registro:</h3>
+                            </div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Antes de finalizar el registro, es necesario leer y aceptar los términos y condiciones de uso de la plataforma.
+                            </p>
                         </div>
                     </div>
 
@@ -381,23 +354,20 @@
             <div class="pagina-libro pagina-der giro" id="giro-5">
                 <!-- Página 9 -->
                 <div class="frente-pagina">
-                    <h1 class="titulo">Diseños Creativos 9</h1>
+                    <h1 class="titulo">Confirmación de registro exitoso</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso4.png" alt="Confirmación de Registro Exitoso - Paso 4" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Registro:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                El sistema mostrará un mensaje de confirmación indicando que la cuenta fue creada correctamente.
+                            </p>
                         </div>
                     </div>
 
@@ -411,23 +381,20 @@
 
                 <!-- Página 10 -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">Diseños Creativos 10</h1>
+                    <h1 class="titulo">Iniciar sesión</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso5.png" alt="Iniciar Sesión - Paso 5" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Acceso:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                El usuario deberá ingresar el correo y contraseña registrados para acceder a su cuenta.
+                            </p>
                         </div>
                     </div>
 
@@ -443,23 +410,20 @@
             <div class="pagina-libro pagina-der giro" id="giro-6">
                 <!-- Página 11 -->
                 <div class="frente-pagina">
-                    <h1 class="titulo">Diseños Creativos 11</h1>
+                    <h1 class="titulo">Verificación de seguridad</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/paso6.png" alt="Verificación de Seguridad - Paso 6" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Acceso:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Como medida de protección, el sistema solicitará un código de verificación enviado al correo electrónico del usuario.
+                            </p>
                         </div>
                     </div>
 
@@ -473,23 +437,20 @@
 
                 <!-- Página 12 -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">Diseños Creativos 12</h1>
+                    <h1 class="titulo">Explorar el panel principal</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso7.png" alt="Explorar el Panel Principal - Paso 7" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Panel principal:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Una vez dentro de la plataforma, el usuario podrá conocer las funciones principales, acceder a contenido educativo y navegar por las diferentes secciones disponibles.
+                            </p>
                         </div>
                     </div>
 
@@ -505,23 +466,20 @@
             <div class="pagina-libro pagina-der giro" id="giro-7">
                 <!-- Página 13 -->
                 <div class="frente-pagina">
-                    <h1 class="titulo">Diseños Creativos 13</h1>
+                    <h1 class="titulo">Explorar el panel principal</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso7.1.png" alt="Explorar el Panel Principal (continuación) - Paso 7.1" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Panel principal:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Continuación: el usuario puede explorar el resumen de ingresos, egresos, metas de ahorro y acceder a los módulos de gestión financiera.
+                            </p>
                         </div>
                     </div>
 
@@ -535,29 +493,26 @@
 
                 <!-- Página 14 -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">Diseños Creativos 14</h1>
+                    <h1 class="titulo">Panel Inicio: resumen financiero</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso8.png" alt="Panel Inicio - Resumen Financiero" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Panel Inicio:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                El usuario podrá visualizar un resumen general de su actividad financiera, incluyendo balance total, ingresos, egresos y análisis gráfico del comportamiento económico del período seleccionado.
+                            </p>
                         </div>
                     </div>
 
                     <span class="numero-pagina">14</span>
 
-                    <!-- Botón siguiente -->
+                    <!-- Botón anterior -->
                     <span class="btn-sig-ant atras" data-page="giro-7">
                       <i class="bx bx-chevron-left"></i>
                     </span>
@@ -567,23 +522,20 @@
             <div class="pagina-libro pagina-der giro" id="giro-8">
                 <!-- Página 15 -->
                 <div class="frente-pagina">
-                    <h1 class="titulo">Diseños Creativos 15</h1>
+                    <h1 class="titulo">Historial y seguimiento financiero</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso8.1.png" alt="Historial y Seguimiento Financiero - Paso 8.1" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Panel Inicio:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                La plataforma permite consultar movimientos recientes, revisar el historial mensual y visualizar el cumplimiento de metas para un mejor control financiero.
+                            </p>
                         </div>
                     </div>
 
@@ -597,29 +549,26 @@
 
                 <!-- Página 16 -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">Diseños Creativos 16</h1>
+                    <h1 class="titulo">Gestión de ingresos (detalle)</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso9.png" alt="Gestión de Ingresos Detalle - Paso 9" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Ingresos:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                En esta sección el usuario podrá administrar detalladamente los ingresos registrados, consultar información específica, exportar reportes y editar registros existentes.
+                            </p>
                         </div>
                     </div>
 
                     <span class="numero-pagina">16</span>
 
-                    <!-- Botón siguiente -->
+                    <!-- Botón anterior -->
                     <span class="btn-sig-ant atras" data-page="giro-8">
                       <i class="bx bx-chevron-left"></i>
                     </span>
@@ -629,23 +578,20 @@
             <div class="pagina-libro pagina-der giro" id="giro-9">
                 <!-- Página 17 -->
                 <div class="frente-pagina">
-                    <h1 class="titulo">Diseños Creativos 17</h1>
+                    <h1 class="titulo">Análisis de ingresos</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso9.1.png" alt="Análisis de Ingresos - Paso 9.1" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Ingresos:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                El sistema presenta herramientas gráficas que permiten analizar la evolución y distribución de las fuentes de ingresos registradas.
+                            </p>
                         </div>
                     </div>
 
@@ -659,29 +605,26 @@
 
                 <!-- Página 18 -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">Diseños Creativos 18</h1>
+                    <h1 class="titulo">Gestión de egresos (detalle)</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso10.png" alt="Gestión de Egresos Detalle - Paso 10" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Egresos:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                El usuario podrá consultar y gestionar los gastos registrados, visualizar el saldo disponible y realizar acciones de edición o exportación de información.
+                            </p>
                         </div>
                     </div>
 
                     <span class="numero-pagina">18</span>
 
-                    <!-- Botón siguiente -->
+                    <!-- Botón anterior -->
                     <span class="btn-sig-ant atras" data-page="giro-9">
                       <i class="bx bx-chevron-left"></i>
                     </span>
@@ -691,23 +634,20 @@
             <div class="pagina-libro pagina-der giro" id="giro-10">
                 <!-- Página 19 -->
                 <div class="frente-pagina">
-                    <h1 class="titulo">Diseños Creativos 19</h1>
+                    <h1 class="titulo">Análisis de egresos</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso10.1.png" alt="Análisis de Egresos - Paso 10.1" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Egresos:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                La plataforma proporciona gráficos estadísticos que permiten analizar el comportamiento y distribución de los gastos según sus categorías.
+                            </p>
                         </div>
                     </div>
 
@@ -721,29 +661,26 @@
 
                 <!-- Página 20 -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">Diseños Creativos 20</h1>
+                    <h1 class="titulo">Consultar módulo de Deudas</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso11.png" alt="Módulo de Deudas - Paso 11" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Deudas:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                El usuario debe ingresar al módulo <strong>Deuda</strong> desde el menú principal para visualizar el resumen general de obligaciones financieras. Allí podrá revisar el saldo pendiente, pagos realizados, fechas de vencimiento y estadísticas relacionadas.
+                            </p>
                         </div>
                     </div>
 
                     <span class="numero-pagina">20</span>
 
-                    <!-- Botón siguiente -->
+                    <!-- Botón anterior -->
                     <span class="btn-sig-ant atras" data-page="giro-10">
                       <i class="bx bx-chevron-left"></i>
                     </span>
@@ -753,23 +690,20 @@
             <div class="pagina-libro pagina-der giro" id="giro-11">
                 <!-- Página 21 -->
                 <div class="frente-pagina">
-                    <h1 class="titulo">Diseños Creativos 21</h1>
+                    <h1 class="titulo">Detalles y estadísticas de deudas</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso11.1.png" alt="Detalles y Estadísticas de Deudas - Paso 11.1" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Deudas:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                La plataforma proporciona gráficos y estadísticas detalladas sobre las obligaciones financieras, permitiendo al usuario analizar la evolución de sus deudas y planificar los pagos pendientes.
+                            </p>
                         </div>
                     </div>
 
@@ -783,29 +717,26 @@
 
                 <!-- Página 22 -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">Diseños Creativos 22</h1>
+                    <h1 class="titulo">Agregar nueva deuda</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso12.png" alt="Agregar Nueva Deuda - Paso 12" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Deudas:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Presiona el botón <strong>Agregar</strong> para registrar una nueva deuda. El sistema abrirá un formulario donde deberás ingresar la entidad acreedora, tipo de deuda, saldo inicial, tasa, fecha de vencimiento y demás datos necesarios.
+                            </p>
                         </div>
                     </div>
 
                     <span class="numero-pagina">22</span>
 
-                    <!-- Botón siguiente -->
+                    <!-- Botón anterior -->
                     <span class="btn-sig-ant atras" data-page="giro-11">
                       <i class="bx bx-chevron-left"></i>
                     </span>
@@ -815,23 +746,20 @@
             <div class="pagina-libro pagina-der giro" id="giro-12">
                 <!-- Página 23 -->
                 <div class="frente-pagina">
-                    <h1 class="titulo">Diseños Creativos 23</h1>
+                    <h1 class="titulo">Registrar un nuevo pago</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso13.png" alt="Registrar un Nuevo Pago - Paso 13" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Deudas:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Selecciona la opción <strong>Agregar pago</strong> para registrar abonos realizados a una deuda existente. Debes indicar la deuda asociada, monto pagado, método de pago y observaciones adicionales.
+                            </p>
                         </div>
                     </div>
 
@@ -845,29 +773,26 @@
 
                 <!-- Página 24 -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">Diseños Creativos 24</h1>
+                    <h1 class="titulo">Ingresar al módulo Ahorro</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso14.png" alt="Ingresar al Módulo Ahorro - Paso 14" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Ahorro:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Accede al módulo <strong>Ahorro</strong> desde el menú principal para visualizar las metas creadas. El sistema mostrará las metas disponibles, el porcentaje de avance y las opciones de administración.
+                            </p>
                         </div>
                     </div>
 
                     <span class="numero-pagina">24</span>
 
-                    <!-- Botón siguiente -->
+                    <!-- Botón anterior -->
                     <span class="btn-sig-ant atras" data-page="giro-12">
                       <i class="bx bx-chevron-left"></i>
                     </span>
@@ -877,23 +802,20 @@
             <div class="pagina-libro pagina-der giro" id="giro-13">
                 <!-- Página 25 -->
                 <div class="frente-pagina">
-                    <h1 class="titulo">Diseños Creativos 25</h1>
+                    <h1 class="titulo">Crear nueva meta</h1>
 
                     <div class="caja-portafolio">
                         <div class="caja-img">
-                            <img src="website 3.png" alt="">
+                            <img src="img/Paso15.png" alt="Crear Nueva Meta - Paso 15" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
                         </div>
 
                         <div class="caja-info">
                             <div class="titulo-info">
-                                <h3>Interfaz UI/UX Avanzada</h3>
-                                <a href="#">Ver <i class="bx bx-link-external"></i></a>
+                                <h3>Ahorro:</h3>
                             </div>
-                            <p>Innovación visual:</p>
-                            <p>Aplicación de paletas doradas y fondos oscuros en sistemas robustos de visualización.</p>
-                        </div>
-                        <div class="caja-botones">
-                            <a href="#" class="boton">Saber Más</a>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Presiona <strong>Crear tu propia meta</strong> para configurar un nuevo objetivo de ahorro. Debes ingresar nombre de la meta, imagen, monto objetivo, tiempo estimado y frecuencia de aportes.
+                            </p>
                         </div>
                     </div>
 
@@ -907,34 +829,367 @@
 
                 <!-- Página 26 -->
                 <div class="dorso-pagina">
-                    <h1 class="titulo">¡Contáctame!</h1>
+                    <h1 class="titulo">Realizar aportes a una meta</h1>
+
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso16.png" alt="Realizar Aportes a una Meta - Paso 16" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+
+                        <div class="caja-info">
+                            <div class="titulo-info">
+                                <h3>Ahorro:</h3>
+                            </div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Selecciona una meta y presiona <strong>Aportar</strong>. El sistema permitirá elegir una fecha y definir el monto que deseas agregar para avanzar hacia el cumplimiento del objetivo.
+                            </p>
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">26</span>
+
+                    <!-- Botón anterior -->
+                    <span class="btn-sig-ant atras" data-page="giro-13">
+                      <i class="bx bx-chevron-left"></i>
+                    </span>
+                </div>
+            </div>
+            <!-- Página 27 y 28 -->
+            <div class="pagina-libro pagina-der giro" id="giro-14">
+                <!-- Página 27 -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">Consultar historial de aportes</h1>
+
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso17.png" alt="Consultar Historial de Aportes - Paso 17" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+
+                        <div class="caja-info">
+                            <div class="titulo-info">
+                                <h3>Ahorro:</h3>
+                            </div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Haz clic en <strong>Ver historial</strong> para consultar el registro completo de aportes realizados. Desde este apartado podrás visualizar fechas, montos y estadísticas de progreso.
+                            </p>
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">27</span>
+
+                    <!-- Botón siguiente -->
+                    <span class="btn-sig-ant" data-page="giro-14">
+                      <i class="bx bx-chevron-right"></i>
+                    </span>
+                </div>
+
+                <!-- Página 28 -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">Opciones del menú de la meta</h1>
+
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso18.png" alt="Opciones del Menú de la Meta - Paso 18" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+
+                        <div class="caja-info">
+                            <div class="titulo-info">
+                                <h3>Ahorro:</h3>
+                            </div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Presiona el botón de tres puntos <strong>(...)</strong> ubicado en la tarjeta de la meta para desplegar las opciones disponibles, como editar o eliminar.
+                            </p>
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">28</span>
+
+                    <!-- Botón anterior -->
+                    <span class="btn-sig-ant atras" data-page="giro-14">
+                      <i class="bx bx-chevron-left"></i>
+                    </span>
+                </div>
+            </div>
+            <!-- Página 29 y 30 -->
+            <div class="pagina-libro pagina-der giro" id="giro-15">
+                <!-- Página 29 -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">Editar meta</h1>
+
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso19.png" alt="Editar Meta - Paso 19" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+
+                        <div class="caja-info">
+                            <div class="titulo-info">
+                                <h3>Ahorro:</h3>
+                            </div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Selecciona la opción <strong>Editar</strong> para modificar la información de una meta existente. Puedes actualizar nombre, imagen, duración, frecuencia o monto objetivo.
+                            </p>
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">29</span>
+
+                    <!-- Botón siguiente -->
+                    <span class="btn-sig-ant" data-page="giro-15">
+                      <i class="bx bx-chevron-right"></i>
+                    </span>
+                </div>
+
+                <!-- Página 30 -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">Eliminar meta</h1>
+
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso20.png" alt="Eliminar Meta - Paso 20" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+
+                        <div class="caja-info">
+                            <div class="titulo-info">
+                                <h3>Ahorro:</h3>
+                            </div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Selecciona la opción <strong>Eliminar</strong> para borrar una meta. El sistema mostrará una advertencia y permitirá descargar el historial antes de confirmar la eliminación definitiva.
+                            </p>
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">30</span>
+
+                    <!-- Botón anterior -->
+                    <span class="btn-sig-ant atras" data-page="giro-15">
+                      <i class="bx bx-chevron-left"></i>
+                    </span>
+                </div>
+            </div>
+            <!-- Página 31 y 32 -->
+            <div class="pagina-libro pagina-der giro" id="giro-16">
+                <!-- Página 31 -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">Meta completada</h1>
+
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso21.png" alt="Meta Completada - Paso 21" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+
+                        <div class="caja-info">
+                            <div class="titulo-info">
+                                <h3>Ahorro:</h3>
+                            </div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">
+                                Cuando el progreso alcance el 100%, el sistema mostrará el estado <strong>Meta completada</strong>, indicando que el objetivo fue alcanzado satisfactoriamente. Desde allí podrás revisar el historial y cerrar el proceso.
+                            </p>
+                        </div>
+                    </div>
+
+                    <span class="numero-pagina">31</span>
+
+                    <!-- Botón siguiente -->
+                    <span class="btn-sig-ant" data-page="giro-16">
+                      <i class="bx bx-chevron-right"></i>
+                    </span>
+                </div>
+
+                <!-- Página 32 -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">Botones superiores derechos</h1>
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso27.png" alt="Botones Superiores Derechos - Paso 27" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+                        <div class="caja-info">
+                            <div class="titulo-info"><h3>Accesos Rápidos:</h3></div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">Explica la función de los accesos rápidos: Manual de usuario, Chatbot, Usuario y Configuraciones, además del acceso al perfil y cierre de sesión.</p>
+                        </div>
+                    </div>
+                    <span class="numero-pagina">32</span>
+                    <span class="btn-sig-ant atras" data-page="giro-16"><i class="bx bx-chevron-left"></i></span>
+                </div>
+            </div>
+            <!-- Página 33 y 34 -->
+            <div class="pagina-libro pagina-der giro" id="giro-17">
+                <!-- Página 33 -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">Editar perfil</h1>
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso27.1.png" alt="Editar Perfil - Paso 27.1" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+                        <div class="caja-info">
+                            <div class="titulo-info"><h3>Perfil:</h3></div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">Permite actualizar datos personales como foto, nombre, correo, teléfono y contraseña.</p>
+                        </div>
+                    </div>
+                    <span class="numero-pagina">33</span>
+                    <span class="btn-sig-ant" data-page="giro-17"><i class="bx bx-chevron-right"></i></span>
+                </div>
+                <!-- Página 34 -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">Cambiar contraseña</h1>
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso28.png" alt="Cambiar Contraseña - Paso 28" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+                        <div class="caja-info">
+                            <div class="titulo-info"><h3>Seguridad:</h3></div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">Guía para ingresar la contraseña actual, crear una nueva, confirmarla y guardar cambios.</p>
+                        </div>
+                    </div>
+                    <span class="numero-pagina">34</span>
+                    <span class="btn-sig-ant atras" data-page="giro-17"><i class="bx bx-chevron-left"></i></span>
+                </div>
+            </div>
+            <!-- Página 35 y 36 -->
+            <div class="pagina-libro pagina-der giro" id="giro-18">
+                <!-- Página 35 -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">Verificación de seguridad</h1>
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso29.png" alt="Verificación de Seguridad - Paso 29" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+                        <div class="caja-info">
+                            <div class="titulo-info"><h3>Seguridad:</h3></div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">Solicita la contraseña actual para validar la identidad antes de realizar cambios importantes.</p>
+                        </div>
+                    </div>
+                    <span class="numero-pagina">35</span>
+                    <span class="btn-sig-ant" data-page="giro-18"><i class="bx bx-chevron-right"></i></span>
+                </div>
+                <!-- Página 36 -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">Acceder al chatbot</h1>
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso23.png" alt="Acceder al Chatbot - Paso 23" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+                        <div class="caja-info">
+                            <div class="titulo-info"><h3>Asistencia:</h3></div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">Permite abrir el asistente virtual para recibir ayuda inmediata y consultar preguntas frecuentes dentro de la plataforma.</p>
+                        </div>
+                    </div>
+                    <span class="numero-pagina">36</span>
+                    <span class="btn-sig-ant atras" data-page="giro-18"><i class="bx bx-chevron-left"></i></span>
+                </div>
+            </div>
+            <!-- Página 37 y 38 -->
+            <div class="pagina-libro pagina-der giro" id="giro-19">
+                <!-- Página 37 -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">Interactuar con el chatbot</h1>
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso24.png" alt="Interactuar con el Chatbot - Paso 24" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+                        <div class="caja-info">
+                            <div class="titulo-info"><h3>Asistencia:</h3></div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">Explica cómo escribir preguntas o solicitudes en el chat para recibir respuestas automáticas del asistente virtual.</p>
+                        </div>
+                    </div>
+                    <span class="numero-pagina">37</span>
+                    <span class="btn-sig-ant" data-page="giro-19"><i class="bx bx-chevron-right"></i></span>
+                </div>
+                <!-- Página 38 -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">Revisar notificaciones</h1>
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso25.png" alt="Revisar Notificaciones - Paso 25" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+                        <div class="caja-info">
+                            <div class="titulo-info"><h3>Notificaciones:</h3></div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">Muestra cómo acceder al Centro de Notificaciones para visualizar alertas y mensajes importantes.</p>
+                        </div>
+                    </div>
+                    <span class="numero-pagina">38</span>
+                    <span class="btn-sig-ant atras" data-page="giro-19"><i class="bx bx-chevron-left"></i></span>
+                </div>
+            </div>
+            <!-- Página 39 y 40 -->
+            <div class="pagina-libro pagina-der giro" id="giro-20">
+                <!-- Página 39 -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">Personalizar notificaciones</h1>
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/Paso26.png" alt="Personalizar Notificaciones - Paso 26" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+                        <div class="caja-info">
+                            <div class="titulo-info"><h3>Notificaciones:</h3></div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">Permite configurar el tiempo y las preferencias para silenciar o administrar notificaciones.</p>
+                        </div>
+                    </div>
+                    <span class="numero-pagina">39</span>
+                    <span class="btn-sig-ant" data-page="giro-20"><i class="bx bx-chevron-right"></i></span>
+                </div>
+                <!-- Página 40 -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">Iniciar sesión con Google</h1>
+                    <div class="caja-portafolio">
+                        <div class="caja-img">
+                            <img src="img/paso2Google.png" alt="Iniciar Sesión con Google - Paso 2" style="object-fit: contain; width: 100%; height: 100%; background-color: transparent; transform: none !important;">
+                        </div>
+                        <div class="caja-info">
+                            <div class="titulo-info"><h3>Acceso:</h3></div>
+                            <p style="margin-top:0.5rem; text-align: justify; font-size: 1.05rem; line-height: 1.6;">Muestra una segunda forma de acceso usando Google para iniciar sesión o registrarse de forma rápida y segura.</p>
+                        </div>
+                    </div>
+                    <span class="numero-pagina">40</span>
+                    <span class="btn-sig-ant atras" data-page="giro-20"><i class="bx bx-chevron-left"></i></span>
+                </div>
+            </div>
+            <!-- Página 41 y 42 -->
+            <div class="pagina-libro pagina-der giro" id="giro-21">
+                <!-- Página 41 -->
+                <div class="frente-pagina">
+                    <h1 class="titulo">¡Contáctanos!</h1>
 
                     <div class="caja-contacto">
                       <form action="">
                         <input type="text" class="campo-texto" placeholder="Nombre Completo" required>
                         <input type="email" class="campo-texto" placeholder="Correo Electrónico" required>
                         <textarea name="" id="" cols="30" rows="10" class="campo-texto" placeholder="Tu Mensaje"></textarea>
-                        <input type="submit" value="Enviar Mensaje" class="boton">
+                        <input type="submit" value="Enviar Mensaje" class="boton contactame">
                       </form>
                     </div>
 
-                    <span class="numero-pagina">26</span>
+                    <span class="numero-pagina">41</span>
 
                     <!-- Botón siguiente -->
-                    <span class="btn-sig-ant atras" data-page="giro-13">
+                    <span class="btn-sig-ant" data-page="giro-21">
+                      <i class="bx bx-chevron-right"></i>
+                    </span>
+                </div>
+
+                <!-- Página 42 -->
+                <div class="dorso-pagina">
+                    <h1 class="titulo">¡Gracias por usar Pesa tus Pesos!</h1>
+                    
+                    <div style="display: flex; justify-content: center; align-items: center; height: 60%; flex-direction: column;">
+                        <a href="#" class="volver-perfil">
+                          <p>Perfil</p>
+                          <i class="bx bxs-user"></i>
+                        </a>
+                    </div>
+
+                    <span class="numero-pagina">42</span>
+
+                    <!-- Botón anterior -->
+                    <span class="btn-sig-ant atras" data-page="giro-21">
                       <i class="bx bx-chevron-left"></i>
                     </span>
-
-                    <a href="#" class="volver-perfil">
-                      <p>Perfil</p>
-                      <i class="bx bxs-user"></i>
-                    </a>
                 </div>
             </div>
       </div>
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="manual.js"></script>
     <script>
       // Lógica para botones de "Leer Más" y "Saber Más"
@@ -960,5 +1215,11 @@
         });
       });
     </script>
+
+    <!-- Lightbox Modal para ampliar cualquier imagen -->
+    <div id="lightbox-modal" class="lightbox">
+        <span class="lightbox-cerrar">&times;</span>
+        <img class="lightbox-contenido" id="lightbox-img" alt="Imagen ampliada">
+    </div>
   </body>
 </html>
